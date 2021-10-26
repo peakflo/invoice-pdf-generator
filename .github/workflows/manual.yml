@@ -50,8 +50,7 @@ jobs:
         run: |
           mkdir release
           echo "`jq '.version="${{ github.event.inputs.version }}"' package.json`" > ./release/package.json
-          cp -r dist ./release
-          cp -r src ./release
+          cp -r src ./release/dist/
           cp release-readme.md ./release/README.md
           
       - name: create release repo
