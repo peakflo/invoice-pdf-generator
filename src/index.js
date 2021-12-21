@@ -30,18 +30,18 @@ export { OutputType, jsPDF };
  *   business?: {
  *       name?: string,
  *       address?: string,
- *       phone?: string,
- *       email?: string,
+ *       addressLine2?: string,
+ *       addressLine3?: string,
  *       email_1?: string,
- *       website?: string,
+ *       country?: string,
  *   },
  *   contact?: {
  *       label?: string,
  *       name?: string,
  *       address?: string,
- *       phone?: string,
- *       email?: string,
- *       otherInfo?: string,
+ *       addressLine2?: string,
+ *       addressLine3?: string,
+ *       country?: string,
  *   },
  *   invoice?: {
  *       label?: string,
@@ -98,18 +98,18 @@ function jsPDFInvoiceTemplate(props) {
     business: {
       name: props.business?.name || "",
       address: props.business?.address || "",
-      phone: props.business?.phone || "",
-      email: props.business?.email || "",
+      addressLine2: props.business?.addressLine2 || "",
+      addressLine3: props.business?.addressLine3 || "",
       email_1: props.business?.email_1 || "",
-      website: props.business?.website || "",
+      country: props.business?.country || "",
     },
     contact: {
       label: props.contact?.label || "",
       name: props.contact?.name || "",
       address: props.contact?.address || "",
-      phone: props.contact?.phone || "",
-      email: props.contact?.email || "",
-      otherInfo: props.contact?.otherInfo || "",
+      addressLine2: props.contact?.addressLine2 || "",
+      addressLine3: props.contact?.addressLine3 || "",
+      country: props.contact?.country || "",
     },
     invoice: {
       label: props.invoice?.label || "",
@@ -227,17 +227,17 @@ function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.subLineHeight;
   doc.text(docWidth - 10, currentHeight, param.business.address, "right");
   currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.phone, "right");
+  doc.text(docWidth - 10, currentHeight, param.business.addressLine2, "right");
   doc.setFontSize(pdfConfig.fieldTextSize);
   // doc.setTextColor(colorGray);
   currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.email, "right");
+  doc.text(docWidth - 10, currentHeight, param.business.addressLine3, "right");
 
   currentHeight += pdfConfig.subLineHeight;
   doc.text(docWidth - 10, currentHeight, param.business.email_1, "right");
 
   currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.website, "right");
+  doc.text(docWidth - 10, currentHeight, param.business.country, "right");
 
   //line breaker after logo & business info
   if (param.invoice.header.length) {
@@ -279,19 +279,19 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight;
   }
 
-  if (param.contact.phone || param.invoice.invGenDate) {
-    doc.text(10, currentHeight, param.contact.phone);
+  if (param.contact.addressLine2 || param.invoice.invGenDate) {
+    doc.text(10, currentHeight, param.contact.addressLine2);
     doc.text(docWidth - 10, currentHeight, param.invoice.invGenDate, "right");
     currentHeight += pdfConfig.subLineHeight;
   }
 
-  if (param.contact.email) {
-    doc.text(10, currentHeight, param.contact.email);
+  if (param.contact.addressLine3) {
+    doc.text(10, currentHeight, param.contact.addressLine3);
     currentHeight += pdfConfig.subLineHeight;
   }
 
-  if (param.contact.otherInfo)
-    doc.text(10, currentHeight, param.contact.otherInfo);
+  if (param.contact.country)
+    doc.text(10, currentHeight, param.contact.country);
   else currentHeight -= pdfConfig.subLineHeight;
   //end contact part
 
