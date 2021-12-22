@@ -234,10 +234,10 @@ function jsPDFInvoiceTemplate(props) {
   doc.text(docWidth - 10, currentHeight, param.business.addressLine3, "right");
 
   currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.email_1, "right");
+  doc.text(docWidth - 10, currentHeight, param.business.country, "right");
 
   currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.country, "right");
+  doc.text(docWidth - 10, currentHeight, param.business.email_1, "right");
 
   //line breaker after logo & business info
   if (param.invoice.header.length) {
