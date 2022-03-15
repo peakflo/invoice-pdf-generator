@@ -45,14 +45,20 @@ jobs:
           HUSKY_SKIP_INSTALL: 1 # Skip install of Husky
         run: |
           yarn install
-          
+
+      - name: Build the package
+        run: |
+          yarn build-babel
+
       - name: Create release directory
         run: |
           mkdir release
           echo "`jq '.version="${{ github.event.inputs.version }}"' package.json`" > ./release/package.json
-          cp -r src ./release/dist/
+          cp -r dist ./release/dist/
+          find src -name "*.d.ts" -exec cp --parents {} release \;
           cp release-readme.md ./release/README.md
-          
+          cp index.d.ts ./release/index.d.ts
+
       - name: create release repo
         uses: s0/git-publish-subdir-action@develop
         env:
