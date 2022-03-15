@@ -1,0 +1,19 @@
+{
+  "presets": ["@babel/env", "@babel/typescript"],
+  "plugins": [
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread",
+    "@babel/plugin-proposal-optional-chaining"
+  ],
+  "ignore": [
+    "src/firestore.ts",
+    "**/__mocks__/**/*.js",
+    "**/__mocks__/**/*.ts",
+    "**/__tests__/**/*.js",
+    "**/__tests__/**/*.ts",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*.test.ts",
+    "**/*.test.js"
+  ]
+}
