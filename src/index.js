@@ -410,7 +410,7 @@ function jsPDFInvoiceTemplate(props) {
   
     doc.setLineWidth(0.1); 
     doc.line(10, currentHeight, docWidth - 10, currentHeight);
-    currentHeight += maxHeight + 4;
+    currentHeight += maxHeight + 2;
 
     //td border height
     currentHeight += 4;
@@ -450,8 +450,8 @@ function jsPDFInvoiceTemplate(props) {
   }
 
   // Subtotal line
-  doc.text(docWidth - 50, currentHeight, param.invoice.invTotalLabel, "right");
-  doc.text(docWidth - 10, currentHeight,  param.invoice.invCurrency + "  " + param.invoice.invTotal.toLocaleString(), "right");
+  doc.text(docWidth - 60, currentHeight, param.invoice.invTotalLabel, "right");
+  doc.text(docWidth - 20, currentHeight,  param.invoice.invCurrency + "  " + param.invoice.invTotal.toLocaleString(), "right");
 
   //row1 - tax
   if (
@@ -463,9 +463,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(param.invoice.row1.style.fontSize);
 
-    doc.text(docWidth - 50, currentHeight, param.invoice.row1.col1, "right");
-    doc.text(docWidth - 25, currentHeight, param.invoice.row1.col3, "right");
-    doc.text(docWidth - 10, currentHeight, param.invoice.row1.col2, "right");
+    doc.text(docWidth - 60, currentHeight, param.invoice.row1.col1, "right");
+    doc.text(docWidth - 20, currentHeight, param.invoice.row1.col2, "right");
   }
   //end row1
 
@@ -479,9 +478,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(param.invoice.row2.style.fontSize);
 
-    doc.text(docWidth - 50, currentHeight, param.invoice.row2.col1, "right");
-    doc.text(docWidth - 25, currentHeight, param.invoice.row2.col3, "right");
-    doc.text(docWidth - 10, currentHeight, param.invoice.row2.col2, "right");
+    doc.text(docWidth - 60, currentHeight, param.invoice.row2.col1, "right");
+    doc.text(docWidth - 20, currentHeight, param.invoice.row2.col2, "right");
   }
   //end row2
 
@@ -495,8 +493,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text(docWidth - 50, currentHeight, param.invoice.total.col1, "right")
-    doc.text(docWidth - 10, currentHeight, param.invoice.total.col3 + "   " + param.invoice.total.col2, "right");
+    doc.text(docWidth - 60, currentHeight, param.invoice.total.col1, "right")
+    doc.text(docWidth - 20, currentHeight, param.invoice.total.col3 + "   " + param.invoice.total.col2, "right");
   }
 
   // Amount Due
@@ -575,11 +573,15 @@ function jsPDFInvoiceTemplate(props) {
     doc.text(param.invoice.invDescLabel, 10, currentHeight);
     currentHeight += pdfConfig.subLineHeight;
     doc.setTextColor(colorGray);
-    doc.setFontSize(pdfConfig.fieldTextSize - 1);
+    doc.setFontSize(pdfConfig.fieldTextSize);
 
     var lines = doc.splitTextToSize(param.invoice.invDesc, docWidth / 2);
     //text in left half
-    doc.text(lines, 10, currentHeight);
+    param.invoice?.invDesc?.forEach((el) => {
+      doc.text(el, 10, currentHeight);
+      currentHeight += pdfConfig.subLineHeight;
+    })
+    
     currentHeight +=
       doc.getTextDimensions(lines).h > 5
         ? doc.getTextDimensions(lines).h + 6
