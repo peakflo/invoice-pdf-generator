@@ -189,3 +189,38 @@ pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
 
 <hr/>
 
+<details open>
+<summary>How to test on peakflo-web</summary>
+
+Steps for testing.
+
+1. Change the `jspdf-invoice-template` on package.json on `peakflo-web` to the path of this project (`invoice-pdf-generator`).
+2. Then install the package on `peakflo-web`.
+
+```sh
+yarn add <path to the `invoice-pdf-generator`>
+
+Eg: yarn add ../invoice-pdf-generator 
+```
+
+3. After performing any change on `invoice-pdf-generator`, 
+    3.1 Run:
+
+    ```sh
+    yarn run build-babel
+    ```
+
+    3.2 Rerun following on `peakflo-web`,
+
+    ```sh
+    yarn add <path to the `invoice-pdf-generator`>
+
+    Eg: yarn add ../invoice-pdf-generator 
+    ```
+
+    3.3 Rerun `peakflo-web` front-end.
+    
+</details>
+<hr/>
+
+
