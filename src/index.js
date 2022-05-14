@@ -353,6 +353,7 @@ function jsPDFInvoiceTemplate(props) {
   //table body
   var tableBodyLength = param.invoice.table.length;
   doc.setFont(undefined, 'normal');
+
   param.invoice.table.forEach(function (row, index) {
     //get nax height for the current row
     let rowsHeight = [];
@@ -415,6 +416,12 @@ function jsPDFInvoiceTemplate(props) {
     //td border height
     currentHeight += 4;
   });
+
+  // no table data
+  if (tableBodyLength === 0) {
+    currentHeight += 6;
+    doc.text('No Data', docWidth / 2, currentHeight);
+  }
   //     doc.line(10, currentHeight, docWidth - 10, currentHeight); //nese duam te shfaqim line ne fund te tabeles
 
   var invDescSize = splitTextAndGetHeight(
@@ -577,10 +584,11 @@ function jsPDFInvoiceTemplate(props) {
 
     var lines = doc.splitTextToSize(param.invoice.invDesc, docWidth / 2);
     //text in left half
-    param.invoice?.invDesc?.forEach((el) => {
-      doc.text(el, 10, currentHeight);
-      currentHeight += pdfConfig.subLineHeight;
-    })
+    if (param.invoice?.invDesc.length > 0)
+      param.invoice?.invDesc?.forEach((el) => {
+        doc.text(el, 10, currentHeight);
+        currentHeight += pdfConfig.subLineHeight;
+      })
     
     currentHeight +=
       doc.getTextDimensions(lines).h > 5
