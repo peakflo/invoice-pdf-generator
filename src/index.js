@@ -59,6 +59,7 @@ export { OutputType, jsPDF };
  *       invCurrency?: string,
  *       invDescLabel?: string,
  *       invDesc?: string,
+ *       creditNoteLabel?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -129,6 +130,7 @@ function jsPDFInvoiceTemplate(props) {
       invCurrency: props.invoice?.invCurrency || "",
       invDescLabel: props.invoice?.invDescLabel || "",
       invDesc: props.invoice?.invDesc || "",
+      creditNoteLabel: props.invoice?.creditNoteLabel || "",
       row1: {
         col1: props.invoice?.row1?.col1 || "",
         col2: props.invoice?.row1?.col2 || "",
@@ -457,8 +459,8 @@ function jsPDFInvoiceTemplate(props) {
   }
 
   // Subtotal line
-  doc.text(docWidth - 60, currentHeight, param.invoice.invTotalLabel, "right");
-  doc.text(docWidth - 20, currentHeight,  param.invoice.invCurrency + "  " + param.invoice.invTotal.toLocaleString(), "right");
+  doc.text(docWidth - 50, currentHeight, param.invoice.invTotalLabel, "right");
+  doc.text(docWidth - 10, currentHeight,  param.invoice.invCurrency + "  " + param.invoice.invTotal.toLocaleString(), "right");
 
   //row1 - tax
   if (
@@ -470,8 +472,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(param.invoice.row1.style.fontSize);
 
-    doc.text(docWidth - 60, currentHeight, param.invoice.row1.col1, "right");
-    doc.text(docWidth - 20, currentHeight, param.invoice.row1.col2, "right");
+    doc.text(docWidth - 50, currentHeight, param.invoice.row1.col1, "right");
+    doc.text(docWidth - 10, currentHeight, param.invoice.row1.col2, "right");
   }
   //end row1
 
@@ -485,8 +487,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(param.invoice.row2.style.fontSize);
 
-    doc.text(docWidth - 60, currentHeight, param.invoice.row2.col1, "right");
-    doc.text(docWidth - 20, currentHeight, param.invoice.row2.col2, "right");
+    doc.text(docWidth - 50, currentHeight, param.invoice.row2.col1, "right");
+    doc.text(docWidth - 10, currentHeight, param.invoice.row2.col2, "right");
   }
   //end row2
 
@@ -500,8 +502,8 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text(docWidth - 60, currentHeight, param.invoice.total.col1, "right")
-    doc.text(docWidth - 20, currentHeight, param.invoice.total.col3 + "   " + param.invoice.total.col2, "right");
+    doc.text(docWidth - 50, currentHeight, param.invoice.total.col1, "right")
+    doc.text(docWidth - 10, currentHeight, param.invoice.total.col3 + "  " + param.invoice.total.col2, "right");
   }
 
   // Amount Due
@@ -515,15 +517,15 @@ function jsPDFInvoiceTemplate(props) {
   ) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(param.invoice.amountDue.style.fontSize);
+    doc.text(docWidth - 50, currentHeight, param.invoice.creditNoteLabel, "right");
     doc.text(docWidth - 10, currentHeight, param.invoice.creditNote, "right");
     currentHeight += pdfConfig.lineHeight;
 
     doc.line(docWidth / 2, currentHeight, docWidth - 10, currentHeight);
     currentHeight += pdfConfig.lineHeight;
    
-    doc.text(docWidth / 1.5, currentHeight, param.invoice.amountDue.col1, "right");
-    doc.text(docWidth - 25, currentHeight, param.invoice.amountDue.col2, "right");
-    doc.text(docWidth - 10, currentHeight, param.invoice.amountDue.col3, "right");
+    doc.text(docWidth - 50, currentHeight, param.invoice.amountDue.col1, "right");
+    doc.text(docWidth - 10, currentHeight, param.invoice.amountDue.col3 + "  " + param.invoice.amountDue.col2, "right");
   }
 
 
