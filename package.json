@@ -1,0 +1,54 @@
+{
+  "name": "jspdf-invoice-template",
+  "version": "0.0.10",
+  "description": "PDF template created for invoice with optional parameters. Using jsPDF library.",
+  "main": "./dist/index.js",
+  "types": "./index.d.ts",
+  "files": [
+    "dist/**/*",
+    "!./dist/**/*.map",
+    "types"
+  ],
+  "scripts": {
+    "build-babel": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir dist --extensions \".ts,.tsx,.js\" --source-maps inline",
+    "build": "webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peakflo/invoice-pdf-generator.git"
+  },
+  "keywords": [
+    "jspdf-template",
+    "jspdf",
+    "invoice",
+    "pdf",
+    "pdf-template",
+    "js-pdf-template",
+    "ts-pdf-template"
+  ],
+  "author": "Peakflo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peakflo/invoice-pdf-generator"
+  },
+  "homepage": "https://github.com/peakflo/invoice-pdf-generator",
+  "dependencies": {
+    "jspdf": "^2.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
+    "@babel/cli": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-typescript": "^7.8.3",
+    "babel-loader": "^8.2.2",
+    "typescript": "^4.1.5",
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  }
+}
