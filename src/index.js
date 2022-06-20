@@ -60,6 +60,7 @@ export { OutputType, jsPDF };
  *       invDescLabel?: string,
  *       invDesc?: string,
  *       creditNoteLabel?: string,
+ *       note?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -131,6 +132,7 @@ function jsPDFInvoiceTemplate(props) {
       invDescLabel: props.invoice?.invDescLabel || "",
       invDesc: props.invoice?.invDesc || "",
       creditNoteLabel: props.invoice?.creditNoteLabel || "",
+      note: props.invoice?.note || "",
       row1: {
         col1: props.invoice?.row1?.col1 || "",
         col2: props.invoice?.row1?.col2 || "",
@@ -445,6 +447,21 @@ function jsPDFInvoiceTemplate(props) {
   doc.setTextColor(colorBlack);
   doc.setFontSize(10);
   currentHeight += pdfConfig.lineHeight;
+
+  // Note 
+  if (param.invoice.note) {
+    currentHeight += pdfConfig.lineHeight;
+    doc.setFont(undefined, 'bold');
+    doc.text(10, currentHeight, 'Note:');
+
+    doc.setFont(undefined, 'normal');
+    const noteData = splitTextAndGetHeight(param.invoice.note, (doc.getPageWidth() - 40))
+
+    doc.text(22, currentHeight, noteData.text);
+
+    // doc.text(item.text, 11, currentHeight + 4)
+    currentHeight += pdfConfig.lineHeight + noteData.height;
+  }
 
   //line breaker before invoce total
   if (
