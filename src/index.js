@@ -510,21 +510,6 @@ function jsPDFInvoiceTemplate(props) {
     doc.text(docWidth - 10, currentHeight, param.invoice.total.col3 + "  " + param.invoice.total.col2, "right");
   }
 
-  // Note 
-  if (param.invoice.note) {
-    currentHeight += pdfConfig.lineHeight;
-    doc.setFont(undefined, 'bold');
-    doc.text(10, currentHeight, 'Note:');
-
-    doc.setFont(undefined, 'normal');
-    const noteData = splitTextAndGetHeight(param.invoice.note, (doc.getPageWidth() - 40))
-
-    doc.text(22, currentHeight, noteData.text);
-
-    // doc.text(item.text, 11, currentHeight + 4)
-    currentHeight += pdfConfig.lineHeight + noteData.height;
-  }
-
   // Amount Due
   doc.setFont(undefined, 'normal');
 
@@ -592,6 +577,23 @@ function jsPDFInvoiceTemplate(props) {
         currentHeight = 10;
       }
     }
+  }
+
+
+  // Note 
+  if (param.invoice.note) {
+    currentHeight += pdfConfig.lineHeight;
+    doc.setFont(undefined, 'bold');
+    doc.text(10, currentHeight, 'Note:');
+
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    const noteData = splitTextAndGetHeight(param.invoice.note, (doc.getPageWidth() - 40))
+    doc.setFontSize(pdfConfig.fieldTextSize);
+
+    doc.text(22, currentHeight, noteData.text);
+
+    currentHeight += pdfConfig.lineHeight + noteData.height;
   }
 
   var addInvoiceDesc = () => {
