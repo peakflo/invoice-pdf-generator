@@ -10,7 +10,7 @@ export namespace OutputType {
 import { jsPDF } from "jspdf";
 /**
  *
- * @param { {
+ * @param {
  *  outputType: OutputType | string,
  *  returnJsPDFDocObject?: boolean,
  *  fileName: string,
@@ -40,20 +40,24 @@ import { jsPDF } from "jspdf";
  *       addressLine3?: string,
  *       country?: string,
  *   },
- *   invoice?: {
+ *   data?: {
  *       label?: string,
- *       invTotalLabel?: string,
  *       num?: number,
- *       invDate?: string,
- *       invGenDate?: string,
+ *       date1Label?: string
+ *       date1?: string,
+ *       date2Label?: string
+ *       date2?: string,
  *       headerBorder?: boolean,
  *       tableBodyBorder?: boolean,
  *       header?: string[],
  *       table?: any,
- *       invTotal?: string,
- *       invCurrency?: string,
- *       invDescLabel?: string,
- *       invDesc?: string,
+ *       subTotalLabel?: string,
+ *       subTotal?: string,
+ *       currency?: string,
+ *       descLabel?: string,
+ *       desc?: string[],
+ *       creditNoteLabel?: string,
+ *       note?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -70,7 +74,14 @@ import { jsPDF } from "jspdf";
  *               fontSize?: number
  *           }
  *       },
- *   },
+ *       total?: {
+ *           col1?: string,
+ *           col2?: string,
+ *           col3?: string,
+ *           style?: {
+ *               fontSize?: number
+ *           }
+ *       },
  *   footer?: {
  *       text?: string,
  *   },
@@ -114,20 +125,23 @@ declare function jsPDFInvoiceTemplate(props: {
         email?: string;
         otherInfo?: string;
     };
-    invoice?: {
+    data?: {
         label?: string;
-        invTotalLabel?: string;
-        num?: number;
-        invDate?: string;
-        invGenDate?: string;
+        subTotalLabel?: string;
+        subTotal?: string;
+        num?: number | string;
+        date1?: string;
+        date1Label?: string;
+        date2?: string;
+        date2Label?: string;
         headerBorder?: boolean;
         tableBodyBorder?: boolean;
         header?: string[];
         table?: any;
-        invTotal?: string;
-        invCurrency?: string;
-        invDescLabel?: string;
-        invDesc?: string;
+        currency?: string;
+        descLabel?: string;
+        desc?: string[];
+        note?: string;
         row1?: {
             col1?: string;
             col2?: string;
@@ -144,6 +158,14 @@ declare function jsPDFInvoiceTemplate(props: {
                 fontSize?: number;
             };
         };
+        total?: {
+                col1?: string,
+                col2?: string,
+                col3?: string,
+                style?: {
+                    fontSize?: number
+                }
+            },
     };
     footer?: {
         text?: string;
