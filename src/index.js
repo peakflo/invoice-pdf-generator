@@ -38,10 +38,18 @@ export { OutputType, jsPDF };
  *   contact?: {
  *       label?: string,
  *       name?: string,
- *       address?: string,
- *       addressLine2?: string,
- *       addressLine3?: string,
- *       country?: string,
+ *       billingAddress: {
+ *          address?: string,
+ *          addressLine2?: string,
+ *          addressLine3?: string,
+ *          country?: string,
+ *       },
+ *       shippingAddress?: {
+ *          address?: string,
+ *          addressLine2?: string,
+ *          addressLine3?: string,
+ *          country?: string,
+ *       }
  *   },
  *   data?: {
  *       label?: string,
@@ -61,6 +69,8 @@ export { OutputType, jsPDF };
  *       desc?: string[],
  *       creditNoteLabel?: string,
  *       note?: string,
+ *       requestedBy?: string,
+ *       authorisedBy?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -117,10 +127,20 @@ function jsPDFInvoiceTemplate(props) {
     contact: {
       label: props.contact?.label || "",
       name: props.contact?.name || "",
-      address: props.contact?.address || "",
-      addressLine2: props.contact?.addressLine2 || "",
-      addressLine3: props.contact?.addressLine3 || "",
-      country: props.contact?.country || "",
+      billingAddress: {
+        label:  props.contact?.billingAddress?.label || "",
+        address: props.contact?.billingAddress?.address || "",
+        addressLine2: props.contact?.billingAddress?.addressLine2 || "",
+        addressLine3: props.contact?.billingAddress?.addressLine3 || "",
+        country: props.contact?.billingAddress?.country || "",
+      },
+      shippingAddress: {
+        label:  props.contact?.shippingAddress?.label || "",
+        address: props.contact?.shippingAddress?.address || "",
+        addressLine2: props.contact?.shippingAddress?.addressLine2 || "",
+        addressLine3: props.contact?.shippingAddress?.addressLine3 || "",
+        country: props.contact?.shippingAddress?.country || "",
+      },
     },
     data: {
       label: props.data?.label || "",
@@ -137,6 +157,8 @@ function jsPDFInvoiceTemplate(props) {
       subTotal: props.data?.subTotal || "",
       currency: props.data?.currency || "",
       descLabel: props.data?.descLabel || "",
+      requestedBy: props.data?.requestedBy || "",
+      authorisedBy: props.data?.authorisedBy || "",
       desc: props.data?.desc || "",
       creditNoteLabel: props.data?.creditNoteLabel || "",
       note: props.data?.note || "",
@@ -292,29 +314,49 @@ function jsPDFInvoiceTemplate(props) {
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
 
-  if (param.contact.address || param.data.date1) {
-    doc.text(10, currentHeight, param.contact.address);
+  if (param.contact?.billingAddress.address || param.data.date1) {
+    const billingAddressLabel = param.contact?.billingAddress.label
+    const shippingAddressLabel = param.contact?.shippingAddress.label
+    doc.text(10, currentHeight, billingAddressLabel);
+    doc.text(doc.getPageWidth()/3, currentHeight, shippingAddressLabel);
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(docWidth - 10, currentHeight, param.data.date2Label, "right");
     doc.text(docWidth - 40, currentHeight, param.data.date1Label, "right");
-    currentHeight += pdfConfig.subLineHeight;
+    currentHeight += pdfConfig.subLineHeight
   }
 
-  if (param.contact.addressLine2 || param.data.date2) {
-    doc.text(10, currentHeight, param.contact.addressLine2);
-    doc.setFontSize(pdfConfig.fieldTextSize - 2);
+  if (param.contact?.billingAddress.address || param.data.date1) {
+    const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.address, ((doc.getPageWidth()/3) - 25))
+    const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((doc.getPageWidth()/3) - 25))
+    doc.text(10, currentHeight, billingAddress.text);
+    doc.text(doc.getPageWidth()/3, currentHeight, shippingAddress.text);
+    doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(docWidth - 40, currentHeight, param.data.date1, "right");
     doc.text(docWidth - 10, currentHeight, param.data.date2, "right");
-    currentHeight += pdfConfig.subLineHeight;
+    currentHeight += billingAddress.height > shippingAddress.height ? billingAddress.height : shippingAddress.height;
   }
 
-  if (param.contact.addressLine3) {
-    doc.text(10, currentHeight, param.contact.addressLine3);
-    currentHeight += pdfConfig.subLineHeight;
+  if (param.contact?.billingAddress.addressLine1 || param.data.date2) {
+    const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.addressLine2, ((doc.getPageWidth()/3) - 25))
+    const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.addressLine2, ((doc.getPageWidth()/3) - 25))
+    doc.text(10, currentHeight, billingAddress.text);
+    doc.text(doc.getPageWidth()/3, currentHeight, shippingAddress.text);
+    doc.setFontSize(pdfConfig.fieldTextSize - 2);
+    currentHeight += billingAddress.height > shippingAddress.height ? billingAddress.height : shippingAddress.height;
   }
 
-  if (param.contact.country)
-    doc.text(10, currentHeight, param.contact.country);
+  if (param.contact?.billingAddress.addressLine3) {
+    const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.addressLine3, ((doc.getPageWidth()/3) - 25))
+    const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.addressLine3, ((doc.getPageWidth()/3) - 25))
+    doc.text(10, currentHeight, billingAddress.text);
+    doc.text(doc.getPageWidth()/3, currentHeight, shippingAddress.text);
+    currentHeight += billingAddress.height > shippingAddress.height ? billingAddress.height : shippingAddress.height;
+  }
+
+  if (param.contact.billingAddress.country || param.contact.shippingAddress.country) {
+    doc.text(10, currentHeight, param.contact.billingAddress.country);
+    doc.text(doc.getPageWidth()/3, currentHeight, param.contact.shippingAddress.country);
+  }
   else currentHeight -= pdfConfig.subLineHeight;
   //end contact part
 
@@ -586,19 +628,46 @@ function jsPDFInvoiceTemplate(props) {
     }
   }
 
+  // requested by
+  if (param.data.requestedBy) {
+    currentHeight += pdfConfig.lineHeight;
+    doc.setFont(undefined, 'bold');
+    doc.text(10, currentHeight, 'Requested By');
+    currentHeight += pdfConfig.subLineHeight;
+
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.text(10, currentHeight, param.data.requestedBy);
+    currentHeight += pdfConfig.lineHeight
+  }
+
+  // authorised by
+  if (param.data.authorisedBy) {
+    currentHeight += pdfConfig.lineHeight;
+    doc.setFont(undefined, 'bold');
+    doc.text(10, currentHeight, 'Authorised By');
+    currentHeight += pdfConfig.subLineHeight;
+
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.text(10, currentHeight, param.data.authorisedBy);
+    currentHeight += pdfConfig.lineHeight
+  }
+
 
   // Note 
   if (param.data.note) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(undefined, 'bold');
-    doc.text(10, currentHeight, 'Note:');
+    doc.text(10, currentHeight, 'Note');
+    currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(undefined, 'normal');
     doc.setFontSize(pdfConfig.fieldTextSize);
     const noteData = splitTextAndGetHeight(param.data.note, (doc.getPageWidth() - 40))
     doc.setFontSize(pdfConfig.fieldTextSize);
 
-    doc.text(22, currentHeight, noteData.text);
+    doc.text(10, currentHeight, noteData.text);
 
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
@@ -607,27 +676,19 @@ function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.setTextColor(colorBlack);
     doc.setFont(undefined, 'bold');
-    doc.text(param.data.descLabel, 10, currentHeight);
+    doc.text(10, currentHeight, param.data.descLabel);
     doc.setFont(undefined, 'normal');
     currentHeight += pdfConfig.subLineHeight;
-    doc.setTextColor(colorGray);
     doc.setFontSize(pdfConfig.fieldTextSize);
 
-    var lines = doc.splitTextToSize(param.data.desc, docWidth / 2);
-    //text in left half
     if (param.data?.desc.length > 0) {
       currentHeight += 1;
       param.data?.desc?.forEach((el) => {
-        doc.text(el, 10, currentHeight);
-        currentHeight += pdfConfig.subLineHeight;
+        const text = splitTextAndGetHeight(el, (doc.getPageWidth() - 40))
+        doc.text(10, currentHeight, text.text);
+        currentHeight += pdfConfig.subLineHeight + text.height;
       })
     }
-    currentHeight +=
-      doc.getTextDimensions(lines).h > 5
-        ? doc.getTextDimensions(lines).h + 6
-        : pdfConfig.lineHeight;
-
-    return currentHeight;
   };
 
   if (param.data?.desc?.length > 0) addDesc();
