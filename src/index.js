@@ -316,7 +316,7 @@ function jsPDFInvoiceTemplate(props) {
     const shippingAddressLabel = param.contact?.shippingAddress.label
     doc.text(10, currentHeight, billingAddressLabel);
     doc.text(doc.getPageWidth()/3, currentHeight, shippingAddressLabel);
-    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.text(docWidth - 10, currentHeight, param.data.date2Label, "right");
     doc.text(docWidth - 40, currentHeight, param.data.date1Label, "right");
     currentHeight += pdfConfig.subLineHeight
@@ -327,7 +327,7 @@ function jsPDFInvoiceTemplate(props) {
     const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((doc.getPageWidth()/3) - 25))
     doc.text(10, currentHeight, billingAddress.text);
     doc.text(doc.getPageWidth()/3, currentHeight, shippingAddress.text);
-    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.text(docWidth - 40, currentHeight, param.data.date1, "right");
     doc.text(docWidth - 10, currentHeight, param.data.date2, "right");
     currentHeight += billingAddress.height > shippingAddress.height ? billingAddress.height : shippingAddress.height;
@@ -627,26 +627,26 @@ function jsPDFInvoiceTemplate(props) {
 
   // requested by
   if (param.data.requestedBy) {
+    doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(undefined, 'bold');
     doc.text(10, currentHeight, 'Requested By');
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(undefined, 'normal');
-    doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(10, currentHeight, param.data.requestedBy);
     currentHeight += pdfConfig.lineHeight
   }
 
   // authorised by
   if (param.data.authorisedBy) {
+    doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(undefined, 'bold');
     doc.text(10, currentHeight, 'Authorised By');
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(undefined, 'normal');
-    doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(10, currentHeight, param.data.authorisedBy);
     currentHeight += pdfConfig.lineHeight
   }
@@ -670,13 +670,12 @@ function jsPDFInvoiceTemplate(props) {
   }
 
   var addDesc = () => {
-    doc.setFontSize(pdfConfig.labelTextSize);
+    doc.setFontSize(pdfConfig.labelTextSize - 2);
     doc.setTextColor(colorBlack);
     doc.setFont(undefined, 'bold');
     doc.text(10, currentHeight, param.data.descLabel);
     doc.setFont(undefined, 'normal');
     currentHeight += pdfConfig.subLineHeight;
-    doc.setFontSize(pdfConfig.fieldTextSize);
 
     if (param.data?.desc.length > 0) {
       currentHeight += 1;
