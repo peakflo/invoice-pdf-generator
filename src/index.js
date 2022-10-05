@@ -450,8 +450,6 @@ function jsPDFInvoiceTemplate(props) {
       doc.addPage();
       currentHeight = 10;
       if (index + 1 < tableBodyLength) addTableHeader();
-      //       else
-      //         currentHeight += pdfConfig.subLineHeight + 2 + pdfConfig.subLineHeight - 1; //same as in addtableHeader
     }
 
     //reset the height that was increased to check the next row
@@ -471,23 +469,6 @@ function jsPDFInvoiceTemplate(props) {
   if (tableBodyLength === 0) {
     currentHeight += 6;
     doc.text('No Data', docWidth / 2, currentHeight);
-  }
-  //     doc.line(10, currentHeight, docWidth - 10, currentHeight); //nese duam te shfaqim line ne fund te tabeles
-
-  var desc = splitTextAndGetHeight(
-    param.data.desc,
-    docWidth / 2
-  ).height;
-  //END TABLE PART
-
-  if (param.orientationLandscape && currentHeight + desc > 173) {
-    doc.addPage();
-    currentHeight = 10;
-  }
-
-  if (!param.orientationLandscape && currentHeight + desc > 270) {
-    doc.addPage();
-    currentHeight = 10;
   }
 
   doc.setTextColor(colorBlack);
@@ -578,19 +559,6 @@ function jsPDFInvoiceTemplate(props) {
     doc.text(docWidth - 10, currentHeight, param.data.amountDue.col3 + "  " + param.data.amountDue.col2, "right");
   }
 
-
-
-  if (param.orientationLandscape && currentHeight + desc > 173) {
-    doc.addPage();
-    currentHeight = 10;
-  }
-
-
-  if (!param.orientationLandscape && currentHeight + desc > 270) {
-    doc.addPage();
-    currentHeight = 10;
-  }
-
   doc.setTextColor(colorBlack);
   currentHeight += pdfConfig.subLineHeight;
   currentHeight += pdfConfig.subLineHeight;
@@ -611,16 +579,6 @@ function jsPDFInvoiceTemplate(props) {
           docWidth - 20,
           doc.internal.pageSize.height - 6
         );
-      }
-
-      if (param.orientationLandscape && currentHeight + desc > 183) {
-        doc.addPage();
-        currentHeight = 10;
-      }
-
-      if (!param.orientationLandscape && currentHeight + desc > 270) {
-        doc.addPage();
-        currentHeight = 10;
       }
     }
   }
@@ -655,34 +613,51 @@ function jsPDFInvoiceTemplate(props) {
   // Note 
   if (param.data.note) {
     currentHeight += pdfConfig.lineHeight;
+    const noteData = splitTextAndGetHeight(param.data.note, (doc.getPageWidth() - 40))
+    if (param.orientationLandscape && currentHeight + noteData.height > 173) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+  
+    if (!param.orientationLandscape && currentHeight + noteData.height > 270) {
+      doc.addPage();
+      currentHeight = 10;
+    }
     doc.setFont(undefined, 'bold');
     doc.text(10, currentHeight, 'Note');
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(undefined, 'normal');
     doc.setFontSize(pdfConfig.fieldTextSize);
-    const noteData = splitTextAndGetHeight(param.data.note, (doc.getPageWidth() - 40))
-    doc.setFontSize(pdfConfig.fieldTextSize);
-
     doc.text(10, currentHeight, noteData.text);
-
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
 
   var addDesc = () => {
     doc.setFontSize(pdfConfig.labelTextSize - 2);
     doc.setTextColor(colorBlack);
-    doc.setFont(undefined, 'bold');
-    doc.text(10, currentHeight, param.data.descLabel);
-    doc.setFont(undefined, 'normal');
-    currentHeight += pdfConfig.subLineHeight;
 
     if (param.data?.desc.length > 0) {
       currentHeight += 1;
-      param.data?.desc?.forEach((el) => {
-        const text = splitTextAndGetHeight(el, (doc.getPageWidth() - 40))
-        doc.text(10, currentHeight, text.text);
-        currentHeight += pdfConfig.subLineHeight + text.height;
+      param.data?.desc?.forEach((el, index) => {
+        const desc = splitTextAndGetHeight(el, (doc.getPageWidth() - 40))
+        if (param.orientationLandscape && currentHeight + desc.height > 173) {
+          doc.addPage();
+          currentHeight = 10;
+        }
+    
+        if (!param.orientationLandscape && currentHeight + desc.height > 270) {
+          doc.addPage();
+          currentHeight = 10;
+        }
+        if (index === 0) {
+          doc.setFont(undefined, 'bold');
+          doc.text(10, currentHeight, param.data.descLabel);
+          doc.setFont(undefined, 'normal');
+          currentHeight += pdfConfig.subLineHeight;
+        }
+        doc.text(10, currentHeight, desc.text);
+        currentHeight += pdfConfig.subLineHeight + desc.height;
       })
     }
   };
