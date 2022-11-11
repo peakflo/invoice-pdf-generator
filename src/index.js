@@ -58,6 +58,8 @@ export { OutputType, jsPDF };
  *       date1?: string,
  *       date2Label?: string
  *       date2?: string,
+ *       date3Label?: string,
+ *       date3?: string,
  *       headerBorder?: boolean,
  *       tableBodyBorder?: boolean,
  *       header?: string[],
@@ -148,8 +150,10 @@ function jsPDFInvoiceTemplate(props) {
       date1Label: props.data?.date1Label || "",
       num: props.data?.num || "",
       date2Label: props.data?.date2Label || "",
+      date3Label: props.data?.date3Label || "",
       date1: props.data?.date1 || "",
       date2: props.data?.date2 || "",
+      date3: props.data?.date3 || "",
       headerBorder: props.data?.headerBorder || false,
       tableBodyBorder: props.data?.tableBodyBorder || false,
       header: props.data?.header || [],
@@ -317,8 +321,13 @@ function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, billingAddressLabel);
     doc.text(doc.getPageWidth()/3, currentHeight, shippingAddressLabel);
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
+    if(param.data?.data3 || param.data?.date3Label){
+      doc.text(docWidth - 70, currentHeight, param.data.date1Label, "right");
+      doc.text(docWidth - 40, currentHeight, param.data.date3Label, "right");
+    }else{
+      doc.text(docWidth - 40, currentHeight, param.data.date1Label, "right");
+    }
     doc.text(docWidth - 10, currentHeight, param.data.date2Label, "right");
-    doc.text(docWidth - 40, currentHeight, param.data.date1Label, "right");
     currentHeight += pdfConfig.subLineHeight
   }
 
@@ -328,7 +337,12 @@ function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, billingAddress.text);
     doc.text(doc.getPageWidth()/3, currentHeight, shippingAddress.text);
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
-    doc.text(docWidth - 40, currentHeight, param.data.date1, "right");
+    if(param.data?.data3 || param.data?.date3Label){
+      doc.text(docWidth - 70, currentHeight, param.data.date1, "right");
+      doc.text(docWidth - 40, currentHeight, param.data.date3, "right");
+    }else{
+      doc.text(docWidth - 40, currentHeight, param.data.date1, "right");
+    }
     doc.text(docWidth - 10, currentHeight, param.data.date2, "right");
     currentHeight += billingAddress.height > shippingAddress.height ? billingAddress.height : shippingAddress.height;
   }
