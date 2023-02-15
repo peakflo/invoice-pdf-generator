@@ -633,17 +633,17 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     const staticVAContent = 
       `Account Name: ${param.business.name}\nBank Name: ${param.data.staticVA.bank}\nAccount Number: ${param.data.staticVA.account}`
-    const paymentDetails = splitTextAndGetHeight(staticVAContent, (doc.getPageWidth() - 40))
+    const paymentDetails = splitTextAndGetHeight(staticVAContent, (pageWidth - 40))
   
-    if (currentHeight + paymentDetails.height > 270) {
+    if (currentHeight + paymentDetails.height > pageHeight) {
       doc.addPage();
       currentHeight = 20;
     }
-    doc.setFont(undefined, 'bold');
+    doc.setFont(undefined, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, 'Payment details');
     currentHeight += pdfConfig.subLineHeight;
 
-    doc.setFont(undefined, 'normal');
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(10, currentHeight, paymentDetails.text);
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
