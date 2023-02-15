@@ -637,7 +637,7 @@ function jsPDFInvoiceTemplate(props) {
   
     if (currentHeight + paymentDetails.height > pageHeight) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = 20;
     }
     doc.setFont(undefined, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, 'Payment details');
