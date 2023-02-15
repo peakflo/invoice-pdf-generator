@@ -73,6 +73,10 @@ export { OutputType, jsPDF };
  *       note?: string,
  *       requestedBy?: string,
  *       authorisedBy?: string,
+ *       staticVA?: {
+ *          account: string,
+ *          bank: string,
+ *       },
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -163,6 +167,7 @@ function jsPDFInvoiceTemplate(props) {
       descLabel: props.data?.descLabel || "",
       requestedBy: props.data?.requestedBy || "",
       authorisedBy: props.data?.authorisedBy || "",
+      staticVA: props.data?.staticVA,
       desc: props.data?.desc || "",
       creditNoteLabel: props.data?.creditNoteLabel || "",
       note: props.data?.note || "",
@@ -621,6 +626,27 @@ function jsPDFInvoiceTemplate(props) {
     doc.setFont(undefined, 'normal');
     doc.text(10, currentHeight, param.data.authorisedBy);
     currentHeight += pdfConfig.lineHeight
+  }
+
+  // static VA payment details
+  if (param.data.staticVA) {
+    currentHeight += pdfConfig.lineHeight;
+    const staticVAContent = 
+      `Account Name: ${param.business.name}\nBank Name: ${param.data.staticVA.bank}\nAccount Number: ${param.data.staticVA.account}`
+    const paymentDetails = splitTextAndGetHeight(staticVAContent, (pageWidth - 40))
+  
+    if (currentHeight + paymentDetails.height > pageHeight) {
+      doc.addPage();
+      currentHeight = 20;
+    }
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(10, currentHeight, 'Payment details');
+    currentHeight += pdfConfig.subLineHeight;
+
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.text(10, currentHeight, paymentDetails.text);
+    currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
 
 
