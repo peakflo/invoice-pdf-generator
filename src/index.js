@@ -129,6 +129,7 @@ function jsPDFInvoiceTemplate(props) {
       addressLine3: props.business?.addressLine3 || "",
       email_1: props.business?.email_1 || "",
       country: props.business?.country || "",
+      taxNumber: props.business?.taxNumber || "",
     },
     contact: {
       label: props.contact?.label || "",
@@ -237,6 +238,7 @@ function jsPDFInvoiceTemplate(props) {
   const docHeight = doc.internal.pageSize.height;
 
   const colorBlack = "#000000";
+  const colorBlue = "#3367d6"
   const colorGray = "#4d4e53";
   const lightGray = "#888888"
   const FONT_TYPE_NORMAL = "normal"
@@ -268,6 +270,14 @@ function jsPDFInvoiceTemplate(props) {
       param.logo.width,
       param.logo.height
     );
+  }
+
+
+  if(param.business.taxNumber) {
+    currentHeight += pdfConfig.subLineHeight + 2;
+    doc.setFontSize(pdfConfig.labelTextSize);
+    doc.setTextColor(colorBlue);
+    doc.text(docWidth - 10, currentHeight, param.business.taxNumber, ALIGN_RIGHT);
   }
 
   doc.setTextColor(colorGray);
