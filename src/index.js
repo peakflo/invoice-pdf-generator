@@ -761,25 +761,7 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
 
-  // Note 
-  if (param.data.note) {
-    currentHeight += pdfConfig.labelTextSize;
-    const noteData = splitTextAndGetHeight(param.data.note, (pageWidth - 40))
-  
-    if (currentHeight + noteData.height > pageHeight) {
-      doc.addPage();
-      currentHeight = 10;
-    }
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, 'Note');
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.text(10, currentHeight, noteData.text);
-    currentHeight += pdfConfig.lineHeight + noteData.height;
-  }
-
+  // E signature
   if (param.data?.eSign?.signature?.src) {
     doc.addImage(
       param.data?.eSign?.signature?.src,
@@ -804,6 +786,25 @@ async function jsPDFInvoiceTemplate(props) {
     
     currentHeight += pdfConfig.subLineHeight;
     doc.text(docWidth - 10, currentHeight, `at ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
+  }
+
+  // Note 
+  if (param.data.note) {
+    currentHeight += pdfConfig.labelTextSize;
+    const noteData = splitTextAndGetHeight(param.data.note, (pageWidth - 40))
+  
+    if (currentHeight + noteData.height > pageHeight) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(10, currentHeight, 'Note');
+    currentHeight += pdfConfig.subLineHeight;
+
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.text(10, currentHeight, noteData.text);
+    currentHeight += pdfConfig.lineHeight + noteData.height;
   }
 
   const addDesc = () => {
