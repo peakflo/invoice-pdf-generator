@@ -285,6 +285,7 @@ async function jsPDFInvoiceTemplate(props) {
   const ALIGN_RIGHT = "right"
   const ALIGN_CENTER = "center"
   const ISSUER_ADDRESS_LABEL = 'Company Adress'
+  const IMAGE_CONTENT_TYPE = 'PNG'
 
   //starting at 15mm
   let currentHeight = 15;
@@ -304,7 +305,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.logo.src) {
     doc.addImage(
       param.logo.src,
-      'PNG',
+      IMAGE_CONTENT_TYPE,
       10 + param.logo.margin.left,
       currentHeight - 5 + param.logo.margin.top,
       param.logo.width,
@@ -331,7 +332,7 @@ async function jsPDFInvoiceTemplate(props) {
   
           doc.addImage(
             qrBase64,
-            'PNG',
+            IMAGE_CONTENT_TYPE,
             docWidth - 40,
             currentHeight,
             30,
@@ -765,7 +766,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data?.eSign?.signature?.src) {
     doc.addImage(
       param.data?.eSign?.signature?.src,
-      'PNG',
+      IMAGE_CONTENT_TYPE,
       docWidth - 65,
       currentHeight,
       param.data?.eSign?.signature?.width,
