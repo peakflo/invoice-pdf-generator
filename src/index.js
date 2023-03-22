@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import QRCode from 'qrcode'
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -34,6 +35,7 @@ export { OutputType, jsPDF };
  *       addressLine3?: string,
  *       email_1?: string,
  *       country?: string,
+ *       taxNumber?: string
  *   },
  *   contact?: {
  *       label?: string,
@@ -77,6 +79,25 @@ export { OutputType, jsPDF };
  *          account: string,
  *          bank: string,
  *       },
+ *      indiaIRP?: {
+ *          qrCode: string,
+ *          irn: string
+ *      },
+ *      eSign?: {
+ *          approverName?: string,
+ *          approvedAt?: string,
+ *          authorizer?: string,
+ *          approverText?: string,
+ *          signature?: {
+ *              src?: string,
+ *              width?: number,
+ *              height?: number,
+ *              margin?: {
+ *                  top?: number,
+ *                  left?: number
+ *              }
+ *          },     
+ *      },
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -107,7 +128,7 @@ export { OutputType, jsPDF };
  *   pageEnable?: boolean,
  *   pageLabel?: string, } } props
  */
-function jsPDFInvoiceTemplate(props) {
+async function jsPDFInvoiceTemplate(props) {
   const param = {
     outputType: props.outputType || OutputType.Save,
     returnJsPDFDocObject: props.returnJsPDFDocObject || false,
@@ -135,19 +156,20 @@ function jsPDFInvoiceTemplate(props) {
       label: props.contact?.label || "",
       name: props.contact?.name || "",
       billingAddress: {
-        label:  props.contact?.billingAddress?.label || "",
+        label: props.contact?.billingAddress?.label || "",
         address: props.contact?.billingAddress?.address || "",
         addressLine2: props.contact?.billingAddress?.addressLine2 || "",
         addressLine3: props.contact?.billingAddress?.addressLine3 || "",
         country: props.contact?.billingAddress?.country || "",
       },
       shippingAddress: {
-        label:  props.contact?.shippingAddress?.label || "",
+        label: props.contact?.shippingAddress?.label || "",
         address: props.contact?.shippingAddress?.address || "",
         addressLine2: props.contact?.shippingAddress?.addressLine2 || "",
         addressLine3: props.contact?.shippingAddress?.addressLine3 || "",
         country: props.contact?.shippingAddress?.country || "",
       },
+      taxNumber: props.contact?.taxNumber || "",
     },
     data: {
       label: props.data?.label || "",
@@ -205,8 +227,25 @@ function jsPDFInvoiceTemplate(props) {
         },
       },
       creditNote: props.data?.creditNote || "",
-
-
+      indiaIRP: {
+        qrCode: props.data?.indiaIRP?.qrCode || "",
+        irn: props.data?.indiaIRP?.irn || "",
+      },
+      eSign: {
+        approverName: props.data?.eSign?.approverName || "",
+        approvedAt: props.data?.eSign?.approvedAt || "",
+        authorizer: props.data?.eSign?.authorizer || "",
+        approverText: props.data?.eSign?.approverText || "",
+        signature: {
+          src: props.data?.eSign?.signature?.src || "",
+          width: props.data?.eSign?.signature?.width || "",
+          height: props.data?.eSign?.signature?.height || "",
+          margin: {
+            top: props.data?.eSign?.signature?.margin?.top || "",
+            left: props.data?.eSign?.signature?.margin?.left || "",
+          },
+        },
+      },
     },
     footer: {
       text: props.footer?.text || "",
@@ -245,6 +284,8 @@ function jsPDFInvoiceTemplate(props) {
   const FONT_TYPE_BOLD = "bold"
   const ALIGN_RIGHT = "right"
   const ALIGN_CENTER = "center"
+  const ISSUER_ADDRESS_LABEL = 'Company Adress'
+  const IMAGE_CONTENT_TYPE = 'PNG'
 
   //starting at 15mm
   let currentHeight = 15;
@@ -264,7 +305,7 @@ function jsPDFInvoiceTemplate(props) {
   if (param.logo.src) {
     doc.addImage(
       param.logo.src,
-      'PNG',
+      IMAGE_CONTENT_TYPE,
       10 + param.logo.margin.left,
       currentHeight - 5 + param.logo.margin.top,
       param.logo.width,
@@ -278,28 +319,77 @@ function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.setTextColor(colorBlue);
     doc.text(docWidth - 10, currentHeight, param.business.taxNumber, ALIGN_RIGHT);
+    currentHeight += pdfConfig.subLineHeight;
   }
+  doc.setTextColor(colorBlack);
+    // IRP QR code
+    // If QR code is availble, align issuer address to left. Else keep in right.
+    const IRPQrCode = param.data?.indiaIRP?.qrCode;
+    if (IRPQrCode) {
+      await QRCode.toDataURL(IRPQrCode)
+        .then((imagebase64) => {
+          const qrBase64 = imagebase64;
+  
+          doc.addImage(
+            qrBase64,
+            IMAGE_CONTENT_TYPE,
+            docWidth - 40,
+            currentHeight,
+            30,
+            30
+          );
+          currentHeight += pdfConfig.fieldTextSize;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+        if (param?.business?.address) {
+          doc.setFontSize(pdfConfig.fieldTextSize)
+          doc.text(10, currentHeight, ISSUER_ADDRESS_LABEL);
+        }
+        currentHeight += pdfConfig.subLineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize - 2);
+        doc.text(10, currentHeight, param.business.address);
+        currentHeight += pdfConfig.subLineHeight;
+        doc.text(10, currentHeight, param.business.addressLine2);
+        currentHeight += pdfConfig.subLineHeight;
+      
+        if (param.business.addressLine3) {
+          doc.text(10, currentHeight, param.business.addressLine3);
+          currentHeight += pdfConfig.subLineHeight;
+        }
+      
+        doc.text(10, currentHeight, param.business.country);
+      
+        currentHeight += pdfConfig.subLineHeight;
+        doc.text(10, currentHeight, param.business.email_1);
+    } else {
+      if (param?.business?.address) {
+        currentHeight += pdfConfig.lineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize)
+        doc.text(docWidth - 10, currentHeight, ISSUER_ADDRESS_LABEL, ALIGN_RIGHT);
+      }
+      doc.setFontSize(pdfConfig.fieldTextSize - 2);
+      currentHeight += pdfConfig.subLineHeight;
+      doc.text(docWidth - 10, currentHeight, param.business.address, ALIGN_RIGHT);
+      currentHeight += pdfConfig.subLineHeight;
+      doc.text(docWidth - 10, currentHeight, param.business.addressLine2, ALIGN_RIGHT);
+      currentHeight += pdfConfig.subLineHeight;
+    
+      if (param.business.addressLine3) {
+        doc.text(docWidth - 10, currentHeight, param.business.addressLine3, ALIGN_RIGHT);
+        currentHeight += pdfConfig.subLineHeight;
+      }
+    
+      doc.text(docWidth - 10, currentHeight, param.business.country, ALIGN_RIGHT);
+    
+      currentHeight += pdfConfig.subLineHeight;
+      doc.text(docWidth - 10, currentHeight, param.business.email_1, ALIGN_RIGHT);
+    }
 
   doc.setTextColor(colorGray);
 
-  currentHeight += pdfConfig.subLineHeight;
-  currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.address, ALIGN_RIGHT);
-  currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.addressLine2, ALIGN_RIGHT);
-  doc.setFontSize(pdfConfig.fieldTextSize);
-  // doc.setTextColor(colorGray);
-  currentHeight += pdfConfig.subLineHeight;
-
-  if (param.business.addressLine3) {
-    doc.text(docWidth - 10, currentHeight, param.business.addressLine3, ALIGN_RIGHT);
-    currentHeight += pdfConfig.subLineHeight;
-  }
-
-  doc.text(docWidth - 10, currentHeight, param.business.country, ALIGN_RIGHT);
-
-  currentHeight += pdfConfig.subLineHeight;
-  doc.text(docWidth - 10, currentHeight, param.business.email_1, ALIGN_RIGHT);
 
   //line breaker after logo & business info
   if (param.data.header.length) {
@@ -332,10 +422,30 @@ function jsPDFInvoiceTemplate(props) {
   if (param.contact.name || (param.data.label && param.data.num))
     currentHeight += pdfConfig.subLineHeight + 2;
 
+    if(param.contact?.taxNumber) {
+      doc.setFontSize(pdfConfig.fieldTextSize);
+      doc.setTextColor(colorBlue);
+      doc.text(10, currentHeight, param.contact.taxNumber);
+    }
+
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
 
-  if (param.contact?.billingAddress.address || param.data.date1) {
+  if (param.data?.indiaIRP?.irn) {
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorBlue);
+    doc.text(
+      docWidth - 10,
+      currentHeight,
+      `IRN: ${param.data?.indiaIRP.irn}`,
+      ALIGN_RIGHT
+    );
+  }
+  if (param.contact?.taxNumber || param.data?.indiaIRP?.irn)
+    currentHeight += pdfConfig.lineHeight;
+
+  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+    doc.setTextColor(colorBlack);
     const billingAddressLabel = param.contact?.billingAddress.label
     const shippingAddressLabel = param.contact?.shippingAddress.label
     doc.text(10, currentHeight, billingAddressLabel);
@@ -351,7 +461,7 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight
   }
 
-  if (param.contact?.billingAddress.address || param.data.date1) {
+  if (param.contact?.billingAddress.address?.label || param.data.date1) {
     const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.address, ((pageWidth/3) - 25))
     const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((pageWidth/3) - 25))
     doc.text(10, currentHeight, billingAddress.text);
@@ -652,10 +762,36 @@ function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
 
+  // E signature
+  if (param.data?.eSign?.signature?.src) {
+    doc.addImage(
+      param.data?.eSign?.signature?.src,
+      IMAGE_CONTENT_TYPE,
+      docWidth - 65,
+      currentHeight,
+      param.data?.eSign?.signature?.width,
+      param.data?.eSign?.signature?.height
+    );
+    currentHeight += pdfConfig.headerTextSize;
+
+    doc.setFontSize(pdfConfig.labelTextSize - 2);
+    doc.setTextColor(colorBlack);
+
+    if (param.data?.eSign?.authorizer) {
+      currentHeight += pdfConfig.lineHeight;
+      doc.text(docWidth - 10, currentHeight, `${param.data?.eSign?.authorizer},`, ALIGN_RIGHT);
+    }
+    
+    currentHeight += pdfConfig.subLineHeight;
+    doc.text(docWidth - 10, currentHeight, `${param.data?.eSign?.approverText} ${param.data?.eSign?.approverName},`, ALIGN_RIGHT);
+    
+    currentHeight += pdfConfig.subLineHeight;
+    doc.text(docWidth - 10, currentHeight, `at ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
+  }
 
   // Note 
   if (param.data.note) {
-    currentHeight += pdfConfig.lineHeight;
+    currentHeight += pdfConfig.labelTextSize;
     const noteData = splitTextAndGetHeight(param.data.note, (pageWidth - 40))
   
     if (currentHeight + noteData.height > pageHeight) {
