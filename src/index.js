@@ -75,6 +75,7 @@ export { OutputType, jsPDF };
  *       note?: string,
  *       requestedBy?: string,
  *       authorisedBy?: string,
+ *      pdfType?: string,
  *       staticVA?: {
  *          account: string,
  *          bank: string,
@@ -194,6 +195,7 @@ async function jsPDFInvoiceTemplate(props) {
       desc: props.data?.desc || "",
       creditNoteLabel: props.data?.creditNoteLabel || "",
       note: props.data?.note || "",
+      pdfType: props.data?.pdfType || "",
       row1: {
         col1: props.data?.row1?.col1 || "",
         col2: props.data?.row1?.col2 || "",
@@ -301,6 +303,8 @@ async function jsPDFInvoiceTemplate(props) {
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
   doc.text(docWidth - 10, currentHeight, param.business.name, ALIGN_RIGHT);
+  currentHeight += pdfConfig.subLineHeight + 2;
+
   doc.setFontSize(pdfConfig.fieldTextSize);
   if (param.logo.src) {
     doc.addImage(
@@ -315,7 +319,6 @@ async function jsPDFInvoiceTemplate(props) {
 
 
   if(param.business.taxNumber) {
-    currentHeight += pdfConfig.subLineHeight + 2;
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.setTextColor(colorBlue);
     doc.text(docWidth - 10, currentHeight, param.business.taxNumber, ALIGN_RIGHT);
@@ -388,6 +391,15 @@ async function jsPDFInvoiceTemplate(props) {
       doc.text(docWidth - 10, currentHeight, param.business.email_1, ALIGN_RIGHT);
     }
 
+  if (param.data?.pdfType) {
+    currentHeight += pdfConfig.subLineHeight + 2;
+    doc.setTextColor(colorBlue);
+    doc.setFontSize(pdfConfig.fieldTextSize)
+
+    doc.text(docWidth/2, currentHeight, param.data?.pdfType, ALIGN_RIGHT);
+  
+  }
+  
   doc.setTextColor(colorGray);
 
 
@@ -444,8 +456,8 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.contact?.taxNumber || param.data?.indiaIRP?.irn)
     currentHeight += pdfConfig.lineHeight;
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
-    doc.setTextColor(colorBlack);
+  doc.setTextColor(colorBlack);
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     const billingAddressLabel = param.contact?.billingAddress.label
     const shippingAddressLabel = param.contact?.shippingAddress.label
     doc.text(10, currentHeight, billingAddressLabel);
@@ -461,7 +473,7 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight
   }
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.address, ((pageWidth/3) - 25))
     const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((pageWidth/3) - 25))
     doc.text(10, currentHeight, billingAddress.text);
@@ -533,7 +545,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     param.data.header.forEach(function (row, index) {
       if (index == 0) doc.text(row, 11, currentHeight);
-      else doc.text(row, index * tdWidth + 11, currentHeight);
+      else doc.text(row, index * tdWidth + 11, currentHeight, ALIGN_CENTER);
     });
 
     currentHeight += pdfConfig.subLineHeight - 1;
@@ -622,8 +634,10 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   // Subtotal line
-  doc.text(docWidth - 50, currentHeight, param.data.subTotalLabel, ALIGN_RIGHT);
-  doc.text(docWidth - 10, currentHeight,  param.data.currency + "  " + param.data.subTotal.toLocaleString(), ALIGN_RIGHT);
+  if (param.data.subTotal) {
+    doc.text(docWidth - 50, currentHeight, param.data.subTotalLabel, ALIGN_RIGHT);
+    doc.text(docWidth - 10, currentHeight,  param.data.currency + "  " + param.data.subTotal.toLocaleString(), ALIGN_RIGHT);
+  }
 
   //row1 - tax
   if (
