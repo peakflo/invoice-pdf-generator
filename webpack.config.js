@@ -21,6 +21,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js'],
+    extensions: ['regenerator-runtime/runtime', '.js'],
   },
 };
