@@ -268,6 +268,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   const options = {
     orientation: param.orientationLandscape ? "landscape" : "",
+    compressPdf: true
   };
 
   const doc = new jsPDF(options);
