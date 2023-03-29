@@ -444,7 +444,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.contact?.taxNumber || param.data?.indiaIRP?.irn)
     currentHeight += pdfConfig.lineHeight;
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     doc.setTextColor(colorBlack);
     const billingAddressLabel = param.contact?.billingAddress.label
     const shippingAddressLabel = param.contact?.shippingAddress.label
@@ -461,7 +461,7 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight
   }
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.address, ((pageWidth/3) - 25))
     const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((pageWidth/3) - 25))
     doc.text(10, currentHeight, billingAddress.text);
