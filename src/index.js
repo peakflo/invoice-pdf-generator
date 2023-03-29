@@ -608,6 +608,20 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.lineHeight;
 
 
+  if (
+    param.data.subTotal ||
+    param.data.row1 ||
+    param.data.row2 ||
+    param.data.total
+  ) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+  }
 
   //line breaker before invoce total
   if (
@@ -764,6 +778,14 @@ async function jsPDFInvoiceTemplate(props) {
 
   // E signature
   if (param.data?.eSign?.signature?.src) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+
     doc.addImage(
       param.data?.eSign?.signature?.src,
       IMAGE_CONTENT_TYPE,
