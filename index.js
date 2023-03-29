@@ -1,3 +1,4 @@
+import 'regenerator-runtime'
 import jsPDFInvoiceTemplate, { jsPDF, OutputType } from './src/index';
 
 

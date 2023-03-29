@@ -1,3 +1,4 @@
+import 'regenerator-runtime'
 import { jsPDF } from "jspdf";
 import QRCode from 'qrcode'
 
