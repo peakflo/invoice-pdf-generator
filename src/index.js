@@ -444,7 +444,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.contact?.taxNumber || param.data?.indiaIRP?.irn)
     currentHeight += pdfConfig.lineHeight;
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     doc.setTextColor(colorBlack);
     const billingAddressLabel = param.contact?.billingAddress.label
     const shippingAddressLabel = param.contact?.shippingAddress.label
@@ -461,7 +461,7 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight
   }
 
-  if (param.contact?.billingAddress.address?.label || param.data.date1) {
+  if (param.contact?.billingAddress?.label || param.data.date1) {
     const billingAddress = splitTextAndGetHeight(param.contact?.billingAddress.address, ((pageWidth/3) - 25))
     const shippingAddress = splitTextAndGetHeight(param.contact?.shippingAddress.address, ((pageWidth/3) - 25))
     doc.text(10, currentHeight, billingAddress.text);
@@ -608,6 +608,20 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.lineHeight;
 
 
+  if (
+    param.data.subTotal ||
+    param.data.row1 ||
+    param.data.row2 ||
+    param.data.total
+  ) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+  }
 
   //line breaker before invoce total
   if (
@@ -764,6 +778,14 @@ async function jsPDFInvoiceTemplate(props) {
 
   // E signature
   if (param.data?.eSign?.signature?.src) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+
     doc.addImage(
       param.data?.eSign?.signature?.src,
       IMAGE_CONTENT_TYPE,
