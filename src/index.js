@@ -810,7 +810,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(docWidth - 10, currentHeight, `${param.data?.eSign?.approverText} ${param.data?.eSign?.approverName},`, ALIGN_RIGHT);
     
     currentHeight += pdfConfig.subLineHeight;
-    doc.text(docWidth - 10, currentHeight, `at ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
+    doc.text(docWidth - 10, currentHeight, `on ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
   }
 
   // Note 
