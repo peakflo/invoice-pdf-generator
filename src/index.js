@@ -1,3 +1,4 @@
+import 'regenerator-runtime'
 import { jsPDF } from "jspdf";
 import QRCode from 'qrcode'
 
@@ -270,6 +271,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   const options = {
     orientation: param.orientationLandscape ? "landscape" : "",
+    compressPdf: true
   };
 
   const doc = new jsPDF(options);
@@ -620,6 +622,20 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.lineHeight;
 
 
+  if (
+    param.data.subTotal ||
+    param.data.row1 ||
+    param.data.row2 ||
+    param.data.total
+  ) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+  }
 
   //line breaker before invoce total
   if (
@@ -778,6 +794,14 @@ async function jsPDFInvoiceTemplate(props) {
 
   // E signature
   if (param.data?.eSign?.signature?.src) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > (pageHeight - 10) && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+
     doc.addImage(
       param.data?.eSign?.signature?.src,
       IMAGE_CONTENT_TYPE,
@@ -800,7 +824,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(docWidth - 10, currentHeight, `${param.data?.eSign?.approverText} ${param.data?.eSign?.approverName},`, ALIGN_RIGHT);
     
     currentHeight += pdfConfig.subLineHeight;
-    doc.text(docWidth - 10, currentHeight, `at ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
+    doc.text(docWidth - 10, currentHeight, `on ${param.data?.eSign?.approvedAt}.`, ALIGN_RIGHT);
   }
 
   // Note 
