@@ -1,11 +1,11 @@
-var jsPDFInvoiceTemplate = require('./index')
+var jsPDFInvoiceTemplate = require('../index')
 
 describe('Invoice tests', () => {
     test('IRP invoice+sign+logo', async () => {
         var testProps1 = {
             "outputType": "save",
             "returnJsPDFDocObject": true,
-            "fileName": "Invoice-INV30032302",
+            "fileName": "output/test1.pdf",
             "orientationLandscape": false,
             "business": {
               "name": "Demo INR File",
@@ -150,7 +150,7 @@ describe('Invoice tests', () => {
             }
           }
         const pdfObject = await jsPDFInvoiceTemplate.default(testProps1)
-        await pdfObject.jsPDFDocObject.save('output/test1.pdf')
+        // await pdfObject.jsPDFDocObject.save('output/test1.pdf')
         expect(true).toBeTruthy()
     })
 });
