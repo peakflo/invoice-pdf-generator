@@ -192,6 +192,13 @@ pdfCreated.jsPDFDocObject.save(); //or .output('<outputTypeHere>');
 <details open>
 <summary>How to test on peakflo-web</summary>
 
+
+## Testing
+### Option 1
+1. run `yarn test`
+2. Go to output folder in the project and see the pdf files
+3. If you are building completely different pdf case - create new test in `main.test.js` file
+### Option 2
 Steps for testing.
 
 1. Change the `jspdf-invoice-template` on package.json on `peakflo-web` to the path of this project (`invoice-pdf-generator`).
