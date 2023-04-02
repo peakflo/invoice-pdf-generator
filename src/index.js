@@ -414,7 +414,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(pdfConfig.labelTextSize);
 
     doc.text(
-      (docWidth / 2) + 40,
+      docWidth / 2 + 40,
       currentHeight,
       param.data?.pdfTitle,
       ALIGN_RIGHT
@@ -584,7 +584,6 @@ async function jsPDFInvoiceTemplate(props) {
   //TABLE PART
 
   const tdWidth = (pageWidth - 20) / param.data.header.length;
-  const tdWidthExtendWidth = (pageWidth + 10) / param.data.header.length;
 
   const addTableHeaderBoarder = () => {
     currentHeight += 2;
@@ -614,7 +613,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     param.data.header.forEach(function (row, index) {
       if (index == 0) doc.text(row, 11, currentHeight);
-      else doc.text(row, index * tdWidth + 30, currentHeight);
+      else doc.text(row, index * tdWidth + 11, currentHeight);
     });
 
     currentHeight += pdfConfig.subLineHeight - 1;
@@ -648,13 +647,10 @@ async function jsPDFInvoiceTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     row.forEach(function (rr, index) {
-      let item =
-        index === 0
-          ? splitTextAndGetHeight(rr.toString(), tdWidthExtendWidth - 1)
-          : splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
+      let item = splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
 
       if (index == 0) doc.text(item.text, 11, currentHeight + 4);
-      else doc.text(item.text, 30 + index * tdWidth, currentHeight + 4);
+      else doc.text(item.text, 11 + index * tdWidth, currentHeight + 4);
     });
 
     //pre-increase currentHeight to check the height based on next row
