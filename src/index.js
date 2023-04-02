@@ -66,6 +66,7 @@ export { OutputType, jsPDF };
  *       headerBorder?: boolean,
  *       tableBodyBorder?: boolean,
  *       header?: string[],
+ *       headerWidth?: number[],
  *       table?: any,
  *       subTotalLabel?: string,
  *       subTotal?: string,
@@ -186,6 +187,7 @@ async function jsPDFInvoiceTemplate(props) {
       headerBorder: props.data?.headerBorder || false,
       tableBodyBorder: props.data?.tableBodyBorder || false,
       header: props.data?.header || [],
+      headerWidth: props.data?.headerWidth || [],
       table: props.data?.table || [],
       subTotal: props.data?.subTotal || "",
       currency: props.data?.currency || "",
@@ -585,19 +587,48 @@ async function jsPDFInvoiceTemplate(props) {
 
   const tdWidth = (pageWidth - 20) / param.data.header.length;
 
+  function getTdWidthDimensions() {
+    let leftShift = 10;
+    const result = [];
+    for (let i = 0; i < param.data.header.length; i++) {
+      result.push({
+        shift: leftShift,
+        width: param.data.headerWidth?.[i]
+          ? (pageWidth - 20) * param.data.headerWidth[i]
+          : tdWidth,
+      });
+      leftShift =
+        leftShift +
+        (param.data.headerWidth?.[i]
+          ? (pageWidth - 20) * param.data.headerWidth[i]
+          : tdWidth);
+    }
+    return result;
+  }
+
   const addTableHeaderBoarder = () => {
+    const tdWidthDimensions = getTdWidthDimensions();
     currentHeight += 2;
     for (let i = 0; i < param.data.header.length; i++) {
       doc.setFont(undefined, FONT_TYPE_BOLD);
-      if (i === 0) doc.rect(10, currentHeight, tdWidth, 7);
-      else doc.rect(tdWidth * i + 10, currentHeight, tdWidth, 7);
+      doc.rect(
+        tdWidthDimensions?.[i]?.shift,
+        currentHeight,
+        tdWidthDimensions?.[i]?.width,
+        7
+      );
     }
     currentHeight -= 2;
   };
   const addTableBodyBoarder = (lineHeight) => {
+    const tdWidthDimensions = getTdWidthDimensions();
     for (let i = 0; i < param.data.header.length; i++) {
-      if (i === 0) doc.rect(10, currentHeight, tdWidth, lineHeight);
-      else doc.rect(tdWidth * i + 10, currentHeight, tdWidth, lineHeight);
+      doc.rect(
+        tdWidthDimensions?.[i]?.shift,
+        currentHeight,
+        tdWidthDimensions?.[i]?.width,
+        lineHeight
+      );
     }
   };
   const addTableHeader = () => {
@@ -611,9 +642,9 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setDrawColor(colorGray);
     currentHeight += 2;
 
+    const tdWidthDimensions = getTdWidthDimensions();
     param.data.header.forEach(function (row, index) {
-      if (index == 0) doc.text(row, 11, currentHeight);
-      else doc.text(row, index * tdWidth + 11, currentHeight);
+      doc.text(row, tdWidthDimensions?.[index]?.shift, currentHeight);
     });
 
     currentHeight += pdfConfig.subLineHeight - 1;
@@ -632,9 +663,13 @@ async function jsPDFInvoiceTemplate(props) {
     let rowsHeight = [];
     const getRowsHeight = function () {
       doc.setFontSize(pdfConfig.textSizeSmall);
+      const tdWidthDimensions = getTdWidthDimensions();
       row.forEach(function (rr, index) {
         //size should be the same used in other td
-        let item = splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
+        let item = splitTextAndGetHeight(
+          rr.toString(),
+          tdWidthDimensions?.[index]?.width - 1
+        ); //minus 1, to fix the padding issue between borders
         rowsHeight.push(item.height);
       });
     };
@@ -646,11 +681,14 @@ async function jsPDFInvoiceTemplate(props) {
 
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
+    const tdWidthDimensions = getTdWidthDimensions();
     row.forEach(function (rr, index) {
-      let item = splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
+      let item = splitTextAndGetHeight(
+        rr.toString(),
+        tdWidthDimensions?.[index]?.width - 1
+      ); //minus 1, to fix the padding issue between borders
 
-      if (index == 0) doc.text(item.text, 11, currentHeight + 4);
-      else doc.text(item.text, 11 + index * tdWidth, currentHeight + 4);
+      doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
     });
 
     //pre-increase currentHeight to check the height based on next row

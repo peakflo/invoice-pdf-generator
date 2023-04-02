@@ -50,6 +50,7 @@ import { jsPDF } from "jspdf";
  *       headerBorder?: boolean,
  *       tableBodyBorder?: boolean,
  *       header?: string[],
+ *       headerWidth?: number[],
  *       table?: any,
  *       subTotalLabel?: string,
  *       subTotal?: string,
@@ -140,6 +141,7 @@ declare function jsPDFInvoiceTemplate(props: {
     headerBorder?: boolean;
     tableBodyBorder?: boolean;
     header?: string[];
+    headerWidth?: number[];
     table?: any;
     currency?: string;
     descLabel?: string;

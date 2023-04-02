@@ -37,8 +37,9 @@ describe("Invoice tests", () => {
         netTerm: "31",
         headerBorder: false,
         tableBodyBorder: false,
-        pdfTitle: 'Advertisement on Microsoft Advertising properties',
+        pdfTitle: "Advertisement on Microsoft Advertising properties",
         header: ["Description", "Unit Price", "Quantity", "Tax", "Amount"],
+        headerWidth: [0.5],
         table: [
           [
             "SaaS Subscription sdjjslkjs dojasd ajod asdoja dasji dasjdas",
