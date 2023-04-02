@@ -597,7 +597,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     param.data.header.forEach(function (row, index) {
       if (index == 0) doc.text(row, 11, currentHeight);
-      else doc.text(row, index * tdWidth + 11, currentHeight);
+      else doc.text(row, index * tdWidth + 30, currentHeight);
     });
 
     currentHeight += pdfConfig.subLineHeight - 1;
@@ -634,7 +634,7 @@ async function jsPDFInvoiceTemplate(props) {
       let item = splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
 
       if (index == 0) doc.text(item.text, 11, currentHeight + 4);
-      else doc.text(item.text, 11 + index * tdWidth, currentHeight + 4);
+      else doc.text(item.text, 30 + index * tdWidth, currentHeight + 4);
     });
 
     //pre-increase currentHeight to check the height based on next row

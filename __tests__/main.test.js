@@ -39,7 +39,13 @@ describe("Invoice tests", () => {
         tableBodyBorder: false,
         header: ["Description", "Unit Price", "Quantity", "Tax", "Amount"],
         table: [
-          ["SaaS Subscription", "100.00", 70, "18%", "7,000.00"],
+          [
+            "SaaS Subscription sdjjslkjs dojasd ajod asdoja dasji dasjdas",
+            "100.00",
+            70,
+            "18%",
+            "7,000.00",
+          ],
           ["SaaS Subscription", "100.00", 2, "", "200.00"],
           ["Durga Test", "1,000.00", 1, "", "1,000.00"],
           ["SaaS Subscription", "100.00", 1, "", "100.00"],
