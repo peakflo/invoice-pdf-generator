@@ -411,14 +411,6 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(docWidth - 10, currentHeight, param.business.email_1, ALIGN_RIGHT);
   }
 
-  if (param.data?.pdfTitle) {
-    currentHeight += pdfConfig.subLineHeight + 2;
-    doc.setTextColor(colorBlue);
-    doc.setFontSize(pdfConfig.labelTextSize);
-
-    doc.text(10, currentHeight, param.data?.pdfTitle, ALIGN_LEFT);
-  }
-
   doc.setTextColor(colorGray);
 
   //line breaker after logo & business info
@@ -578,6 +570,17 @@ async function jsPDFInvoiceTemplate(props) {
     );
   } else currentHeight -= pdfConfig.subLineHeight;
   //end contact part
+
+  // INVOICE TITLE - INMOBI change
+  if (param.data?.pdfTitle) {
+    currentHeight += pdfConfig.subLineHeight + 2;
+    // doc.setTextColor(colorBlue);
+    doc.setFontSize(pdfConfig.labelTextSize);
+
+    doc.text(10, currentHeight, param.data?.pdfTitle, ALIGN_LEFT);
+  }
+
+  doc.setTextColor(colorGray);
 
   //TABLE PART
 
