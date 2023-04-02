@@ -76,6 +76,7 @@ export { OutputType, jsPDF };
  *       note?: string,
  *       requestedBy?: string,
  *       authorisedBy?: string,
+ *       pdfTitle?: string,
  *       staticVA?: {
  *          account: string,
  *          bank: string,
@@ -195,6 +196,7 @@ async function jsPDFInvoiceTemplate(props) {
       desc: props.data?.desc || "",
       creditNoteLabel: props.data?.creditNoteLabel || "",
       note: props.data?.note || "",
+      pdfTitle: props.data?.pdfTitle || "",
       row1: {
         col1: props.data?.row1?.col1 || "",
         col2: props.data?.row1?.col2 || "",
@@ -294,6 +296,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   const pdfConfig = {
     headerTextSize: 20,
+    labelTitleSize: 16,
     labelTextSize: 12,
     fieldTextSize: 10,
     textSizeSmall: 8,
@@ -403,6 +406,19 @@ async function jsPDFInvoiceTemplate(props) {
 
     currentHeight += pdfConfig.subLineHeight;
     doc.text(docWidth - 10, currentHeight, param.business.email_1, ALIGN_RIGHT);
+  }
+
+  if (param.data?.pdfTitle) {
+    currentHeight += pdfConfig.subLineHeight + 2;
+    doc.setTextColor(colorBlue);
+    doc.setFontSize(pdfConfig.labelTextSize);
+
+    doc.text(
+      (docWidth / 2) + 40,
+      currentHeight,
+      param.data?.pdfTitle,
+      ALIGN_RIGHT
+    );
   }
 
   doc.setTextColor(colorGray);
