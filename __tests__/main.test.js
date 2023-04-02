@@ -57,7 +57,7 @@ describe("Invoice tests", () => {
         currency: "INR",
         desc: [],
         creditNoteLabel: "Less payments and credit:",
-        note: "Failure to raise any queries to InMobi in relation to \nthis invoice within five business days.\n",
+        note: "Failure to raise any queries to InMobi in relation to this invoice within five business days. Failure to raise any queries to InMobi in relation to this invoice within five business days. Failure to raise any queries to InMobi in relation to this invoice within five business days.",
         staticVA: null,
         row1: {
           col1: "Tax:",

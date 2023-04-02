@@ -916,7 +916,7 @@ async function jsPDFInvoiceTemplate(props) {
   // Note
   if (param.data.note) {
     currentHeight += pdfConfig.labelTextSize;
-    const noteData = splitTextAndGetHeight(param.data.note, pageWidth - 40);
+    const noteData = splitTextAndGetHeight(param.data.note, pageWidth - 20);
 
     if (currentHeight + noteData.height > pageHeight) {
       doc.addPage();
@@ -924,7 +924,7 @@ async function jsPDFInvoiceTemplate(props) {
     }
     doc.setFont(undefined, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Note");
-    currentHeight += pdfConfig.subLineHeight;
+    currentHeight += pdfConfig.lineHeight;
 
     doc.setFont(undefined, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
