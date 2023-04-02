@@ -289,6 +289,7 @@ async function jsPDFInvoiceTemplate(props) {
   const FONT_TYPE_NORMAL = "normal";
   const FONT_TYPE_BOLD = "bold";
   const ALIGN_RIGHT = "right";
+  const ALIGN_LEFT = "left";
   const ALIGN_CENTER = "center";
   const ISSUER_ADDRESS_LABEL = "Company Adress";
   const IMAGE_CONTENT_TYPE = "PNG";
@@ -415,12 +416,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setTextColor(colorBlue);
     doc.setFontSize(pdfConfig.labelTextSize);
 
-    doc.text(
-      docWidth / 2 + 40,
-      currentHeight,
-      param.data?.pdfTitle,
-      ALIGN_RIGHT
-    );
+    doc.text(10, currentHeight, param.data?.pdfTitle, ALIGN_LEFT);
   }
 
   doc.setTextColor(colorGray);
