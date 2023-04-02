@@ -1,11 +1,11 @@
 export default jsPDFInvoiceTemplate;
-export namespace OutputType {
-  const Save: string;
-  const DataUriString: string;
-  const DataUri: string;
-  const DataUrlNewWindow: string;
-  const Blob: string;
-  const ArrayBuffer: string;
+export interface OutputType {
+  Save: string;
+  DataUriString: string;
+  DataUri: string;
+  DataUrlNewWindow: string;
+  Blob: string;
+  ArrayBuffer: string;
 }
 import { jsPDF } from "jspdf";
 /**
@@ -91,14 +91,7 @@ import { jsPDF } from "jspdf";
  */
 declare function jsPDFInvoiceTemplate(props: {
   outputType:
-    | {
-        Save: string;
-        DataUriString: string;
-        DataUri: string;
-        DataUrlNewWindow: string;
-        Blob: string;
-        ArrayBuffer: string;
-      }
+    | OutputType
     | string;
   returnJsPDFDocObject?: boolean;
   fileName: string;
