@@ -568,6 +568,7 @@ async function jsPDFInvoiceTemplate(props) {
   //TABLE PART
 
   const tdWidth = (pageWidth - 20) / param.data.header.length;
+  const tdWidthExtendWidth = (pageWidth + 10) / param.data.header.length;
 
   const addTableHeaderBoarder = () => {
     currentHeight += 2;
@@ -631,7 +632,10 @@ async function jsPDFInvoiceTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     row.forEach(function (rr, index) {
-      let item = splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
+      let item =
+        index === 0
+          ? splitTextAndGetHeight(rr.toString(), tdWidthExtendWidth - 1)
+          : splitTextAndGetHeight(rr.toString(), tdWidth - 1); //minus 1, to fix the padding issue between borders
 
       if (index == 0) doc.text(item.text, 11, currentHeight + 4);
       else doc.text(item.text, 30 + index * tdWidth, currentHeight + 4);
