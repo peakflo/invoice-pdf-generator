@@ -882,7 +882,8 @@ async function jsPDFInvoiceTemplate(props) {
   // E signature
   if (param.data?.eSign?.signature?.src) {
     if (
-      currentHeight > pageHeight ||
+      currentHeight + (param.data?.eSign?.signature?.height || 20) >
+        pageHeight ||
       (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
