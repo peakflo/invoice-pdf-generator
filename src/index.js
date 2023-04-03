@@ -251,8 +251,8 @@ async function jsPDFInvoiceTemplate(props) {
         approverText: props.data?.eSign?.approverText || "",
         signature: {
           src: props.data?.eSign?.signature?.src || "",
-          width: props.data?.eSign?.signature?.width || "",
-          height: props.data?.eSign?.signature?.height || "",
+          width: props.data?.eSign?.signature?.width || 55,
+          height: props.data?.eSign?.signature?.height || 20,
           margin: {
             top: props.data?.eSign?.signature?.margin?.top || "",
             left: props.data?.eSign?.signature?.margin?.left || "",

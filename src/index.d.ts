@@ -175,8 +175,8 @@ declare function jsPDFInvoiceTemplate(props: {
       approverText?: string;
       signature?: {
         src?: string;
-        width?: string;
-        height?: string;
+        width?: number;
+        height?: number;
         margin?: {
           top?: string;
           left?: string;
