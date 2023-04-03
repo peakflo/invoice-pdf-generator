@@ -235,13 +235,15 @@ async function jsPDFInvoiceTemplate(props) {
         },
       },
       creditNote: props.data?.creditNote || "",
-      indiaIRP: {
-        qrCode: props.data?.indiaIRP?.qrCode || "",
-        irn: props.data?.indiaIRP?.irn || "",
-        gstRegType: props.data?.indiaIRP?.gstRegType || "",
-        hsnNum: props.data?.indiaIRP?.hsnNum || "",
-        gstStateWithCode: props.data?.indiaIRP?.gstStateWithCode || "",
-      },
+      ...(props.data?.indiaIRP && {
+        indiaIRP: {
+          qrCode: props.data.indiaIRP.qrCode || "",
+          irn: props.data.indiaIRP.irn || "",
+          gstRegType: props.data.indiaIRP.gstRegType || "",
+          hsnNum: props.data.indiaIRP.hsnNum || "",
+          gstStateWithCode: props.data.indiaIRP.gstStateWithCode || "",
+        },
+      }),
       eSign: {
         approverName: props.data?.eSign?.approverName || "",
         approvedAt: props.data?.eSign?.approvedAt || "",
@@ -565,7 +567,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, param.contact.taxNumber);
   }
 
-  if (param.data?.indiaIRP) {
+  if (param.data.indiaIRP) {
     const indiaIRP = param.data?.indiaIRP;
     currentHeight += 2 * pdfConfig.subLineHeight;
     doc.setFont(undefined, FONT_TYPE_NORMAL);
@@ -599,6 +601,9 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, "IRN:");
     doc.setFont(undefined, FONT_TYPE_BOLD);
     doc.text(10 + doc.getTextWidth(`IRN: `), currentHeight, indiaIRP.irn);
+    currentHeight += pdfConfig.subLineHeight;
+  } else {
+    doc.setFont(undefined, FONT_TYPE_BOLD);
     currentHeight += pdfConfig.subLineHeight;
   }
 
