@@ -261,7 +261,7 @@ async function jsPDFInvoiceTemplate(props) {
     footer: {
       text: props.footer?.text || "",
     },
-    pageEnable: props.pageEnable || false,
+    pageEnable: props.pageEnable || true,
     pageLabel: props.pageLabel || "Page",
   };
 
@@ -871,8 +871,7 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   doc.setTextColor(colorBlack);
-  currentHeight += pdfConfig.subLineHeight;
-  currentHeight += pdfConfig.subLineHeight;
+  currentHeight += pdfConfig.subLineHeight - 1;
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
 
