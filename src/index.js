@@ -291,7 +291,7 @@ async function jsPDFInvoiceTemplate(props) {
   const ALIGN_RIGHT = "right";
   const ALIGN_LEFT = "left";
   const ALIGN_CENTER = "center";
-  const ISSUER_ADDRESS_LABEL = "Company Adress";
+  const ISSUER_ADDRESS_LABEL = "Company Address";
   const IMAGE_CONTENT_TYPE = "PNG";
 
   //starting at 15mm
