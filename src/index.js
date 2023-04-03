@@ -587,10 +587,10 @@ async function jsPDFInvoiceTemplate(props) {
     );
     currentHeight += pdfConfig.subLineHeight;
     doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, "HSN/ SAC code:");
+    doc.text(10, currentHeight, "HSN / SAC code:");
     doc.setFont(undefined, FONT_TYPE_BOLD);
     doc.text(
-      10 + doc.getTextWidth(`HSN/ SAC code: `),
+      10 + doc.getTextWidth(`HSN / SAC code: `),
       currentHeight,
       indiaIRP.hsnNum
     );
