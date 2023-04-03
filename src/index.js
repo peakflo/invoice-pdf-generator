@@ -84,7 +84,10 @@ export { OutputType, jsPDF };
  *       },
  *      indiaIRP?: {
  *          qrCode: string,
- *          irn: string
+ *          irn: string,
+ *          gstRegType: string,
+ *          hsnNum: string,
+ *          gstStateWithCode: string
  *      },
  *      eSign?: {
  *          approverName?: string,
@@ -232,10 +235,15 @@ async function jsPDFInvoiceTemplate(props) {
         },
       },
       creditNote: props.data?.creditNote || "",
-      indiaIRP: {
-        qrCode: props.data?.indiaIRP?.qrCode || "",
-        irn: props.data?.indiaIRP?.irn || "",
-      },
+      ...(props.data?.indiaIRP && {
+        indiaIRP: {
+          qrCode: props.data.indiaIRP.qrCode || "",
+          irn: props.data.indiaIRP.irn || "",
+          gstRegType: props.data.indiaIRP.gstRegType || "",
+          hsnNum: props.data.indiaIRP.hsnNum || "",
+          gstStateWithCode: props.data.indiaIRP.gstStateWithCode || "",
+        },
+      }),
       eSign: {
         approverName: props.data?.eSign?.approverName || "",
         approvedAt: props.data?.eSign?.approvedAt || "",
@@ -255,7 +263,7 @@ async function jsPDFInvoiceTemplate(props) {
     footer: {
       text: props.footer?.text || "",
     },
-    pageEnable: props.pageEnable || false,
+    pageEnable: props.pageEnable || true,
     pageLabel: props.pageLabel || "Page",
   };
 
@@ -444,27 +452,10 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.contact.name || (param.data.label && param.data.num))
     currentHeight += pdfConfig.subLineHeight + 2;
 
-  if (param.contact?.taxNumber) {
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setTextColor(colorBlue);
-    doc.text(10, currentHeight, param.contact.taxNumber);
-  }
-
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
 
-  if (param.data?.indiaIRP?.irn) {
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setTextColor(colorBlue);
-    doc.text(
-      docWidth - 10,
-      currentHeight,
-      `IRN: ${param.data?.indiaIRP.irn}`,
-      ALIGN_RIGHT
-    );
-  }
-  if (param.contact?.taxNumber || param.data?.indiaIRP?.irn)
-    currentHeight += pdfConfig.lineHeight;
+  currentHeight += pdfConfig.subLineHeight;
 
   if (param.contact?.billingAddress?.label || param.data.date1) {
     doc.setTextColor(colorBlack);
@@ -501,11 +492,11 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.contact?.billingAddress?.label || param.data.date1) {
     const billingAddress = splitTextAndGetHeight(
       param.contact?.billingAddress.address,
-      pageWidth / 3 - 25
+      pageWidth / 2
     );
     const shippingAddress = splitTextAndGetHeight(
       param.contact?.shippingAddress.address,
-      pageWidth / 3 - 25
+      pageWidth / 2
     );
     doc.text(10, currentHeight, billingAddress.text);
     doc.text(pageWidth / 3, currentHeight, shippingAddress.text);
@@ -570,6 +561,51 @@ async function jsPDFInvoiceTemplate(props) {
     );
   } else currentHeight -= pdfConfig.subLineHeight;
   //end contact part
+
+  if (param.contact?.taxNumber) {
+    currentHeight += pdfConfig.subLineHeight;
+    doc.text(10, currentHeight, param.contact.taxNumber);
+  }
+
+  if (param.data.indiaIRP) {
+    const indiaIRP = param.data?.indiaIRP;
+    currentHeight += 2 * pdfConfig.subLineHeight;
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.text(10, currentHeight, "GST Registration Type: ");
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(
+      10 + doc.getTextWidth(`GST Registration Type: `),
+      currentHeight,
+      indiaIRP.gstRegType
+    );
+    currentHeight += pdfConfig.subLineHeight;
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.text(10, currentHeight, "Place of supply: ");
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(
+      10 + doc.getTextWidth(`Place of supply:`),
+      currentHeight,
+      indiaIRP.gstStateWithCode
+    );
+    currentHeight += pdfConfig.subLineHeight;
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.text(10, currentHeight, "HSN / SAC code:");
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(
+      10 + doc.getTextWidth(`HSN / SAC code: `),
+      currentHeight,
+      indiaIRP.hsnNum
+    );
+    currentHeight += pdfConfig.subLineHeight;
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.text(10, currentHeight, "IRN:");
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(10 + doc.getTextWidth(`IRN: `), currentHeight, indiaIRP.irn);
+    currentHeight += pdfConfig.subLineHeight;
+  } else {
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    currentHeight += pdfConfig.subLineHeight;
+  }
 
   // INVOICE TITLE - INMOBI change
   if (param.data?.pdfTitle) {
@@ -840,8 +876,7 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   doc.setTextColor(colorBlack);
-  currentHeight += pdfConfig.subLineHeight;
-  currentHeight += pdfConfig.subLineHeight;
+  currentHeight += pdfConfig.subLineHeight - 1;
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
 

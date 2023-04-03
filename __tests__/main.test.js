@@ -114,6 +114,9 @@ describe("Invoice tests", () => {
           qrCode:
             "eyJhbGciOiJSUzI1NiIsImtpZCI6IjE1MTNCODIxRUU0NkM3NDlBNjNCODZFMzE4QkY3MTEwOTkyODdEMUYiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJGUk80SWU1R3gwbW1PNGJqR0w5eEVKa29mUjgifQ.eyJkYXRhIjoie1wiU2VsbGVyR3N0aW5cIjpcIjI5QUFCQ1QxMzMyTDAwMFwiLFwiQnV5ZXJHc3RpblwiOlwiMjlBQUJDVzc3OTFBMVozXCIsXCJEb2NOb1wiOlwiR0FSSTIyMDAzMDUzXCIsXCJEb2NUeXBcIjpcIklOVlwiLFwiRG9jRHRcIjpcIjI5LzAzLzIwMjNcIixcIlRvdEludlZhbFwiOjQ5NTYwMCxcIkl0ZW1DbnRcIjo2LFwiTWFpbkhzbkNvZGVcIjpcIjk5ODM2NVwiLFwiSXJuXCI6XCJmZWNjNTJiYTdjNDViMTk4MmZjZGNjN2UzYTNhODg2NzYzZDJjM2RkMTM0YWQwNjg0MWU1OTMyM2E3YWI1ZTk2XCIsXCJJcm5EdFwiOlwiMjAyMy0wMy0yOSAxMzo0MzowMFwifSIsImlzcyI6Ik5JQyBTYW5kYm94In0.h6sjtzro0uLKuzfxhF_D82Ks62U_Sg8DkzZ64Th0BNFtLI8OTlqSxOapXIhoe5hxe5AXbirQ_1nnVHqQojhMla0SnuRk_drQJBvYP64JxtIAEJC1QH0jzajpDdSTcVdvbQoaNrmMVQeJlYswTJM3NLfx_1aUKXKmvdKo3VC1j5At4VZxxX9xV0_ORXaxVRC4jtwLhk88OS64uN5XSVRVkoCf7doSY0DPrN0_jdRXETjODG5xol9GQL-9YfEPkjfxzycglHyiMqDsbD8AgBtSt17vrcPrWoeV50Iqu-hTKh96r_hBH7kUwJuBPk2gTMBCr3gsOm4Uyy3Rbhrh5nTvKg",
           irn: "fecc52ba7c45b1982fcdcc7e3a3a886763d2c3dd134ad06841e59323a7ab5e96",
+          gstRegType: "Regular",
+          hsnNum: "998365 / Sale of Internet advertising space",
+          gstStateWithCode: "Karnataka / 29",
         },
         eSign: {
           approverText: "Digitally signed and approved by",
