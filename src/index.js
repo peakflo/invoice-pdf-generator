@@ -85,9 +85,13 @@ export { OutputType, jsPDF };
  *      indiaIRP?: {
  *          qrCode: string,
  *          irn: string,
+ *          label4: string,
  *          gstRegType: string,
+ *          label1: string,
  *          hsnNum: string,
+ *          label3: string,
  *          gstStateWithCode: string
+ *          label2: string,
  *      },
  *      eSign?: {
  *          approverName?: string,
@@ -242,6 +246,10 @@ async function jsPDFInvoiceTemplate(props) {
           gstRegType: props.data.indiaIRP.gstRegType || "",
           hsnNum: props.data.indiaIRP.hsnNum || "",
           gstStateWithCode: props.data.indiaIRP.gstStateWithCode || "",
+          label1: props.data.indiaIRP.label1 || "",
+          label2: props.data.indiaIRP.label2 || "",
+          label3: props.data.indiaIRP.label3 || "",
+          label4: props.data.indiaIRP.label4 || "",
         },
       }),
       eSign: {
@@ -457,7 +465,11 @@ async function jsPDFInvoiceTemplate(props) {
 
   currentHeight += pdfConfig.subLineHeight;
 
-  if (param.contact?.billingAddress?.label || param.data.date1) {
+  if (
+    param.contact?.billingAddress?.label ||
+    param.data.date1 ||
+    param.data.date2
+  ) {
     doc.setTextColor(colorBlack);
     const billingAddressLabel = param.contact?.billingAddress.label;
     const shippingAddressLabel = param.contact?.shippingAddress.label;
@@ -479,7 +491,7 @@ async function jsPDFInvoiceTemplate(props) {
       );
     } else {
       doc.text(
-        docWidth - 40,
+        docWidth - 10,
         currentHeight,
         param.data.date1Label,
         ALIGN_RIGHT
@@ -489,7 +501,11 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight;
   }
 
-  if (param.contact?.billingAddress?.label || param.data.date1) {
+  if (
+    param.contact?.billingAddress?.label ||
+    param.data.date1 ||
+    param.data.date2
+  ) {
     const billingAddress = splitTextAndGetHeight(
       param.contact?.billingAddress.address,
       pageWidth / 2
@@ -567,41 +583,57 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, param.contact.taxNumber);
   }
 
-  if (param.data.indiaIRP) {
-    const indiaIRP = param.data?.indiaIRP;
+  const indiaIRP = param.data?.indiaIRP;
+  if (indiaIRP) {
     currentHeight += 2 * pdfConfig.subLineHeight;
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, "GST Registration Type: ");
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    doc.text(
-      10 + doc.getTextWidth(`GST Registration Type: `),
-      currentHeight,
-      indiaIRP.gstRegType
-    );
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, "Place of supply: ");
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    doc.text(
-      10 + doc.getTextWidth(`Place of supply:`),
-      currentHeight,
-      indiaIRP.gstStateWithCode
-    );
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, "HSN / SAC code:");
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    doc.text(
-      10 + doc.getTextWidth(`HSN / SAC code: `),
-      currentHeight,
-      indiaIRP.hsnNum
-    );
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, "IRN:");
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    doc.text(10 + doc.getTextWidth(`IRN: `), currentHeight, indiaIRP.irn);
-    currentHeight += pdfConfig.subLineHeight;
+
+    if (indiaIRP.gstRegType) {
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label1);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label1),
+        currentHeight,
+        indiaIRP.gstRegType
+      );
+      currentHeight += pdfConfig.subLineHeight;
+    }
+
+    if (indiaIRP.gstStateWithCode) {
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label2);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label2),
+        currentHeight,
+        indiaIRP.gstStateWithCode
+      );
+      currentHeight += pdfConfig.subLineHeight;
+    }
+
+    if (indiaIRP.hsnNum) {
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label3);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label3),
+        currentHeight,
+        indiaIRP.hsnNum
+      );
+      currentHeight += pdfConfig.subLineHeight;
+    }
+
+    if (indiaIRP.irn) {
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label4);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label4),
+        currentHeight,
+        indiaIRP.irn
+      );
+      currentHeight += pdfConfig.subLineHeight;
+    }
   } else {
     doc.setFont(undefined, FONT_TYPE_BOLD);
     currentHeight += pdfConfig.subLineHeight;
@@ -787,13 +819,20 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   // Subtotal line
-  doc.text(docWidth - 50, currentHeight, param.data.subTotalLabel, ALIGN_RIGHT);
-  doc.text(
-    docWidth - 10,
-    currentHeight,
-    param.data.currency + "  " + param.data.subTotal.toLocaleString(),
-    ALIGN_RIGHT
-  );
+  if (param.data.subTotalLabel && param.data.subTotal) {
+    doc.text(
+      docWidth - 50,
+      currentHeight,
+      param.data.subTotalLabel,
+      ALIGN_RIGHT
+    );
+    doc.text(
+      docWidth - 10,
+      currentHeight,
+      param.data.currency + "  " + param.data.subTotal.toLocaleString(),
+      ALIGN_RIGHT
+    );
+  }
 
   //row1 - tax
   if (
@@ -957,7 +996,7 @@ async function jsPDFInvoiceTemplate(props) {
       doc.addPage();
       currentHeight = 10;
     }
-
+    currentHeight += pdfConfig.subLineHeight;
     doc.addImage(
       param.data?.eSign?.signature?.src,
       IMAGE_CONTENT_TYPE,
