@@ -1,6 +1,7 @@
 import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
+import { getCustomFont } from './font'
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -301,6 +302,7 @@ async function jsPDFInvoiceTemplate(props) {
   const ALIGN_CENTER = "center";
   const ISSUER_ADDRESS_LABEL = "Company Address";
   const IMAGE_CONTENT_TYPE = "PNG";
+  const CUSTOM_FONT_NAME = "customFont";
 
   //starting at 15mm
   let currentHeight = 15;
@@ -314,7 +316,9 @@ async function jsPDFInvoiceTemplate(props) {
     lineHeight: 6,
     subLineHeight: 4,
   };
-
+  doc.addFileToVFS("customFont.ttf", getCustomFont());
+  doc.addFont("customFont.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  doc.setFont(CUSTOM_FONT_NAME);
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
   doc.text(docWidth - 10, currentHeight, param.business.name, ALIGN_RIGHT);
@@ -645,7 +649,7 @@ async function jsPDFInvoiceTemplate(props) {
     const tdWidthDimensions = getTdWidthDimensions();
     currentHeight += 2;
     for (let i = 0; i < param.data.header.length; i++) {
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.rect(
         tdWidthDimensions?.[i]?.shift,
         currentHeight,
@@ -670,7 +674,7 @@ async function jsPDFInvoiceTemplate(props) {
     if (param.data.headerBorder) addTableHeaderBoarder();
 
     currentHeight += pdfConfig.subLineHeight + 10;
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setTextColor(colorBlack);
     doc.setFontSize(pdfConfig.fieldTextSize);
     //border color
@@ -691,7 +695,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   //table body
   const tableBodyLength = param.data.table.length;
-  doc.setFont(undefined, FONT_TYPE_NORMAL);
+  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
 
   param.data.table.forEach(function (row, index) {
     //get nax height for the current row
@@ -828,7 +832,7 @@ async function jsPDFInvoiceTemplate(props) {
   ) {
     currentHeight += pdfConfig.lineHeight;
     doc.setFontSize(12);
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(docWidth - 50, currentHeight, param.data.total.col1, ALIGN_RIGHT);
     doc.text(
       docWidth - 10,
@@ -839,7 +843,7 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   // Amount Due
-  doc.setFont(undefined, FONT_TYPE_NORMAL);
+  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
 
   if (
     param.data.amountDue &&
@@ -902,11 +906,11 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.requestedBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Requested By");
     currentHeight += pdfConfig.subLineHeight;
 
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.text(10, currentHeight, param.data.requestedBy);
     currentHeight += pdfConfig.lineHeight;
   }
@@ -915,11 +919,11 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.authorisedBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Authorised By");
     currentHeight += pdfConfig.subLineHeight;
 
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.text(10, currentHeight, param.data.authorisedBy);
     currentHeight += pdfConfig.lineHeight;
   }
@@ -937,11 +941,11 @@ async function jsPDFInvoiceTemplate(props) {
       doc.addPage();
       currentHeight = 20;
     }
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Payment details");
     currentHeight += pdfConfig.subLineHeight;
 
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(10, currentHeight, paymentDetails.text);
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
@@ -1007,11 +1011,12 @@ async function jsPDFInvoiceTemplate(props) {
       doc.addPage();
       currentHeight = 10;
     }
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.setFontSize(pdfConfig.labelTextSize);
     doc.text(10, currentHeight, "Note");
     currentHeight += pdfConfig.lineHeight;
 
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.text(10, currentHeight, noteData.text);
     currentHeight += pdfConfig.lineHeight + noteData.height;
@@ -1031,9 +1036,9 @@ async function jsPDFInvoiceTemplate(props) {
         }
 
         if (index === 0) {
-          doc.setFont(undefined, FONT_TYPE_BOLD);
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
           doc.text(10, currentHeight, param.data.descLabel);
-          doc.setFont(undefined, FONT_TYPE_NORMAL);
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
           currentHeight += pdfConfig.subLineHeight;
         }
         doc.text(10, currentHeight, desc.text);
