@@ -990,11 +990,38 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
 
+  const addDesc = () => {
+    doc.setFontSize(pdfConfig.labelTextSize - 2);
+    doc.setTextColor(colorBlack);
+
+    if (param.data?.desc.length > 0) {
+      currentHeight += 1;
+      param.data?.desc?.forEach((el, index) => {
+        const desc = splitTextAndGetHeight(el, pageWidth - 40);
+        if (currentHeight + desc.height > pageHeight) {
+          doc.addPage();
+          currentHeight = 10;
+        }
+
+        if (index === 0) {
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+          doc.text(10, currentHeight, param.data.descLabel);
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+          currentHeight += pdfConfig.subLineHeight;
+        }
+        doc.text(10, currentHeight, desc.text);
+        currentHeight += pdfConfig.subLineHeight + desc.height;
+      });
+    }
+  };
+
+  if (param.data?.desc?.length > 0) addDesc();
+
   // E signature
   if (param.data?.eSign?.signature?.src) {
     if (
       currentHeight + (param.data?.eSign?.signature?.height || 20) >
-        pageHeight ||
+      pageHeight ||
       (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
@@ -1060,33 +1087,6 @@ async function jsPDFInvoiceTemplate(props) {
     doc.text(10, currentHeight, noteData.text);
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
-
-  const addDesc = () => {
-    doc.setFontSize(pdfConfig.labelTextSize - 2);
-    doc.setTextColor(colorBlack);
-
-    if (param.data?.desc.length > 0) {
-      currentHeight += 1;
-      param.data?.desc?.forEach((el, index) => {
-        const desc = splitTextAndGetHeight(el, pageWidth - 40);
-        if (currentHeight + desc.height > pageHeight) {
-          doc.addPage();
-          currentHeight = 10;
-        }
-
-        if (index === 0) {
-          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-          doc.text(10, currentHeight, param.data.descLabel);
-          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-          currentHeight += pdfConfig.subLineHeight;
-        }
-        doc.text(10, currentHeight, desc.text);
-        currentHeight += pdfConfig.subLineHeight + desc.height;
-      });
-    }
-  };
-
-  if (param.data?.desc?.length > 0) addDesc();
 
   //add num of page at the bottom
   if (doc.getNumberOfPages() === 1 && param.pageEnable) {
