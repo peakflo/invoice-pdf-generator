@@ -122,8 +122,10 @@ describe("PDF Test", () => {
           },
           total: {
             col1: "Total:",
-            col2: "495,600.00",
+            col2: "100,907,616.31",
             col3: "INR",
+            col4: "Amount in words:",
+            col5: "Ten Crore Nine Lakh Seven Thousand Six Hundred Sixteen Rupees And Thirty One Paise Only",
             style: { fontSize: 10 },
           },
           indiaIRP: {
@@ -385,8 +387,10 @@ describe("PDF Test", () => {
           staticVA: null,
           total: {
             col1: "Total:",
-            col2: "495,600.00",
+            col2: "100,907,616.31",
             col3: "SGD",
+            col4: "Amount in words:",
+            col5: "One Hundred Million Nine Hundred Seven Thousand Six Hundred Sixteen Dollars And Thirty One Cents Only",
             style: { fontSize: 10 },
           },
           indiaIRP: {

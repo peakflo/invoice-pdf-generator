@@ -129,6 +129,8 @@ export { OutputType, jsPDF };
  *           col1?: string,
  *           col2?: string,
  *           col3?: string,
+ *           col4?: string,
+ *           col5?: string,
  *           style?: {
  *               fontSize?: number
  *           }
@@ -224,9 +226,11 @@ async function jsPDFInvoiceTemplate(props) {
         },
       },
       total: {
-        col1: props.data?.total?.col1 || "",
-        col2: props.data?.total?.col2 || "",
-        col3: props.data?.total?.col3 || "",
+        col1: props.data?.total?.col1 || "", // Total label
+        col2: props.data?.total?.col2 || "", // Total amount
+        col3: props.data?.total?.col3 || "", // currency
+        col4: props.data?.total?.col4 || "", // Total amount in words label
+        col5: props.data?.total?.col5 || "", // Total amount in words
         style: {
           fontSize: props.data?.row2?.style?.fontSize || 12,
         },
@@ -879,6 +883,22 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.total.col3 + "  " + param.data.total.col2,
       ALIGN_RIGHT
     );
+
+    if (param.data.total?.col4 && param.data.total?.col5) {
+      const totalInWords = splitTextAndGetHeight(param.data.total.col5, pageWidth - 20)
+      currentHeight += pdfConfig.fieldTextSize;
+
+      doc.setFontSize(pdfConfig.fieldTextSize)
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, param.data.total.col4);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(param.data.total.col4),
+        currentHeight,
+        totalInWords.text
+      );
+      currentHeight += pdfConfig.subLineHeight + totalInWords.height;
+    }
   }
 
   // Amount Due
