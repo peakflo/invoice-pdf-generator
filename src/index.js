@@ -1,7 +1,8 @@
 import "regenerator-runtime";
 import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import QRCode from "qrcode";
-import { getCustomFont } from './font'
+import { getCustomFont } from "./font";
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -132,6 +133,8 @@ export { OutputType, jsPDF };
  *           col3?: string,
  *           col4?: string,
  *           col5?: string,
+ *           col2Conv?: string,
+ *           col3defaultCurrency?: string,
  *           style?: {
  *               fontSize?: number
  *           }
@@ -233,6 +236,9 @@ async function jsPDFInvoiceTemplate(props) {
         col3: props.data?.total?.col3 || "", // currency
         col4: props.data?.total?.col4 || "", // Total amount in words label
         col5: props.data?.total?.col5 || "", // Total amount in words
+        col2Conv: props.data?.total?.col2Conv || "", // Total converted amount
+        col3defaultCurrency: props.data?.total?.col3defaultCurrency || "", // default currency,
+        col2ConvRate: props.data?.total?.col2ConvRate || "", // conversion rate
         style: {
           fontSize: props.data?.row2?.style?.fontSize || 12,
         },
@@ -818,6 +824,69 @@ async function jsPDFInvoiceTemplate(props) {
     }
   }
 
+  // Define the box parameters
+  const boxWidth = 100;
+  const boxHeight = 30;
+  const boxX = 10;
+  const boxY = currentHeight + 10;
+
+  // Draw the box
+  doc.setDrawColor(0, 0, 0);
+  doc.setFillColor(255, 255, 255);
+  doc.setLineWidth(0.2);
+  doc.rect(boxX, boxY, boxWidth, boxHeight, "FD");
+
+  // Add text to the box
+  doc.setTextColor(0, 0, 0);
+  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+  doc.text("For GST reporting purposes:", boxX + 5, boxY + 5);
+  doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
+  doc.setFontSize(10);
+  doc.text(
+    `1 ${param.data.total.col3defaultCurrency} = ${param.data.total.col2ConvRate} ${param.data.total.col3}`,
+    boxX + 5,
+    boxY + 13
+  );
+
+  // Add the table
+  doc.autoTable({
+    startY: boxY + 14,
+    margin: { left: boxX, right: 0 },
+    head: [["", `Amount ${param.data.total.col3defaultCurrency}`]],
+    body: [
+      ["Subtotal", param.data.total.col2Conv],
+      [
+        {
+          content: `Total ${param.data.total.col3defaultCurrency}`,
+          fontStyle: "bold",
+        },
+        { content: param.data.total.col2Conv, fontStyle: "bold" },
+      ],
+    ],
+    theme: "plain",
+    headStyles: {
+      fillColor: [255, 255, 255],
+      textColor: [0, 0, 0],
+      lineColor: [0, 0, 0],
+      fontSize: 8,
+      align: "right",
+    },
+    bodyStyles: {
+      fillColor: [255, 255, 255],
+      textColor: [0, 0, 0],
+      lineWidth: 0.2,
+      lineColor: [0, 0, 0],
+      fontSize: 9,
+    },
+    columnStyles: {
+      0: { cellWidth: 55, halign: "right", valign: "top" },
+      1: { cellWidth: 45, halign: "left", valign: "top" },
+    },
+    rowStyles: {
+      1: { fontStyle: "bold" },
+    },
+  });
+
   //line breaker before invoce total
   if (
     param.data.header.length &&
@@ -873,12 +942,7 @@ async function jsPDFInvoiceTemplate(props) {
           doc.addPage();
           currentHeight = 20;
         }
-        doc.text(
-          docWidth - 50,
-          currentHeight,
-          `${tax.name}:`,
-          ALIGN_RIGHT
-        );
+        doc.text(docWidth - 50, currentHeight, `${tax.name}:`, ALIGN_RIGHT);
         doc.text(
           docWidth - 10,
           currentHeight,
