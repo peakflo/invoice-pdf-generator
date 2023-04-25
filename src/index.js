@@ -113,6 +113,7 @@ export { OutputType, jsPDF };
  *           col1?: string,
  *           col2?: string,
  *           col3?: string,
+ *           col4?: any,
  *           style?: {
  *               fontSize?: number
  *           }
@@ -129,6 +130,8 @@ export { OutputType, jsPDF };
  *           col1?: string,
  *           col2?: string,
  *           col3?: string,
+ *           col4?: string,
+ *           col5?: string,
  *           style?: {
  *               fontSize?: number
  *           }
@@ -211,6 +214,7 @@ async function jsPDFInvoiceTemplate(props) {
         col1: props.data?.row1?.col1 || "",
         col2: props.data?.row1?.col2 || "",
         col3: props.data?.row1?.col3 || "",
+        col4: props.data?.row1?.col4 || [],
         style: {
           fontSize: props.data?.row1?.style?.fontSize || 12,
         },
@@ -224,9 +228,11 @@ async function jsPDFInvoiceTemplate(props) {
         },
       },
       total: {
-        col1: props.data?.total?.col1 || "",
-        col2: props.data?.total?.col2 || "",
-        col3: props.data?.total?.col3 || "",
+        col1: props.data?.total?.col1 || "", // Total label
+        col2: props.data?.total?.col2 || "", // Total amount
+        col3: props.data?.total?.col3 || "", // currency
+        col4: props.data?.total?.col4 || "", // Total amount in words label
+        col5: props.data?.total?.col5 || "", // Total amount in words
         style: {
           fontSize: props.data?.row2?.style?.fontSize || 12,
         },
@@ -847,10 +853,44 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(param.data.row1.style.fontSize);
 
     doc.text(docWidth - 50, currentHeight, param.data.row1.col1, ALIGN_RIGHT);
-    doc.text(docWidth - 10, currentHeight, param.data.row1.col2, ALIGN_RIGHT);
+    doc.text(
+      docWidth - 10,
+      currentHeight,
+      param.data.row1.col3 + "  " + param.data.row1.col2,
+      ALIGN_RIGHT
+    );
+
+    // Show all the taxes applied
+    const taxData = param.data.row1?.col4;
+    if (taxData) {
+      doc.setTextColor(lightGray);
+      taxData.forEach((tax) => {
+        currentHeight += pdfConfig.lineHeight;
+        if (
+          currentHeight > pageHeight ||
+          (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
+        ) {
+          doc.addPage();
+          currentHeight = 20;
+        }
+        doc.text(
+          docWidth - 50,
+          currentHeight,
+          `${tax.name}:`,
+          ALIGN_RIGHT
+        );
+        doc.text(
+          docWidth - 10,
+          currentHeight,
+          param.data.row1.col3 + "  " + tax.amount,
+          ALIGN_RIGHT
+        );
+      });
+    }
   }
   //end row1
 
+  doc.setTextColor(colorBlack);
   //row2 - discounts
   if (
     param.data.row2 &&
@@ -879,6 +919,25 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.total.col3 + "  " + param.data.total.col2,
       ALIGN_RIGHT
     );
+
+    if (param.data.total?.col4 && param.data.total?.col5) {
+      const totalInWords = splitTextAndGetHeight(
+        param.data.total.col5,
+        pageWidth - 20
+      );
+      currentHeight += pdfConfig.fieldTextSize;
+
+      doc.setFontSize(pdfConfig.fieldTextSize);
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, param.data.total.col4);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(param.data.total.col4),
+        currentHeight,
+        totalInWords.text
+      );
+      currentHeight += pdfConfig.subLineHeight + totalInWords.height;
+    }
   }
 
   // Amount Due
@@ -1021,7 +1080,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data?.eSign?.signature?.src) {
     if (
       currentHeight + (param.data?.eSign?.signature?.height || 20) >
-      pageHeight ||
+        pageHeight ||
       (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
