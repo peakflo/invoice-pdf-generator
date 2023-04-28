@@ -133,8 +133,9 @@ export { OutputType, jsPDF };
  *           col3?: string,
  *           col4?: string,
  *           col5?: string,
- *           col2Conv?: string,
- *           col3defaultCurrency?: string,
+ *           totalConv?: string,
+ *           defaultCurrency?: string,
+ *           convRate?: string,
  *           style?: {
  *               fontSize?: number
  *           }
@@ -233,12 +234,12 @@ async function jsPDFInvoiceTemplate(props) {
       total: {
         col1: props.data?.total?.col1 || "", // Total label
         col2: props.data?.total?.col2 || "", // Total amount
-        col3: props.data?.total?.col3 || "", // currency
+        col3: props.data?.total?.col3 || "", // Invoice currency
         col4: props.data?.total?.col4 || "", // Total amount in words label
         col5: props.data?.total?.col5 || "", // Total amount in words
-        col2Conv: props.data?.total?.col2Conv || "", // Total converted amount
-        col3defaultCurrency: props.data?.total?.col3defaultCurrency || "", // default currency,
-        col2ConvRate: props.data?.total?.col2ConvRate || "", // conversion rate
+        totalConv: props.data?.total?.totalConv || "", // Total converted amount
+        defaultCurrency: props.data?.total?.defaultCurrency || "", // default currency,
+        convRate: props.data?.total?.convRate || "", // conversion rate
         style: {
           fontSize: props.data?.row2?.style?.fontSize || 12,
         },
@@ -824,68 +825,85 @@ async function jsPDFInvoiceTemplate(props) {
     }
   }
 
-  // Define the box parameters
-  const boxWidth = 100;
-  const boxHeight = 30;
-  const boxX = 10;
-  const boxY = currentHeight + 10;
+  if (
+    param.data.total.totalConv &&
+    param.data.total.convRate &&
+    param.data.total.defaultCurrency
+  ) {
+    // (15 = Conv table height) + (10 = box height) = 25
+    if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
+      doc.addPage();
+      currentHeight = 10;
+    }
 
-  // Draw the box
-  doc.setDrawColor(0, 0, 0);
-  doc.setFillColor(255, 255, 255);
-  doc.setLineWidth(0.2);
-  doc.rect(boxX, boxY, boxWidth, boxHeight, "FD");
+    // Define the box parameters
+    const boxWidth = 95;
+    const boxHeight = 30;
+    const boxX = 10;
+    const boxY = currentHeight + 10;
 
-  // Add text to the box
-  doc.setTextColor(0, 0, 0);
-  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-  doc.text("For GST reporting purposes:", boxX + 5, boxY + 5);
-  doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
-  doc.setFontSize(10);
-  doc.text(
-    `1 ${param.data.total.col3defaultCurrency} = ${param.data.total.col2ConvRate} ${param.data.total.col3}`,
-    boxX + 5,
-    boxY + 13
-  );
+    // Draw the box
+    doc.setDrawColor(0, 0, 0);
+    doc.setFillColor(255, 255, 255);
+    doc.setLineWidth(0.2);
+    doc.rect(boxX, boxY, boxWidth, boxHeight, "FD");
 
-  // Add the table
-  doc.autoTable({
-    startY: boxY + 14,
-    margin: { left: boxX, right: 0 },
-    head: [["", `Amount ${param.data.total.col3defaultCurrency}`]],
-    body: [
-      ["Subtotal", param.data.total.col2Conv],
-      [
-        {
-          content: `Total ${param.data.total.col3defaultCurrency}`,
-          fontStyle: "bold",
-        },
-        { content: param.data.total.col2Conv, fontStyle: "bold" },
+    // Add text to the box
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.text("For GST reporting purposes:", boxX + 5, boxY + 5);
+    doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
+    doc.setFontSize(10);
+    doc.text(
+      `1 ${param.data.total.defaultCurrency} = ${param.data.total.convRate} ${param.data.total.col3}`,
+      boxX + 5,
+      boxY + 13
+    );
+
+    // Add the table
+    doc.autoTable({
+      startY: boxY + 14,
+      margin: { left: boxX, right: 0 },
+      head: [["", `Amount ${param.data.total.defaultCurrency}`]],
+      body: [
+        ["Subtotal", param.data.total.totalConv],
+        [
+          {
+            content: `Total ${param.data.total.defaultCurrency}`,
+            fontStyle: "bold",
+          },
+          { content: param.data.total.totalConv, fontStyle: "bold" },
+        ],
       ],
-    ],
-    theme: "plain",
-    headStyles: {
-      fillColor: [255, 255, 255],
-      textColor: [0, 0, 0],
-      lineColor: [0, 0, 0],
-      fontSize: 8,
-      align: "right",
-    },
-    bodyStyles: {
-      fillColor: [255, 255, 255],
-      textColor: [0, 0, 0],
-      lineWidth: 0.2,
-      lineColor: [0, 0, 0],
-      fontSize: 9,
-    },
-    columnStyles: {
-      0: { cellWidth: 55, halign: "right", valign: "top" },
-      1: { cellWidth: 45, halign: "left", valign: "top" },
-    },
-    rowStyles: {
-      1: { fontStyle: "bold" },
-    },
-  });
+      theme: "plain",
+      headStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        lineColor: [0, 0, 0],
+        fontSize: 8,
+        align: "right",
+        minCellHeight: 5,
+      },
+      bodyStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        lineWidth: 0.2,
+        lineColor: [0, 0, 0],
+        fontSize: 9,
+        minCellHeight: 5,
+      },
+      columnStyles: {
+        0: { cellWidth: 40, halign: "right", valign: "top" },
+        1: { cellWidth: 55, halign: "left", valign: "top" },
+      },
+      rowStyles: {
+        1: { fontStyle: "bold" },
+      },
+    });
+  }
+
+  // No. of rows of sub total, taxes, discounts .. until Total (NOT TABLE ROWS).
+  let finalRowCount = 0;
 
   //line breaker before invoce total
   if (
@@ -893,7 +911,7 @@ async function jsPDFInvoiceTemplate(props) {
     (param.data.subTotal || param.data.subTotalLabel || param.data.currency)
   ) {
     doc.setLineWidth(0.5);
-    doc.line(docWidth / 2, currentHeight, docWidth - 10, currentHeight);
+    doc.line(docWidth / 2 + 10, currentHeight, docWidth - 10, currentHeight);
     currentHeight += pdfConfig.lineHeight;
   }
 
@@ -911,6 +929,8 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.currency + "  " + param.data.subTotal.toLocaleString(),
       ALIGN_RIGHT
     );
+
+    finalRowCount += 1;
   }
 
   //row1 - tax
@@ -928,6 +948,8 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.row1.col3 + "  " + param.data.row1.col2,
       ALIGN_RIGHT
     );
+
+    finalRowCount += 1;
 
     // Show all the taxes applied
     const taxData = param.data.row1?.col4;
@@ -950,6 +972,8 @@ async function jsPDFInvoiceTemplate(props) {
           ALIGN_RIGHT
         );
       });
+
+      finalRowCount += taxData.length;
     }
   }
   //end row1
@@ -965,6 +989,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     doc.text(docWidth - 50, currentHeight, param.data.row2.col1, ALIGN_RIGHT);
     doc.text(docWidth - 10, currentHeight, param.data.row2.col2, ALIGN_RIGHT);
+    finalRowCount += 1;
   }
   //end row2
 
@@ -983,25 +1008,39 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.total.col3 + "  " + param.data.total.col2,
       ALIGN_RIGHT
     );
+    finalRowCount += 1;
+  }
 
-    if (param.data.total?.col4 && param.data.total?.col5) {
-      const totalInWords = splitTextAndGetHeight(
-        param.data.total.col5,
-        pageWidth - 20
-      );
-      currentHeight += pdfConfig.fieldTextSize;
+  // -1 = because the fx rate box is one row lower
+  // 5 = each row height
+  const finalRowHeight = (finalRowCount - 1) * 5;
 
-      doc.setFontSize(pdfConfig.fieldTextSize);
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, param.data.total.col4);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
-      doc.text(
-        10 + doc.getTextWidth(param.data.total.col4),
-        currentHeight,
-        totalInWords.text
-      );
-      currentHeight += pdfConfig.subLineHeight + totalInWords.height;
-    }
+  // Add a line height after convertion rate table and totals
+  // 35 = height of fx rate box
+  if (param.data.total.totalConv && finalRowHeight < 35) {
+    const diff = 35 - finalRowHeight;
+    currentHeight += pdfConfig.fieldTextSize + diff;
+  } else {
+    currentHeight += pdfConfig.fieldTextSize;
+  }
+
+  // Total in words
+  if (param.data.total?.col4 && param.data.total?.col5) {
+    const totalInWords = splitTextAndGetHeight(
+      param.data.total.col5,
+      pageWidth - 20
+    );
+
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.text(10, currentHeight, param.data.total.col4);
+    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.text(
+      10 + doc.getTextWidth(param.data.total.col4),
+      currentHeight,
+      totalInWords.text
+    );
+    currentHeight += pdfConfig.subLineHeight + totalInWords.height;
   }
 
   // Amount Due
@@ -1133,7 +1172,7 @@ async function jsPDFInvoiceTemplate(props) {
           currentHeight += pdfConfig.subLineHeight;
         }
         doc.text(10, currentHeight, desc.text);
-        currentHeight += pdfConfig.subLineHeight + desc.height;
+        currentHeight += desc.height + 1;
       });
     }
   };

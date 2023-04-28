@@ -163,9 +163,9 @@ declare function jsPDFInvoiceTemplate(props: {
       col1?: string;
       col2?: string;
       col3?: string;
-      col2Conv?: string;
-      col3defaultCurrency?: string;
-      col2ConvRate?: string;
+      totalConv?: string;
+      defaultCurrency?: string;
+      convRate?: string;
       style?: {
         fontSize?: number;
       };
