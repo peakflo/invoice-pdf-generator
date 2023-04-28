@@ -862,7 +862,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     // Add the table
     doc.autoTable({
-      startY: boxY + 14,
+      startY: boxY + 18,
       margin: { left: boxX, right: 0 },
       head: [["", `Amount ${param.data.total.defaultCurrency}`]],
       body: [
@@ -880,6 +880,7 @@ async function jsPDFInvoiceTemplate(props) {
         fillColor: [255, 255, 255],
         textColor: [0, 0, 0],
         lineColor: [0, 0, 0],
+        lineWidth: 0.2,
         fontSize: 8,
         align: "right",
         minCellHeight: 5,
