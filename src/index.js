@@ -828,6 +828,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (
     param.data.total.totalConv &&
     param.data.total.convRate &&
+    param.data.total.convRate !== "1" &&
     param.data.total.defaultCurrency
   ) {
     // (15 = Conv table height) + (10 = box height) = 25
