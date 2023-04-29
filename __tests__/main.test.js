@@ -125,7 +125,10 @@ describe("PDF Test", () => {
           subTotalLabel: "Sub Total:",
           subTotal: "420,000.00",
           currency: "INR",
-          desc: ['Hi this is testing statement.', 'Hi this is testing statement.'],
+          desc: [
+            "Hi this is testing statement.",
+            "Hi this is testing statement.",
+          ],
           creditNoteLabel: "Less payments and credit:",
           note: "Remittance Information:\n1. Pay to: InMobi Technology Services Private Limited\n2. Bank Citibank N.A. MG Road Bangalore Branch, A/c No. 0710453004\n3. IFSC Code: CITI0000004\n4. TDS deduction u/s 194C @2%\n5. Bank charges are to the remitter's account\n6. Please mention Invoice number in your remittance instruction\n7. GST category : Sale of space or time for advertisement other than print media\n\nRemarks: \nFailure to raise any queries to InMobi in relation to this invoice within five business days of receipt shall be deemed to be full acceptance of the \ninvoice and InMobi shall have the option to impose late payment interest thereafter as set out under the 'Payment Liability' section at \nhttp://www.inmobi.com/advertiser-terms.\nTax payable under reverse charge : No",
           staticVA: null,
@@ -151,10 +154,10 @@ describe("PDF Test", () => {
           total: {
             col1: "Total:",
             col2: "100,907,616.31",
-            col3: "INR",
+            col3: "SGD",
             totalConv: "12,31,956.87",
-            defaultCurrency: "SGD",
-            convRate: "0.74613",
+            defaultCurrency: "INR",
+            convRate: "61.245",
             col4: "Amount in words:",
             col5: "Ten Crore Nine Lakh Seven Thousand Six Hundred Sixteen Rupees And Thirty One Paise Only",
             style: { fontSize: 10 },
@@ -273,7 +276,7 @@ describe("PDF Test", () => {
             defaultCurrency: "SGD",
             convRate: "0.74613",
             col4: "Amount in words:",
-            col5: "Ten Crore Nine Lakh Seven Thousand Six Hundred"
+            col5: "Ten Crore Nine Lakh Seven Thousand Six Hundred",
           },
           eSign: {
             approverText: "Digitally signed and approved by",
@@ -335,7 +338,10 @@ describe("PDF Test", () => {
             ],
           ],
           currency: "SGD",
-          desc: ['Hi this is testing statement.', 'Hi this is testing statement.'],
+          desc: [
+            "Hi this is testing statement.",
+            "Hi this is testing statement.",
+          ],
           creditNoteLabel: "Less payments and credit:",
           note: "Remittance Information:\n1. Pay to: InMobi Technology Services Private Limited\n2. Bank Citibank N.A. MG Road Bangalore Branch, A/c No. 0710453004\n3. IFSC Code: CITI0000004\n4. TDS deduction u/s 194C @2%\n5. Bank charges are to the remitter's account\n6. Please mention Invoice number in your remittance instruction\n7. GST category : Sale of space or time for advertisement other than print media\n\nRemarks: \nFailure to raise any queries to InMobi in relation to this invoice within five business days of receipt shall be deemed to be full acceptance of the \ninvoice and InMobi shall have the option to impose late payment interest thereafter as set out under the 'Payment Liability' section at \nhttp://www.inmobi.com/advertiser-terms.\nTax payable under reverse charge : No",
           staticVA: null,
@@ -399,7 +405,10 @@ describe("PDF Test", () => {
             ],
           ],
           currency: "SGD",
-          desc: ['Hi this is testing statement.', 'Hi this is testing statement.'],
+          desc: [
+            "Hi this is testing statement.",
+            "Hi this is testing statement.",
+          ],
           creditNoteLabel: "Less payments and credit:",
           note: "Remittance Information:\n1. Pay to: InMobi Technology Services Private Limited\n2. Bank Citibank N.A. MG Road Bangalore Branch, A/c No. 0710453004\n3. IFSC Code: CITI0000004\n4. TDS deduction u/s 194C @2%\n5. Bank charges are to the remitter's account\n6. Please mention Invoice number in your remittance instruction\n7. GST category : Sale of space or time for advertisement other than print media\n\nRemarks: \nFailure to raise any queries to InMobi in relation to this invoice within five business days of receipt shall be deemed to be full acceptance of the \ninvoice and InMobi shall have the option to impose late payment interest thereafter as set out under the 'Payment Liability' section at \nhttp://www.inmobi.com/advertiser-terms.\nTax payable under reverse charge : No",
           staticVA: null,
