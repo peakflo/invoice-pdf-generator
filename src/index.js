@@ -828,8 +828,9 @@ async function jsPDFInvoiceTemplate(props) {
   if (
     param.data.total.totalConv &&
     param.data.total.convRate &&
+    param.data.total.defaultCurrency &&
     param.data.total.convRate !== "1" &&
-    param.data.total.defaultCurrency
+    param.data.total.col3 !== param.data.total.defaultCurrency
   ) {
     // (15 = Conv table height) + (10 = box height) = 25
     if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
@@ -856,7 +857,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
     doc.setFontSize(10);
     doc.text(
-      `1 ${param.data.total.defaultCurrency} = ${param.data.total.convRate} ${param.data.total.col3}`,
+      `1 ${param.data.total.col3} = ${param.data.total.convRate} ${param.data.total.defaultCurrency}`,
       boxX + 5,
       boxY + 13
     );
