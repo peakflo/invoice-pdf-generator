@@ -134,6 +134,7 @@ export { OutputType, jsPDF };
  *           col4?: string,
  *           col5?: string,
  *           totalConv?: string,
+ *           isFxConversionVisible: boolean,
  *           defaultCurrency?: string,
  *           convRate?: string,
  *           style?: {
@@ -238,6 +239,7 @@ async function jsPDFInvoiceTemplate(props) {
         col4: props.data?.total?.col4 || "", // Total amount in words label
         col5: props.data?.total?.col5 || "", // Total amount in words
         totalConv: props.data?.total?.totalConv || "", // Total converted amount
+        isFxConversionVisible: props.data?.total?.isFxConversionVisible,
         defaultCurrency: props.data?.total?.defaultCurrency || "", // default currency,
         convRate: props.data?.total?.convRate || "", // conversion rate
         style: {
@@ -825,13 +827,7 @@ async function jsPDFInvoiceTemplate(props) {
     }
   }
 
-  if (
-    param.data.total.totalConv &&
-    param.data.total.convRate &&
-    param.data.total.defaultCurrency &&
-    param.data.total.convRate !== "1" &&
-    param.data.total.col3 !== param.data.total.defaultCurrency
-  ) {
+  if (param.data.total.isFxConversionVisible) {
     // (15 = Conv table height) + (10 = box height) = 25
     if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
       doc.addPage();
