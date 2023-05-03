@@ -827,14 +827,7 @@ async function jsPDFInvoiceTemplate(props) {
     }
   }
 
-  if (
-    param.data.total.totalConv &&
-    param.data.total.convRate &&
-    param.data.total.defaultCurrency &&
-    param.data.total.convRate !== "1" &&
-    param.data.total.col3 !== param.data.total.defaultCurrency &&
-    param.data.total.isFxConversionVisible
-  ) {
+  if (param.data.total.isFxConversionVisible) {
     // (15 = Conv table height) + (10 = box height) = 25
     if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
       doc.addPage();
