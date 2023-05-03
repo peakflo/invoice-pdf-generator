@@ -239,7 +239,7 @@ async function jsPDFInvoiceTemplate(props) {
         col4: props.data?.total?.col4 || "", // Total amount in words label
         col5: props.data?.total?.col5 || "", // Total amount in words
         totalConv: props.data?.total?.totalConv || "", // Total converted amount
-        isFxConversionVisible: props.data?.total?.isFxConversionVisible || true,
+        isFxConversionVisible: props.data?.total?.isFxConversionVisible,
         defaultCurrency: props.data?.total?.defaultCurrency || "", // default currency,
         convRate: props.data?.total?.convRate || "", // conversion rate
         style: {
