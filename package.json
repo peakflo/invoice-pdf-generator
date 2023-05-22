@@ -15,8 +15,7 @@
     "build:js": "babel src --out-dir dist --extensions \".ts,.tsx,.js\" --source-maps inline",
     "build": "webpack --mode production",
     "test": "DISABLE_LOGGING=true jest --silent",
-    "test:debug": "jest",
-    "prepublish": "npm run build"
+    "test:debug": "jest"
   },
   "repository": {
     "type": "git",
