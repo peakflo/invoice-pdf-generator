@@ -54,6 +54,10 @@ describe("PDF Test", () => {
           netTerm: "30",
           headerBorder: false,
           tableBodyBorder: false,
+          customFields: [
+            "Custom field 1: Hello world",
+            "Custom field 2: Hello world 2",
+          ],
           pdfTitle: "Advertisement on Microsoft Advertising properties",
           header: ["Description", "Unit Price", "Quantity", "Tax", "Amount"],
           headerWidth: [0.5, 0.125, 0.125, 0.125, 0.125],

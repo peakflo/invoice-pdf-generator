@@ -58,6 +58,7 @@ import { jsPDF } from "jspdf";
  *       subTotal?: string,
  *       currency?: string,
  *       descLabel?: string,
+ *       customFields?: string[],
  *       desc?: string[],
  *       creditNoteLabel?: string,
  *       note?: string,

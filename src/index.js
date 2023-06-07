@@ -78,6 +78,7 @@ export { OutputType, jsPDF };
  *       creditNoteLabel?: string,
  *       note?: string,
  *       requestedBy?: string,
+ *       customFields?: string[],
  *       authorisedBy?: string,
  *       pdfTitle?: string,
  *       staticVA?: {
@@ -209,6 +210,7 @@ async function jsPDFInvoiceTemplate(props) {
       currency: props.data?.currency || "",
       descLabel: props.data?.descLabel || "",
       requestedBy: props.data?.requestedBy || "",
+      customFields: props.data?.customFields || [],
       authorisedBy: props.data?.authorisedBy || "",
       staticVA: props.data?.staticVA,
       desc: props.data?.desc || "",
@@ -1112,6 +1114,21 @@ async function jsPDFInvoiceTemplate(props) {
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.text(10, currentHeight, param.data.requestedBy);
+    currentHeight += pdfConfig.lineHeight;
+  }
+
+  // Additional Information - custom fields
+  if (param.data.customFields.length) {
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    currentHeight += pdfConfig.lineHeight;
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.text(10, currentHeight, "Additional Information");
+
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    param.data.customFields.map((item) => {
+      currentHeight += pdfConfig.subLineHeight;
+      doc.text(10, currentHeight, item);
+    });
     currentHeight += pdfConfig.lineHeight;
   }
 
