@@ -210,7 +210,7 @@ async function jsPDFInvoiceTemplate(props) {
       currency: props.data?.currency || "",
       descLabel: props.data?.descLabel || "",
       requestedBy: props.data?.requestedBy || "",
-      customFields: props.data?.customFields || "",
+      customFields: props.data?.customFields || [],
       authorisedBy: props.data?.authorisedBy || "",
       staticVA: props.data?.staticVA,
       desc: props.data?.desc || "",
