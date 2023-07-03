@@ -83,6 +83,8 @@ import { jsPDF } from "jspdf";
  *           col2?: string,
  *           col3?: string,
  *           totalConv?: string;
+ *           totalTaxAmount: string;
+ *           totalTaxAmountConv: string;
  *           defaultCurrency?: string;
  *           convRate?: string;
  *           isFxConversionVisible: boolean;
@@ -165,6 +167,8 @@ declare function jsPDFInvoiceTemplate(props: {
       col1?: string;
       col2?: string;
       col3?: string;
+      totalTaxAmount: string;
+      totalTaxAmountConv: string;
       totalConv?: string;
       defaultCurrency?: string;
       convRate?: string;
