@@ -242,6 +242,8 @@ async function jsPDFInvoiceTemplate(props) {
         col5: props.data?.total?.col5 || "", // Total amount in words
         totalConv: props.data?.total?.totalConv || "", // Total converted amount
         isFxConversionVisible: props.data?.total?.isFxConversionVisible,
+        totalTaxAmount: props.data?.total?.totalTaxAmount || "",
+        totalTaxAmountConv: props.data?.total?.totalTaxAmountConv || "",
         defaultCurrency: props.data?.total?.defaultCurrency || "", // default currency,
         convRate: props.data?.total?.convRate || "", // conversion rate
         style: {
@@ -867,6 +869,7 @@ async function jsPDFInvoiceTemplate(props) {
       head: [["", `Amount ${param.data.total.defaultCurrency}`]],
       body: [
         ["Subtotal", param.data.total.totalConv],
+        ["Total Tax", param.data.total.totalTaxAmountConv],
         [
           {
             content: `Total ${param.data.total.defaultCurrency}`,
