@@ -162,6 +162,7 @@ describe("PDF Test", () => {
             totalConv: "12,31,956.87",
             totalTaxAmount: "3,122.32",
             totalTaxAmountConv: "3,12,313.32",
+            subTotalConv: "32,323",
             isFxConversionVisible: true,
             defaultCurrency: "INR",
             convRate: "61.245",
