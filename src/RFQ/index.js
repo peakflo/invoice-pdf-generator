@@ -12,8 +12,6 @@ const OutputType = {
   ArrayBuffer: "arraybuffer", //return ArrayBuffer format
 };
 
-export { OutputType, jsPDF };
-
 /**
  *
  * @param {

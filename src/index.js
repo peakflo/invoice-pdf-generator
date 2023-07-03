@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import QRCode from "qrcode";
 import { getCustomFont } from "./font";
-
+import jsPDFRfqTemplate from "./RFQ";
 const OutputType = {
   Save: "save", //save pdf as a file
   DataUriString: "datauristring", //returns the data uri string
@@ -13,7 +13,7 @@ const OutputType = {
   ArrayBuffer: "arraybuffer", //return ArrayBuffer format
 };
 
-export { OutputType, jsPDF };
+export { OutputType, jsPDF, jsPDFRfqTemplate };
 
 /**
  *
