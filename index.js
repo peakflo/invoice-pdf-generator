@@ -1,9 +1,6 @@
-import 'regenerator-runtime'
-import jsPDFInvoiceTemplate, { jsPDF, OutputType } from './src/index';
+import "regenerator-runtime";
+import jsPDFInvoiceTemplate, { jsPDF, OutputType } from "./src/index";
+import jsPDFRfqTemplate from "./src/RFQ/index";
 
-
-export default jsPDFInvoiceTemplate;
-export {
-    OutputType,
-    jsPDF
-}
+export { jsPDFInvoiceTemplate, jsPDFRfqTemplate };
+export { OutputType, jsPDF };

@@ -24,3 +24,28 @@ module.exports = {
     extensions: ['.js'],
   },
 };
+
+module.exports = {
+  mode: 'production',
+  entry: './src/RFQ/index.js',
+  output: {
+    path: path.resolve('dist/RFQ'),
+    filename: 'index.js',
+    library: "jsPDFRfqTemplate",
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    publicPath: ''
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js?$/,
+        exclude: /(node_modules)/,
+        use: 'babel-loader',
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.js'],
+  },
+};
