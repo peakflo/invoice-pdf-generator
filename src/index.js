@@ -241,6 +241,7 @@ async function jsPDFInvoiceTemplate(props) {
         col4: props.data?.total?.col4 || "", // Total amount in words label
         col5: props.data?.total?.col5 || "", // Total amount in words
         totalConv: props.data?.total?.totalConv || "", // Total converted amount
+        subTotalConv: props.data?.total?.subTotalConv || "", // sub total converted amount
         isFxConversionVisible: props.data?.total?.isFxConversionVisible,
         totalTaxAmount: props.data?.total?.totalTaxAmount || "",
         totalTaxAmountConv: props.data?.total?.totalTaxAmountConv || "",
@@ -868,7 +869,7 @@ async function jsPDFInvoiceTemplate(props) {
       margin: { left: boxX, right: 0 },
       head: [["", `Amount ${param.data.total.defaultCurrency}`]],
       body: [
-        ["Subtotal", param.data.total.totalConv],
+        ["Subtotal", param.data.total.subTotalConv],
         ["Total Tax", param.data.total.totalTaxAmountConv],
         [
           {
@@ -905,6 +906,8 @@ async function jsPDFInvoiceTemplate(props) {
       },
     });
   }
+
+  currentHeight += pdfConfig.lineHeight;
 
   // No. of rows of sub total, taxes, discounts .. until Total (NOT TABLE ROWS).
   let finalRowCount = 0;
