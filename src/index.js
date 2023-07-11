@@ -297,7 +297,9 @@ async function jsPDFInvoiceTemplate(props) {
   };
 
   const splitTextAndGetHeight = (text, size) => {
-    const lines = doc.splitTextToSize(text, size);
+    const tabSpaces = Array(tabWidth + 1).join(" ");
+    const textWithTabs = text.replace(/\t/g, tabSpaces);
+    const lines = doc.splitTextToSize(textWithTabs, size);
     return {
       text: lines,
       height: doc.getTextDimensions(lines).h,
@@ -318,6 +320,7 @@ async function jsPDFInvoiceTemplate(props) {
   const pageHeight = doc.getPageHeight() - 25; //25 is bottom margin
   const docWidth = doc.internal.pageSize.width;
   const docHeight = doc.internal.pageSize.height;
+  const tabWidth = 4;
 
   const colorBlack = "#000000";
   const colorBlue = "#3367d6";
