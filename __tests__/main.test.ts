@@ -1,4 +1,4 @@
-import { jsPDFInvoiceTemplate } from "../index";
+import jsPDFInvoiceTemplate from "../index";
 
 describe("PDF Test", () => {
   const logo = {

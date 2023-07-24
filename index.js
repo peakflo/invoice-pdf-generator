@@ -5,4 +5,5 @@ import jsPDFInvoiceTemplate, {
   jsPDFRfqTemplate,
 } from "./src/index";
 
-export { OutputType, jsPDF, jsPDFInvoiceTemplate, jsPDFRfqTemplate };
+export default jsPDFInvoiceTemplate;
+export { OutputType, jsPDF, jsPDFRfqTemplate };
