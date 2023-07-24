@@ -1,5 +1,5 @@
 export default jsPDFInvoiceTemplate;
-
+import jsPDFRfqTemplate from "./RFQ/index";
 declare const OutputType: {
   Save: "save"; //save pdf as a file
   DataUriString: "datauristring"; //returns the data uri string
@@ -210,4 +210,4 @@ declare function jsPDFInvoiceTemplate(props: {
   dataUriString?: string;
   arrayBuffer?: ArrayBuffer;
 };
-export { jsPDF, OutputType };
+export { jsPDF, OutputType, jsPDFRfqTemplate };
