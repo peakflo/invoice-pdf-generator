@@ -335,6 +335,8 @@ async function jsPDFRfqTemplate(props) {
     }
   }
 
+  currentHeight = Math.max(currentHeight, heightBelowLogo);
+
   doc.setFontSize(pdfConfig.fieldTextSize);
   currentHeight += pdfConfig.lineHeight + 2;
 
