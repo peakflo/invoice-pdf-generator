@@ -70,4 +70,62 @@ describe("RFQ PDF Test", () => {
       expect(true).toBeTruthy();
     });
   });
+
+  describe("RFQ pdf test without address", () => {
+    test("RFQ pdf test", async () => {
+      var testProps1 = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-rfq-pdf-wo-address.pdf",
+        orientationLandscape: false,
+        business: {
+          name: "Demo INR File",
+        },
+        data: {
+          label: "Quote Request",
+          date1Label: "Due Date: ",
+          date1: "28.04.2023",
+          date2Label: "Invoice Date: ",
+          date2: "29.03.2023",
+          netTermLabel: "Net Term:",
+          netTerm: "30",
+          headerBorder: false,
+          tableBodyBorder: false,
+          header: ["Line Item Description", "Unit", "Quantity"],
+          headerWidth: [0.5, 0.25, 0.25],
+          table: [
+            ["Macbook Laptop M1 Chip - Space grey colour", "Box", 100],
+            ["Macbook Laptop M1 Chip - Rose gold colour ", "Box", 100],
+          ],
+          note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas diam purus, semper ettellus sit amet, blandit laoreet tortor",
+          deliveryInstructions:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas diam purus, semper ettellus sit amet, blandit laoreet tortor. Integer molestie ultricies libero, vel bibendum nisi. Namrutrum sem scelerisque vestibulum blandit. Morbi et ipsum gravida lectus iaculis molestiesed ac elit. Maecenas a ligula auctor",
+          col1: [
+            "PQ Number",
+            "PQ Date",
+            "Response Due Date",
+            "Shared Date",
+            "Expected Delivery Date",
+          ],
+          col2: [
+            "PQ-2343",
+            "17/12/2023",
+            "26/12/2023",
+            "25/12/2023",
+            "31/12/2023",
+          ],
+          requestedBy: {
+            name: "Ishan Garg",
+            phone: "+91-9999999999",
+          },
+        },
+        pageEnable: true,
+        pageLabel: "Page ",
+        logo: logo,
+      };
+      const pdfObject = await jsPDFRfqTemplate(testProps1);
+      // await pdfObject.jsPDFDocObject.save("output/test1.pdf");
+      expect(true).toBeTruthy();
+    });
+  });
 });
