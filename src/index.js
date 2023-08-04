@@ -352,10 +352,12 @@ async function jsPDFInvoiceTemplate(props) {
 
   //Adding PDF title
   if (param.pdfTitle) {
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     currentHeight -= 7;
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.text(docWidth / 2, currentHeight, param.pdfTitle, ALIGN_CENTER);
     currentHeight += pdfConfig.labelTextSize;
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
   }
 
   doc.setFontSize(pdfConfig.headerTextSize);
