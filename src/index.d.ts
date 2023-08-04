@@ -17,6 +17,7 @@ import { jsPDF } from "jspdf";
  *  returnJsPDFDocObject?: boolean,
  *  fileName: string,
  *  orientationLandscape?: boolean,
+ *  pdfTitle?: string,
  *  logo?: {
  *      src?: string,
  *      width?: number,
@@ -103,6 +104,7 @@ declare function jsPDFInvoiceTemplate(props: {
   returnJsPDFDocObject?: boolean;
   fileName: string;
   orientationLandscape?: boolean;
+  pdfTitle?: string;
   logo?: {
     src?: string;
     width?: number;

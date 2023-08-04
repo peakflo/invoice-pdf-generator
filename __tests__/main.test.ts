@@ -22,6 +22,7 @@ describe("PDF Test", () => {
         outputType: "save",
         returnJsPDFDocObject: true,
         fileName: "output/test-inmobi-irp.pdf",
+        pdfTitle: "Tax Invoice",
         orientationLandscape: false,
         business: {
           name: "Demo INR File",
@@ -199,6 +200,7 @@ describe("PDF Test", () => {
         returnJsPDFDocObject: true,
         fileName: "output/test-inmobi.pdf",
         orientationLandscape: false,
+        pdfTitle: "Tax Invoice",
         business: {
           name: "Demo SGD File",
           taxNumber: "GSTIN: 29AABCT1332L000",
@@ -315,6 +317,7 @@ describe("PDF Test", () => {
         returnJsPDFDocObject: true,
         fileName: "output/test-credit-note-basic.pdf",
         orientationLandscape: false,
+        pdfTitle: "Credit Note",
         business: {
           name: "Demo 1 Company",
           taxNumber: "GSTIN: 29AABCT1332L000",

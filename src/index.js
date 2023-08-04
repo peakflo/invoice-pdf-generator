@@ -22,6 +22,7 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *  returnJsPDFDocObject?: boolean,
  *  fileName: string,
  *  orientationLandscape?: boolean,
+ *  pdfTitle?: string,
  *  logo?: {
  *      src?: string,
  *      width?: number,
@@ -154,6 +155,7 @@ async function jsPDFInvoiceTemplate(props) {
     returnJsPDFDocObject: props.returnJsPDFDocObject || false,
     fileName: props.fileName || "",
     orientationLandscape: props.orientationLandscape || false,
+    pdfTitle: props.pdfTitle || "",
     logo: {
       src: props.logo?.src || "",
       width: props.logo?.width || "",
@@ -347,6 +349,17 @@ async function jsPDFInvoiceTemplate(props) {
   doc.addFileToVFS("customFont.ttf", getCustomFont());
   doc.addFont("customFont.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
   doc.setFont(CUSTOM_FONT_NAME);
+
+  //Adding PDF title
+  if (param.pdfTitle) {
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    currentHeight -= 7;
+    doc.setFontSize(pdfConfig.labelTextSize);
+    doc.text(docWidth / 2, currentHeight, param.pdfTitle, ALIGN_CENTER);
+    currentHeight += pdfConfig.labelTextSize;
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  }
+
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
   doc.text(docWidth - 10, currentHeight, param.business.name, ALIGN_RIGHT);
