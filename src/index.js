@@ -935,6 +935,10 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
   }
 
+  // return the page number the above line is on
+  const pageNumberForInvoiceTotal = doc.internal.getNumberOfPages();
+  const invoiceTotalLineHeight = currentHeight;
+
   // Subtotal line
   if (param.data.subTotalLabel && param.data.subTotal) {
     doc.text(
@@ -1331,6 +1335,11 @@ async function jsPDFInvoiceTemplate(props) {
     doc.output(param.outputType, {
       filename: param.fileName,
     });
+
+  returnObj.estamp = {
+    pageNumberForInvoiceTotal,
+    invoiceTotalLineHeight,
+  };
 
   return returnObj;
 }
