@@ -845,82 +845,12 @@ async function jsPDFInvoiceTemplate(props) {
     }
   }
 
-  if (param.data.total.isFxConversionVisible) {
-    // (15 = Conv table height) + (10 = box height) = 25
-    if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
-      doc.addPage();
-      currentHeight = 10;
-    }
-
-    // Define the box parameters
-    const boxWidth = 95;
-    const boxHeight = 30;
-    const boxX = 10;
-    const boxY = currentHeight + 10;
-
-    // Draw the box
-    doc.setDrawColor(0, 0, 0);
-    doc.setFillColor(255, 255, 255);
-    doc.setLineWidth(0.2);
-    doc.rect(boxX, boxY, boxWidth, boxHeight, "FD");
-
-    // Add text to the box
-    doc.setTextColor(0, 0, 0);
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text("For GST reporting purposes:", boxX + 5, boxY + 5);
-    doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
-    doc.setFontSize(10);
-    doc.text(
-      `1 ${param.data.total.col3} = ${param.data.total.convRate} ${param.data.total.defaultCurrency}`,
-      boxX + 5,
-      boxY + 13
-    );
-
-    // Add the table
-    doc.autoTable({
-      startY: boxY + 18,
-      margin: { left: boxX, right: 0 },
-      head: [["", `Amount ${param.data.total.defaultCurrency}`]],
-      body: [
-        ["Subtotal", param.data.total.subTotalConv],
-        ["Total Tax", param.data.total.totalTaxAmountConv],
-        [
-          {
-            content: `Total ${param.data.total.defaultCurrency}`,
-            fontStyle: "bold",
-          },
-          { content: param.data.total.totalConv, fontStyle: "bold" },
-        ],
-      ],
-      theme: "plain",
-      headStyles: {
-        fillColor: [255, 255, 255],
-        textColor: [0, 0, 0],
-        lineColor: [0, 0, 0],
-        lineWidth: 0.2,
-        fontSize: 8,
-        align: "right",
-        minCellHeight: 5,
-      },
-      bodyStyles: {
-        fillColor: [255, 255, 255],
-        textColor: [0, 0, 0],
-        lineWidth: 0.2,
-        lineColor: [0, 0, 0],
-        fontSize: 9,
-        minCellHeight: 5,
-      },
-      columnStyles: {
-        0: { cellWidth: 40, halign: "right", valign: "top" },
-        1: { cellWidth: 55, halign: "left", valign: "top" },
-      },
-      rowStyles: {
-        1: { fontStyle: "bold" },
-      },
-    });
-  }
-
   currentHeight += pdfConfig.lineHeight;
+
+  if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
+    doc.addPage();
+    currentHeight = 10;
+  }
 
   // No. of rows of sub total, taxes, discounts .. until Total (NOT TABLE ROWS).
   let finalRowCount = 0;
@@ -1102,6 +1032,82 @@ async function jsPDFInvoiceTemplate(props) {
       param.data.amountDue.col3 + "  " + param.data.amountDue.col2,
       ALIGN_RIGHT
     );
+  }
+
+  if (param.data.total.isFxConversionVisible) {
+    // (15 = Conv table height) + (10 = box height) = 25
+    if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
+      doc.addPage();
+      currentHeight = 10;
+    }
+
+    // Define the box parameters
+    const boxWidth = 95;
+    const boxHeight = 30;
+    const boxX = pageWidth - boxWidth - 10;
+    const boxY = currentHeight + 5;
+
+    // Draw the box
+    doc.setDrawColor(0, 0, 0);
+    doc.setFillColor(255, 255, 255);
+    doc.setLineWidth(0.2);
+    doc.rect(boxX, boxY, boxWidth, boxHeight, "FD");
+
+    // Add text to the box
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.text("For GST reporting purposes:", boxX + 5, boxY + 5);
+    doc.line(boxX + 5, boxY + 7.5, boxX + boxWidth - 5, boxY + 7.5);
+    doc.setFontSize(10);
+    doc.text(
+      `1 ${param.data.total.col3} = ${param.data.total.convRate} ${param.data.total.defaultCurrency}`,
+      boxX + 5,
+      boxY + 13
+    );
+
+    // Add the table
+    doc.autoTable({
+      startY: boxY + 18,
+      margin: { left: boxX, right: 0 },
+      head: [["", `Amount ${param.data.total.defaultCurrency}`]],
+      body: [
+        ["Subtotal", param.data.total.subTotalConv],
+        ["Total Tax", param.data.total.totalTaxAmountConv],
+        [
+          {
+            content: `Total ${param.data.total.defaultCurrency}`,
+            fontStyle: "bold",
+          },
+          { content: param.data.total.totalConv, fontStyle: "bold" },
+        ],
+      ],
+      theme: "plain",
+      headStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        lineColor: [0, 0, 0],
+        lineWidth: 0.2,
+        fontSize: 8,
+        align: "right",
+        minCellHeight: 5,
+      },
+      bodyStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        lineWidth: 0.2,
+        lineColor: [0, 0, 0],
+        fontSize: 9,
+        minCellHeight: 5,
+      },
+      columnStyles: {
+        0: { cellWidth: 40, halign: "right", valign: "top" },
+        1: { cellWidth: 55, halign: "left", valign: "top" },
+      },
+      rowStyles: {
+        1: { fontStyle: "bold" },
+      },
+    });
+    currentHeight += boxHeight + 30;
   }
 
   doc.setTextColor(colorBlack);
