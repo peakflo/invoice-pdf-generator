@@ -211,5 +211,9 @@ declare function jsPDFInvoiceTemplate(props: {
   blob?: Blob;
   dataUriString?: string;
   arrayBuffer?: ArrayBuffer;
+  estamp?: {
+    pageNumberForInvoiceTotal?: number;
+    invoiceTotalLineHeight?: number;
+  };
 };
 export { jsPDF, OutputType, jsPDFRfqTemplate };
