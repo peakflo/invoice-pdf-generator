@@ -1,0 +1,64 @@
+{
+  "name": "jspdf-invoice-template",
+  "version": "0.2.5",
+  "description": "PDF template created for invoice with optional parameters. Using jsPDF library.",
+  "main": "./dist/index.js",
+  "types": "./index.d.ts",
+  "files": [
+    "dist/**/*",
+    "!./dist/**/*.map",
+    "types"
+  ],
+  "scripts": {
+    "build-babel": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir dist --extensions \".ts,.tsx,.js\" --source-maps inline",
+    "build": "webpack --mode production",
+    "test": "DISABLE_LOGGING=true jest --silent",
+    "test:debug": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peakflo/invoice-pdf-generator.git"
+  },
+  "keywords": [
+    "jspdf-template",
+    "jspdf",
+    "invoice",
+    "pdf",
+    "pdf-template",
+    "js-pdf-template",
+    "ts-pdf-template"
+  ],
+  "author": "Peakflo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peakflo/invoice-pdf-generator"
+  },
+  "homepage": "https://github.com/peakflo/invoice-pdf-generator",
+  "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.21.0",
+    "@babel/runtime": "^7.21.0",
+    "jspdf": "^2.3.1",
+    "jspdf-autotable": "^3.5.28",
+    "qrcode": "^1.5.1",
+    "regenerator-runtime": "^0.13.11"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.12.13",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/jest": "^29.5.0",
+    "babel-jest": "^29.5.0",
+    "babel-loader": "^8.2.2",
+    "dotenv": "^16.0.3",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "typescript": "^4.1.5",
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  }
+}
