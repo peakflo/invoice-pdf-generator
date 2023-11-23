@@ -100,7 +100,6 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *          label6: string,
  *          ackDate: string,
  *          ackNumber: string,
- *          isAckDetailsInInvPDF: boolean,
  *      },
  *      eSign?: {
  *          approverName?: string,
@@ -280,10 +279,8 @@ async function jsPDFInvoiceTemplate(props) {
           label4: props.data.indiaIRP.label4 || "",
           label5: props.data.indiaIRP.label5 || "",
           label6: props.data.indiaIRP.label6 || "",
-          ackDate: props.data.indiaIRP.ackDate || "",
-          ackNumber: props.data.indiaIRP.ackNumber || "",
-          isAckDetailsInInvPDF:
-            props.data.indiaIRP.isAckDetailsInInvPDF || false,
+          ackDate: props.data.indiaIRP.ackDate ?? null,
+          ackNumber: props.data.indiaIRP.ackNumber ?? null,
         },
       }),
       eSign: {
@@ -686,11 +683,7 @@ async function jsPDFInvoiceTemplate(props) {
       currentHeight += pdfConfig.subLineHeight;
     }
 
-    if (
-      indiaIRP.ackDate &&
-      indiaIRP.ackNumber &&
-      indiaIRP.isAckDetailsInInvPDF
-    ) {
+    if (indiaIRP.ackDate && indiaIRP.ackNumber) {
       doc.setFont(undefined, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label5);
       doc.setFont(undefined, FONT_TYPE_BOLD);
