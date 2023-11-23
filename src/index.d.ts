@@ -183,6 +183,8 @@ declare function jsPDFInvoiceTemplate(props: {
     indiaIRP?: {
       qrCode?: string;
       irn?: string;
+      ackDate?: string;
+      ackNumber?: string;
     };
     eSign?: {
       approverName?: string;

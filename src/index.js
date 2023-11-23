@@ -96,6 +96,10 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *          label3: string,
  *          gstStateWithCode: string
  *          label2: string,
+ *          label5: string,
+ *          label6: string,
+ *          ackDate: string,
+ *          ackNumber: string,
  *      },
  *      eSign?: {
  *          approverName?: string,
@@ -273,6 +277,10 @@ async function jsPDFInvoiceTemplate(props) {
           label2: props.data.indiaIRP.label2 || "",
           label3: props.data.indiaIRP.label3 || "",
           label4: props.data.indiaIRP.label4 || "",
+          label5: props.data.indiaIRP.label5 || "",
+          label6: props.data.indiaIRP.label6 || "",
+          ackDate: props.data.indiaIRP.ackDate ?? null,
+          ackNumber: props.data.indiaIRP.ackNumber ?? null,
         },
       }),
       eSign: {
@@ -670,10 +678,31 @@ async function jsPDFInvoiceTemplate(props) {
         indiaIRP.irn
       );
       currentHeight += pdfConfig.subLineHeight;
+    } else {
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      currentHeight += pdfConfig.subLineHeight;
     }
-  } else {
-    doc.setFont(undefined, FONT_TYPE_BOLD);
-    currentHeight += pdfConfig.subLineHeight;
+
+    if (indiaIRP.ackDate && indiaIRP.ackNumber) {
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label5);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label5),
+        currentHeight,
+        indiaIRP.ackDate
+      );
+      currentHeight += pdfConfig.subLineHeight;
+      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, indiaIRP.label6);
+      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.text(
+        10 + doc.getTextWidth(indiaIRP.label6),
+        currentHeight,
+        indiaIRP.ackNumber
+      );
+      currentHeight += pdfConfig.subLineHeight;
+    }
   }
 
   // INVOICE TITLE - INMOBI change

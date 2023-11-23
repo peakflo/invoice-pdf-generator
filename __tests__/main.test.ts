@@ -175,8 +175,13 @@ describe("PDF Test", () => {
             qrCode,
             irn: "fecc52ba7c45b1982fcdcc7e3a3a886763d2c3dd134ad06841e59323a7ab5e96",
             gstRegType: "Regular",
+            ackDate: "2023-11-21",
+            ackNumber: "112310185878436",
             hsnNum: "998365 / Sale of Internet advertising space",
             gstStateWithCode: "Karnataka / 29",
+            label2: "Place of supply: ",
+            label5: "Acknowledgement date: ",
+            label6: "Acknowledgement number: ",
           },
           eSign: {
             approverText: "Digitally signed and approved by",
