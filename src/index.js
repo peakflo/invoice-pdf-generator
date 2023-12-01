@@ -1177,11 +1177,12 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Additional Information - custom fields
   if (param.data.customFields.length) {
-    doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
+    doc.setFontSize(pdfConfig.labelTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Additional Information");
 
+    doc.setFontSize(pdfConfig.fieldTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     param.data.customFields.map((item) => {
       currentHeight += pdfConfig.subLineHeight;
