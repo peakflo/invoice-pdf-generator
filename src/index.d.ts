@@ -69,7 +69,8 @@ import { jsPDF } from "jspdf";
  *           col3?: string,
  *           style?: {
  *               fontSize?: number
- *           }
+ *           },
+ *           hideTotal?: boolean
  *       },
  *       row2?: {
  *           col1?: string,
@@ -156,6 +157,7 @@ declare function jsPDFInvoiceTemplate(props: {
       style?: {
         fontSize?: number;
       };
+      hideTotal?: boolean;
     };
     row2?: {
       col1?: string;

@@ -123,7 +123,8 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *           col4?: any,
  *           style?: {
  *               fontSize?: number
- *           }
+ *           },
+ *           hideTotal?: boolean
  *       },
  *       row2?: {
  *           col1?: string,
@@ -231,6 +232,7 @@ async function jsPDFInvoiceTemplate(props) {
         style: {
           fontSize: props.data?.row1?.style?.fontSize || 12,
         },
+        hideTotal: props.data?.row1?.hideTotal || false,
       },
       row2: {
         col1: props.data?.row2?.col1 || "",
@@ -921,18 +923,20 @@ async function jsPDFInvoiceTemplate(props) {
     param.data.row1 &&
     (param.data.row1.col1 || param.data.row1.col2 || param.data.row1.col3)
   ) {
-    currentHeight += pdfConfig.lineHeight;
-    doc.setFontSize(param.data.row1.style.fontSize);
+    if (!param.data.row1.hideTotal) {
+      currentHeight += pdfConfig.lineHeight;
+      doc.setFontSize(param.data.row1.style.fontSize);
 
-    doc.text(docWidth - 50, currentHeight, param.data.row1.col1, ALIGN_RIGHT);
-    doc.text(
-      docWidth - 10,
-      currentHeight,
-      param.data.row1.col3 + "  " + param.data.row1.col2,
-      ALIGN_RIGHT
-    );
+      doc.text(docWidth - 50, currentHeight, param.data.row1.col1, ALIGN_RIGHT);
+      doc.text(
+        docWidth - 10,
+        currentHeight,
+        param.data.row1.col3 + "  " + param.data.row1.col2,
+        ALIGN_RIGHT
+      );
 
-    finalRowCount += 1;
+      finalRowCount += 1;
+    }
 
     // Show all the taxes applied
     const taxData = param.data.row1?.col4;
