@@ -156,6 +156,12 @@ describe("PDF Test", () => {
             col3: "",
             style: { fontSize: 10 },
           },
+          row3: {
+            col1: "Total WHT:",
+            col2: "2600",
+            col3: "INR",
+            style: { fontSize: 10 },
+          },
           total: {
             col1: "Total:",
             col2: "100,907,616.31",
@@ -280,6 +286,12 @@ describe("PDF Test", () => {
             col1: "Discount:",
             col2: "0.00",
             col3: "",
+            style: { fontSize: 10 },
+          },
+          row3: {
+            col1: "Total WHT:",
+            col2: "2600",
+            col3: "INR",
             style: { fontSize: 10 },
           },
           total: {

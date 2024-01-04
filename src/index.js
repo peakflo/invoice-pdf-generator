@@ -133,6 +133,14 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *               fontSize?: number
  *           }
  *       },
+ *       row3?: {
+ *           col1?: string,
+ *           col2?: string,
+ *           col3?: string,
+ *           style?: {
+ *               fontSize?: number
+ *           }
+ *       },
  *       total?: {
  *           col1?: string,
  *           col2?: string,
@@ -238,6 +246,14 @@ async function jsPDFInvoiceTemplate(props) {
         col3: props.data?.row2?.col3 || "",
         style: {
           fontSize: props.data?.row2?.style?.fontSize || 12,
+        },
+      },
+      row3: {
+        col1: props.data?.row3?.col1 || "",
+        col2: props.data?.row3?.col2 || "",
+        col3: props.data?.row3?.col3 || "",
+        style: {
+          fontSize: props.data?.row3?.style?.fontSize || 12,
         },
       },
       total: {
@@ -975,6 +991,21 @@ async function jsPDFInvoiceTemplate(props) {
     finalRowCount += 1;
   }
   //end row2
+
+  if (
+    param.data.row3 &&
+    (param.data.row3.col1 || param.data.row3.col2 || param.data.row3.col3)
+  ) {
+    currentHeight += pdfConfig.lineHeight;
+    doc.text(docWidth - 50, currentHeight, param.data.row3.col1, ALIGN_RIGHT);
+    doc.text(
+      docWidth - 10,
+      currentHeight,
+      param.data.row3.col3 + "  " + param.data.row3.col2,
+      ALIGN_RIGHT
+    );
+    finalRowCount += 1;
+  }
 
   // Main total
   if (
