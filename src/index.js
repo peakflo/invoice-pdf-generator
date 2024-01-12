@@ -1213,6 +1213,18 @@ async function jsPDFInvoiceTemplate(props) {
   // Additional Information - custom fields
   if (param.data.customFields.length) {
     currentHeight += pdfConfig.lineHeight;
+    // Additional information section will take the following space
+    /**
+     * 1. Label - Additional Information =>  1 Line
+     * 2. Each custom field => 1 Line
+     */
+    const additionalInfoSize =
+      param.data.customFields.length * pdfConfig.subLineHeight +
+      pdfConfig.lineHeight;
+    if (currentHeight + additionalInfoSize > pageHeight) {
+      doc.addPage();
+      currentHeight = 20;
+    }
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Additional Information");
