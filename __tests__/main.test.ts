@@ -341,6 +341,175 @@ describe("PDF Test", () => {
       // await pdfObject.jsPDFDocObject.save('output/test1.pdf')
       expect(true).toBeTruthy();
     });
+    test("Amount in words and long company name", async () => {
+      var testProps1 = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-amount-in-words.pdf",
+        pdfTitle: "Tax Invoice",
+        orientationLandscape: false,
+        business: {
+          name: "Demo INR File",
+          taxNumber: "GSTIN: 29AABCT1332L000",
+          address: "7th floor, Block Delta (Block B)",
+          addressLine2:
+            "Embassy Tech Square, Kadubeesanahalli Village, Outer Ring Road, Varthur Hobli",
+          addressLine3: "Bengaluru - 560103",
+        },
+        contact: {
+          label: "Invoice issued for:",
+          name: "WAKEFIT INNOVATIONS PRIVATE LIMITED AND TESTING LONG NAME",
+          taxNumber: "GSTIN: 29AABCW7791A1Z3",
+          billingAddress: {
+            label: "Billing Address",
+            address: "Plot No.277, n Sub Layout of Kachanayakanahalli, Sub Layout of Kachanayakanahall, Sub Layout of Kachanayakanahall",
+            country: "IN",
+            addressLine2: "Bommasandra, 1st Phase, Jigani, Anekal Taluk, 29, ",
+            addressLine3: "Bengaluru - 560099",
+          },
+        },
+        data: {
+          label: "INVOICE ",
+          num: "GARI22003053",
+          date1Label: "Due Date: ",
+          date1: "28.04.2023",
+          date2Label: "Invoice Date: ",
+          date2: "29.03.2023",
+          netTermLabel: "Net Term:",
+          netTerm: "30",
+          headerBorder: false,
+          tableBodyBorder: false,
+          customFields: [
+            "Custom field 1: Hello world",
+            "Custom field 2: Hello world 2",
+          ],
+          pdfTitle: "Advertisement on Microsoft Advertising properties",
+          header: ["Description", "Unit Price", "Quantity", "Tax", "Amount"],
+          headerWidth: [0.5, 0.125, 0.125, 0.125, 0.125],
+          table: [
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+            [
+              "IMRO92945 ~ F11621HS ~ SIA ROW - Brand ~ Sep'23",
+              "70,000.00",
+              1,
+              "10%, 15%",
+              "70,000.00",
+            ],
+          ],
+          subTotalLabel: "Sub Total:",
+          subTotal: "420,000.00",
+          currency: "INR",
+          desc: [
+            "Hi this is testing statement.",
+            "Hi this is testing statement.",
+          ],
+          creditNoteLabel: "Less payments and credit:",
+          note: "Remittance Information:\n1. Pay to: InMobi Technology Services Private Limited\n2. Bank Citibank N.A. MG Road Bangalore Branch, A/c No. 0710453004\n3. IFSC Code: CITI0000004\n4. TDS deduction u/s 194C @2%\n5. Bank charges are to the remitter's account\n6. Please mention Invoice number in your remittance instruction\n7. GST category : Sale of space or time for advertisement other than print media\n\nRemarks: \nFailure to raise any queries to InMobi in relation to this invoice within five business days of receipt shall be deemed to be full acceptance of the \ninvoice and InMobi shall have the option to impose late payment interest thereafter as set out under the 'Payment Liability' section at \nhttp://www.inmobi.com/advertiser-terms.\nTax payable under reverse charge : No",
+          staticVA: null,
+          row1: {
+            col1: "Total Tax:",
+            col2: "75,600.00",
+            col3: "INR",
+            style: { fontSize: 10 },
+          },
+          row2: {
+            col1: "Discount:",
+            col2: "0.00",
+            col3: "",
+            style: { fontSize: 10 },
+          },
+          row3: {
+            col1: "Total WHT:",
+            col2: "2600",
+            col3: "INR",
+            style: { fontSize: 10 },
+          },
+          total: {
+            col1: "Total:",
+            col2: "100,907,616.31",
+            col3: "SGD",
+            totalConv: "12,31,956.87",
+            totalTaxAmount: "3,122.32",
+            totalTaxAmountConv: "3,12,313.32",
+            subTotalConv: "32,323",
+            isFxConversionVisible: true,
+            defaultCurrency: "INR",
+            convRate: "61.245",
+            col4: "Amount in words:",
+            col5: "Ten Crore Nine Lakh Seven Thousand Six Hundred Sixteen Rupees And Thirty One Paise Only",
+            style: { fontSize: 10 },
+          },
+          eSign: {
+            approverText: "Digitally signed and approved by",
+            approverName: "Akanksha",
+            approvedAt: "29-03-2023",
+            authorizer: "Authorised Signatory",
+            signature,
+          },
+        },
+        pageEnable: true,
+        pageLabel: "Page ",
+        logo: logo,
+      };
+      const pdfObject = await jsPDFInvoiceTemplate(testProps1);
+      // await pdfObject.jsPDFDocObject.save('output/test1.pdf')
+      expect(true).toBeTruthy();
+    });
   });
 
   describe("Credit note tests", () => {
