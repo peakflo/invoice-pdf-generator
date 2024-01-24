@@ -341,9 +341,12 @@ async function jsPDFInvoiceTemplate(props) {
     compressPdf: true,
   };
 
+  // we check if the current height of the page is greater than the page height.
+  // if true, then we break the change.
+  // Checking with DEFAULT_CURRENT_HEIGHT because of current page needs to have some spacing at the bottom.
   const isBreakPage = (height, pageHeight) => {
     return height > pageHeight ||
-    (height > pageHeight - 10 && doc.getNumberOfPages() > 1)
+    (height > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
   }
 
   const doc = new jsPDF(options);
@@ -364,6 +367,7 @@ async function jsPDFInvoiceTemplate(props) {
   const ISSUER_ADDRESS_LABEL = "Company Address";
   const IMAGE_CONTENT_TYPE = "PNG";
   const CUSTOM_FONT_NAME = "customFont";
+  const DEFAULT_CURRENT_HEIGHT = 10;
 
   //starting at 15mm
   let currentHeight = 15;
@@ -797,7 +801,7 @@ async function jsPDFInvoiceTemplate(props) {
   const addTableHeader = () => {
     if (param.data.headerBorder) addTableHeaderBoarder();
 
-    currentHeight += pdfConfig.subLineHeight + 10;
+    currentHeight += pdfConfig.subLineHeight + DEFAULT_CURRENT_HEIGHT;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setTextColor(colorBlack);
     doc.setFontSize(pdfConfig.fieldTextSize);
@@ -859,7 +863,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
       if (index + 1 < tableBodyLength) addTableHeader();
     }
 
@@ -894,7 +898,7 @@ async function jsPDFInvoiceTemplate(props) {
   ) {
     if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
     }
   }
 
@@ -902,7 +906,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
     doc.addPage();
-    currentHeight = 10;
+    currentHeight = DEFAULT_CURRENT_HEIGHT;
   }
 
   // No. of rows of sub total, taxes, discounts .. until Total (NOT TABLE ROWS).
@@ -966,10 +970,7 @@ async function jsPDFInvoiceTemplate(props) {
       doc.setTextColor(lightGray);
       taxData.forEach((tax) => {
         currentHeight += pdfConfig.lineHeight;
-        if (
-          currentHeight > pageHeight ||
-          (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
-        ) {
+        if (isBreakPage(currentHeight, pageHeight)) {
           doc.addPage();
           currentHeight = 20;
         }
@@ -1052,7 +1053,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.total?.col4 && param.data.total?.col5) {
     if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
     }
     const totalInWords = splitTextAndGetHeight(
       param.data.total.col5,
@@ -1112,7 +1113,7 @@ async function jsPDFInvoiceTemplate(props) {
     // (15 = Conv table height) + (10 = box height) = 25
     if (currentHeight > pageHeight || currentHeight + 25 > pageHeight) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
     }
 
     // Define the box parameters
@@ -1294,7 +1295,7 @@ async function jsPDFInvoiceTemplate(props) {
         const desc = splitTextAndGetHeight(el, pageWidth - 40);
         if (currentHeight + desc.height > pageHeight) {
           doc.addPage();
-          currentHeight = 10;
+          currentHeight = DEFAULT_CURRENT_HEIGHT;
         }
 
         if (index === 0) {
@@ -1316,10 +1317,10 @@ async function jsPDFInvoiceTemplate(props) {
     if (
       currentHeight + (param.data?.eSign?.signature?.height || 20) >
         pageHeight ||
-      (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
+      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
     }
     currentHeight += pdfConfig.subLineHeight;
     doc.addImage(
@@ -1369,7 +1370,7 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (currentHeight + noteData.height > pageHeight) {
       doc.addPage();
-      currentHeight = 10;
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setFontSize(pdfConfig.labelTextSize);
@@ -1386,7 +1387,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (doc.getNumberOfPages() === 1 && param.pageEnable) {
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.setTextColor(colorGray);
-    doc.text(docWidth / 2, docHeight - 10, param.footer.text, ALIGN_CENTER);
+    doc.text(docWidth / 2, docHeight - DEFAULT_CURRENT_HEIGHT, param.footer.text, ALIGN_CENTER);
     doc.text(
       param.pageLabel + "1 / 1",
       docWidth - 20,
