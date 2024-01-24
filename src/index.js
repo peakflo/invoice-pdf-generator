@@ -1051,6 +1051,13 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Total in words
   if (param.data.total?.col4 && param.data.total?.col5) {
+    if (
+      currentHeight > pageHeight ||
+      (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = 10;
+    }
     const totalInWords = splitTextAndGetHeight(
       param.data.total.col5,
       pageWidth - 20
