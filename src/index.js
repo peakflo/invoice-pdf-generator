@@ -341,6 +341,11 @@ async function jsPDFInvoiceTemplate(props) {
     compressPdf: true,
   };
 
+  const isBreakPage = (height, pageHeight) => {
+    return height > pageHeight ||
+    (height > pageHeight - 10 && doc.getNumberOfPages() > 1)
+  }
+
   const doc = new jsPDF(options);
   const pageWidth = doc.getPageWidth();
   const pageHeight = doc.getPageHeight() - 25; //25 is bottom margin
@@ -852,10 +857,7 @@ async function jsPDFInvoiceTemplate(props) {
     //pre-increase currentHeight to check the height based on next row
     if (index + 1 < tableBodyLength) currentHeight += maxHeight;
 
-    if (
-      currentHeight > pageHeight ||
-      (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
-    ) {
+    if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
       currentHeight = 10;
       if (index + 1 < tableBodyLength) addTableHeader();
@@ -890,10 +892,7 @@ async function jsPDFInvoiceTemplate(props) {
     param.data.row2 ||
     param.data.total
   ) {
-    if (
-      currentHeight > pageHeight ||
-      (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
-    ) {
+    if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
       currentHeight = 10;
     }
@@ -1051,10 +1050,7 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Total in words
   if (param.data.total?.col4 && param.data.total?.col5) {
-    if (
-      currentHeight > pageHeight ||
-      (currentHeight > pageHeight - 10 && doc.getNumberOfPages() > 1)
-    ) {
+    if (isBreakPage(currentHeight, pageHeight)) {
       doc.addPage();
       currentHeight = 10;
     }
