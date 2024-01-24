@@ -390,6 +390,8 @@ async function jsPDFInvoiceTemplate(props) {
   doc.setTextColor(colorBlack);
   doc.text(docWidth - 10, currentHeight, param.business.name, ALIGN_RIGHT);
   doc.setFontSize(pdfConfig.fieldTextSize);
+
+  // company logo
   if (param.logo.src) {
     doc.addImage(
       param.logo.src,
@@ -401,6 +403,7 @@ async function jsPDFInvoiceTemplate(props) {
     );
   }
 
+  // tenant tax number
   if (param.business.taxNumber) {
     currentHeight += pdfConfig.subLineHeight + 2;
     doc.setFontSize(pdfConfig.labelTextSize);
@@ -505,7 +508,11 @@ async function jsPDFInvoiceTemplate(props) {
 
   doc.setFontSize(pdfConfig.headerTextSize - 7);
   if (param.contact.name) {
-    doc.text(10, currentHeight, param.contact.name);
+    const customerName = splitTextAndGetHeight(
+      param.contact.name,
+      pageWidth / 2
+    );
+    doc.text(10, currentHeight, customerName.text);
   }
 
   doc.setTextColor(colorBlack);
@@ -521,7 +528,7 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   if (param.contact.name || (param.data.label && param.data.num))
-    currentHeight += pdfConfig.subLineHeight + 2;
+    currentHeight += pdfConfig.textSizeSmall;
 
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
