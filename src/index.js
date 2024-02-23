@@ -345,9 +345,12 @@ async function jsPDFInvoiceTemplate(props) {
   // if true, then we break the change.
   // Checking with DEFAULT_CURRENT_HEIGHT because of current page needs to have some spacing at the bottom.
   const isBreakPage = (height, pageHeight) => {
-    return height > pageHeight ||
-    (height > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
-  }
+    return (
+      height > pageHeight ||
+      (height > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
+    );
+  };
 
   const doc = new jsPDF(options);
   const pageWidth = doc.getPageWidth();
@@ -454,14 +457,27 @@ async function jsPDFInvoiceTemplate(props) {
     }
     currentHeight += pdfConfig.subLineHeight;
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
+    const addressLine1 = splitTextAndGetHeight(
+      param.business.address,
+      (docWidth * 4) / 10
+    );
+
     doc.text(10, currentHeight, param.business.address);
-    currentHeight += pdfConfig.subLineHeight;
-    doc.text(10, currentHeight, param.business.addressLine2);
-    currentHeight += pdfConfig.subLineHeight;
+    currentHeight += addressLine1.height + 1;
+    const addressLine2 = splitTextAndGetHeight(
+      param.business.addressLine2,
+      (docWidth * 4) / 10
+    );
+    doc.text(10, currentHeight, addressLine2.text);
+    currentHeight += addressLine2.height + 1;
 
     if (param.business.addressLine3) {
+      const addressLine3 = splitTextAndGetHeight(
+        param.business.addressLine3,
+        (docWidth * 4) / 10
+      );
       doc.text(10, currentHeight, param.business.addressLine3);
-      currentHeight += pdfConfig.subLineHeight;
+      currentHeight += addressLine3.height + 1;
     }
 
     doc.text(10, currentHeight, param.business.country);
@@ -476,24 +492,25 @@ async function jsPDFInvoiceTemplate(props) {
     }
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     currentHeight += pdfConfig.subLineHeight;
-    doc.text(docWidth - 10, currentHeight, param.business.address, ALIGN_RIGHT);
-    currentHeight += pdfConfig.subLineHeight;
-    doc.text(
-      docWidth - 10,
-      currentHeight,
-      param.business.addressLine2,
-      ALIGN_RIGHT
+    const addressLine1 = splitTextAndGetHeight(
+      param.business.address,
+      (docWidth * 4) / 10
     );
-    currentHeight += pdfConfig.subLineHeight;
-
+    doc.text(docWidth - 10, currentHeight, addressLine1.text, ALIGN_RIGHT);
+    currentHeight += addressLine1.height + 1;
+    const addressLine2 = splitTextAndGetHeight(
+      param.business.addressLine2,
+      (docWidth * 4) / 10
+    );
+    doc.text(docWidth - 10, currentHeight, addressLine2.text, ALIGN_RIGHT);
+    currentHeight += addressLine2.height + 1;
     if (param.business.addressLine3) {
-      doc.text(
-        docWidth - 10,
-        currentHeight,
+      const addressLine3 = splitTextAndGetHeight(
         param.business.addressLine3,
-        ALIGN_RIGHT
+        (docWidth * 4) / 10
       );
-      currentHeight += pdfConfig.subLineHeight;
+      doc.text(docWidth - 10, currentHeight, addressLine3.text, ALIGN_RIGHT);
+      currentHeight += addressLine3.height + 1;
     }
 
     doc.text(docWidth - 10, currentHeight, param.business.country, ALIGN_RIGHT);
@@ -516,28 +533,33 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.lineHeight + 2;
 
   doc.setFontSize(pdfConfig.headerTextSize - 7);
+  let customerNameHeight = 0;
   if (param.contact.name) {
     const customerName = splitTextAndGetHeight(
       param.contact.name,
       pageWidth / 2
     );
     doc.text(10, currentHeight, customerName.text);
+    customerNameHeight = customerName.height;
   }
 
   doc.setTextColor(colorBlack);
   doc.setTextColor(lightGray);
   doc.setFontSize(pdfConfig.headerTextSize - 5);
+  let labelHeight = 0;
   if (param.data.label && param.data.num) {
-    doc.text(
-      docWidth - 10,
-      currentHeight,
+    const label = splitTextAndGetHeight(
       param.data.label + param.data.num,
-      ALIGN_RIGHT
+      (pageWidth * 4) / 10
     );
+    doc.text(docWidth - 10, currentHeight, label.text, ALIGN_RIGHT);
+    labelHeight = label.height;
   }
 
-  if (param.contact.name || (param.data.label && param.data.num))
-    currentHeight += pdfConfig.textSizeSmall;
+  if (param.contact.name || (param.data.label && param.data.num)) {
+    currentHeight +=
+      customerNameHeight > labelHeight ? customerNameHeight : labelHeight;
+  }
 
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
@@ -744,8 +766,13 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.subLineHeight + 2;
     // doc.setTextColor(colorBlue);
     doc.setFontSize(pdfConfig.labelTextSize);
+    const pdfTitle = splitTextAndGetHeight(
+      param.data?.pdfTitle,
+      (pageWidth * 3) / 4
+    );
 
-    doc.text(10, currentHeight, param.data?.pdfTitle, ALIGN_LEFT);
+    doc.text(10, currentHeight, pdfTitle.text, ALIGN_LEFT);
+    currentHeight += pdfTitle.height - 4;
   }
 
   doc.setTextColor(colorGray);
@@ -810,11 +837,18 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += 2;
 
     const tdWidthDimensions = getTdWidthDimensions();
+    let maxTextHeightHeader = 0;
     param.data.header.forEach(function (row, index) {
-      doc.text(row, tdWidthDimensions?.[index]?.shift, currentHeight);
+      const rowtext = splitTextAndGetHeight(
+        row,
+        tdWidthDimensions[index].width - 3
+      );
+      maxTextHeightHeader = Math.max(maxTextHeightHeader, rowtext.height);
+      doc.text(rowtext.text, tdWidthDimensions?.[index]?.shift, currentHeight);
     });
 
     currentHeight += pdfConfig.subLineHeight - 1;
+    currentHeight += maxTextHeightHeader + 1;
     doc.setTextColor(colorGray);
     doc.setLineWidth(0.5);
     doc.line(10, currentHeight, docWidth - 10, currentHeight);
@@ -849,14 +883,6 @@ async function jsPDFInvoiceTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     const tdWidthDimensions = getTdWidthDimensions();
-    row.forEach(function (rr, index) {
-      let item = splitTextAndGetHeight(
-        rr.toString(),
-        tdWidthDimensions?.[index]?.width - 1
-      ); //minus 1, to fix the padding issue between borders
-
-      doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
-    });
 
     //pre-increase currentHeight to check the height based on next row
     if (index + 1 < tableBodyLength) currentHeight += maxHeight;
@@ -865,12 +891,22 @@ async function jsPDFInvoiceTemplate(props) {
       doc.addPage();
       currentHeight = DEFAULT_CURRENT_HEIGHT;
       if (index + 1 < tableBodyLength) addTableHeader();
+    } else {
+      // check if new page
+      if (index + 1 < tableBodyLength && currentHeight > 30)
+        currentHeight -= maxHeight;
     }
 
-    //reset the height that was increased to check the next row
-    if (index + 1 < tableBodyLength && currentHeight > 30)
-      // check if new page
-      currentHeight -= maxHeight;
+    doc.setFontSize(pdfConfig.textSizeSmall);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    row.forEach(function (rr, index) {
+      let item = splitTextAndGetHeight(
+        rr.toString(),
+        tdWidthDimensions?.[index]?.width - 1
+      );
+
+      doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
+    });
 
     doc.setLineWidth(0.1);
     doc.line(10, currentHeight, docWidth - 10, currentHeight);
@@ -1317,7 +1353,8 @@ async function jsPDFInvoiceTemplate(props) {
     if (
       currentHeight + (param.data?.eSign?.signature?.height || 20) >
         pageHeight ||
-      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
+      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
       currentHeight = DEFAULT_CURRENT_HEIGHT;
@@ -1387,7 +1424,12 @@ async function jsPDFInvoiceTemplate(props) {
   if (doc.getNumberOfPages() === 1 && param.pageEnable) {
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.setTextColor(colorGray);
-    doc.text(docWidth / 2, docHeight - DEFAULT_CURRENT_HEIGHT, param.footer.text, ALIGN_CENTER);
+    doc.text(
+      docWidth / 2,
+      docHeight - DEFAULT_CURRENT_HEIGHT,
+      param.footer.text,
+      ALIGN_CENTER
+    );
     doc.text(
       param.pageLabel + "1 / 1",
       docWidth - 20,
