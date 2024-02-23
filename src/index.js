@@ -503,7 +503,6 @@ async function jsPDFInvoiceTemplate(props) {
       (docWidth * 4) / 10
     );
     doc.text(docWidth - 10, currentHeight, addressLine2.text, ALIGN_RIGHT);
-    // currentHeight += pdfConfig.subLineHeight;
     currentHeight += addressLine2.height + 1;
     if (param.business.addressLine3) {
       const addressLine3 = splitTextAndGetHeight(
@@ -551,7 +550,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.label && param.data.num) {
     const label = splitTextAndGetHeight(
       param.data.label + param.data.num,
-      pageWidth / 3
+      (pageWidth * 4) / 10
     );
     doc.text(docWidth - 10, currentHeight, label.text, ALIGN_RIGHT);
     labelHeight = label.height;
@@ -561,7 +560,6 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight +=
       customerNameHeight > labelHeight ? customerNameHeight : labelHeight;
   }
-  // currentHeight += pdfConfig.textSizeSmall;
 
   doc.setTextColor(colorGray);
   doc.setFontSize(pdfConfig.fieldTextSize);
@@ -885,14 +883,6 @@ async function jsPDFInvoiceTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     const tdWidthDimensions = getTdWidthDimensions();
-    // row.forEach(function (rr, index) {
-    //   let item = splitTextAndGetHeight(
-    //     rr.toString(),
-    //     tdWidthDimensions?.[index]?.width - 1
-    //   ); //minus 1, to fix the padding issue between borders
-
-    //   doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
-    // });
 
     //pre-increase currentHeight to check the height based on next row
     if (index + 1 < tableBodyLength) currentHeight += maxHeight;
@@ -907,17 +897,13 @@ async function jsPDFInvoiceTemplate(props) {
         currentHeight -= maxHeight;
     }
 
-    //reset the height that was increased to check the next row
-    // if (index + 1 < tableBodyLength && currentHeight > 30)
-    //   // check if new page
-    //   currentHeight -= maxHeight;
     doc.setFontSize(pdfConfig.textSizeSmall);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     row.forEach(function (rr, index) {
       let item = splitTextAndGetHeight(
         rr.toString(),
         tdWidthDimensions?.[index]?.width - 1
-      ); //minus 1, to fix the padding issue between borders
+      );
 
       doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
     });

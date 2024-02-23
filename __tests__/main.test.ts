@@ -611,7 +611,7 @@ describe("PDF Test", () => {
         },
         data: {
           label: "CREDIT NOTE: ",
-          num: "CRED_123LLO2",
+          num: "CRED_123LLO2 CRED_123LLO2 CRED_123LLO2",
           date2Label: "Issue Date: ",
           date2: "28.04.2023",
           headerBorder: false,
