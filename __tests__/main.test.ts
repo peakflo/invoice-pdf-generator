@@ -245,8 +245,8 @@ describe("PDF Test", () => {
           tableBodyBorder: false,
           customFields: [
             "Custom field 1: Hello world",
-            "Custom field 2: Hello world 2",
-            "Custom field 1: Hello world",
+            "Custom field 2: Hello world\n 2",
+            "Custom field 1: Hello\n world",
             "Custom field 2: Hello world 2",
             "Custom field 1: Hello world",
             "Custom field 2: Hello world 2",
@@ -362,7 +362,8 @@ describe("PDF Test", () => {
           taxNumber: "GSTIN: 29AABCW7791A1Z3",
           billingAddress: {
             label: "Billing Address",
-            address: "Plot No.277, n Sub Layout of Kachanayakanahalli, Sub Layout of Kachanayakanahall, Sub Layout of Kachanayakanahall",
+            address:
+              "Plot No.277, n Sub Layout of Kachanayakanahalli, Sub Layout of Kachanayakanahall, Sub Layout of Kachanayakanahall",
             country: "IN",
             addressLine2: "Bommasandra, 1st Phase, Jigani, Anekal Taluk, 29, ",
             addressLine3: "Bengaluru - 560099",

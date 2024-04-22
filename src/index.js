@@ -345,9 +345,12 @@ async function jsPDFInvoiceTemplate(props) {
   // if true, then we break the change.
   // Checking with DEFAULT_CURRENT_HEIGHT because of current page needs to have some spacing at the bottom.
   const isBreakPage = (height, pageHeight) => {
-    return height > pageHeight ||
-    (height > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
-  }
+    return (
+      height > pageHeight ||
+      (height > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
+    );
+  };
 
   const doc = new jsPDF(options);
   const pageWidth = doc.getPageWidth();
@@ -1242,9 +1245,11 @@ async function jsPDFInvoiceTemplate(props) {
 
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    currentHeight += pdfConfig.subLineHeight;
     param.data.customFields.map((item) => {
-      currentHeight += pdfConfig.subLineHeight;
-      doc.text(10, currentHeight, item);
+      const { text, height } = splitTextAndGetHeight(item, pageWidth - 20);
+      doc.text(10, currentHeight, text);
+      currentHeight += height;
     });
     currentHeight += pdfConfig.lineHeight;
   }
@@ -1317,7 +1322,8 @@ async function jsPDFInvoiceTemplate(props) {
     if (
       currentHeight + (param.data?.eSign?.signature?.height || 20) >
         pageHeight ||
-      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT && doc.getNumberOfPages() > 1)
+      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
     ) {
       doc.addPage();
       currentHeight = DEFAULT_CURRENT_HEIGHT;
@@ -1387,7 +1393,12 @@ async function jsPDFInvoiceTemplate(props) {
   if (doc.getNumberOfPages() === 1 && param.pageEnable) {
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.setTextColor(colorGray);
-    doc.text(docWidth / 2, docHeight - DEFAULT_CURRENT_HEIGHT, param.footer.text, ALIGN_CENTER);
+    doc.text(
+      docWidth / 2,
+      docHeight - DEFAULT_CURRENT_HEIGHT,
+      param.footer.text,
+      ALIGN_CENTER
+    );
     doc.text(
       param.pageLabel + "1 / 1",
       docWidth - 20,
