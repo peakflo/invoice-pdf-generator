@@ -347,6 +347,7 @@ describe("PDF Test", () => {
         returnJsPDFDocObject: true,
         fileName: "output/test-amount-in-words.pdf",
         pdfTitle: "Tax Invoice",
+        isPdfForDsc: true,
         orientationLandscape: false,
         business: {
           name: "Demo INR File",
