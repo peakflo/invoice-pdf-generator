@@ -106,6 +106,7 @@ declare function jsPDFInvoiceTemplate(props: {
   fileName: string;
   orientationLandscape?: boolean;
   pdfTitle?: string;
+  isPdfForDsc?: boolean;
   logo?: {
     src?: string;
     width?: number;
@@ -226,6 +227,10 @@ declare function jsPDFInvoiceTemplate(props: {
   estamp?: {
     pageNumberForInvoiceTotal?: number;
     invoiceTotalLineHeight?: number;
+  };
+  digitalSign?: {
+    signaturePageNumber?: number;
+    signatureLineHeight?: number;
   };
 };
 export { jsPDF, OutputType, jsPDFRfqTemplate };

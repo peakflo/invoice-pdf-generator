@@ -22,6 +22,7 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *  returnJsPDFDocObject?: boolean,
  *  fileName: string,
  *  orientationLandscape?: boolean,
+ *  isPdfForDsc?: boolean,
  *  pdfTitle?: string,
  *  pdfSubTitle?: string,
  *  logo?: {
@@ -170,6 +171,7 @@ async function jsPDFInvoiceTemplate(props) {
     fileName: props.fileName || "",
     orientationLandscape: props.orientationLandscape || false,
     pdfTitle: props.pdfTitle || "",
+    isPdfForDsc: props.isPdfForDsc || false,
     pdfSubTitle: props.pdfSubTitle || "",
     logo: {
       src: props.logo?.src || "",
@@ -400,7 +402,7 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   if (param.pdfSubTitle) {
-    currentHeight -= 5
+    currentHeight -= 5;
     doc.text(docWidth / 2, currentHeight, param.pdfSubTitle, ALIGN_CENTER);
     currentHeight += pdfConfig.labelTextSize;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
@@ -1377,6 +1379,25 @@ async function jsPDFInvoiceTemplate(props) {
     );
   }
 
+  let signaturePageNumber;
+  let signatureLineHeight;
+  if (param?.isPdfForDsc) {
+    // PDF is for Digital Signature
+    currentHeight += pdfConfig.subLineHeight;
+    if (
+      currentHeight + 20 > pageHeight ||
+      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
+    }
+    signaturePageNumber = doc.internal.getNumberOfPages();
+    signatureLineHeight = currentHeight;
+    currentHeight += 20;
+    currentHeight += pdfConfig.subLineHeight;
+  }
+
   // Note
   if (param.data.note) {
     currentHeight += pdfConfig.labelTextSize;
@@ -1453,6 +1474,13 @@ async function jsPDFInvoiceTemplate(props) {
     pageNumberForInvoiceTotal,
     invoiceTotalLineHeight,
   };
+
+  if (param.isPdfForDsc) {
+    returnObj.digitalSign = {
+      signaturePageNumber,
+      signatureLineHeight,
+    };
+  }
 
   return returnObj;
 }
