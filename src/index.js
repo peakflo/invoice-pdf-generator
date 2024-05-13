@@ -24,6 +24,7 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *  orientationLandscape?: boolean,
  *  isPdfForDsc?: boolean,
  *  pdfTitle?: string,
+ *  pdfSubTitle?: string,
  *  logo?: {
  *      src?: string,
  *      width?: number,
@@ -171,6 +172,7 @@ async function jsPDFInvoiceTemplate(props) {
     orientationLandscape: props.orientationLandscape || false,
     pdfTitle: props.pdfTitle || "",
     isPdfForDsc: props.isPdfForDsc || false,
+    pdfSubTitle: props.pdfSubTitle || "",
     logo: {
       src: props.logo?.src || "",
       width: props.logo?.width || "",
@@ -396,6 +398,12 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight -= 7;
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.text(docWidth / 2, currentHeight, param.pdfTitle, ALIGN_CENTER);
+    currentHeight += pdfConfig.labelTextSize;
+  }
+
+  if (param.pdfSubTitle) {
+    currentHeight -= 5;
+    doc.text(docWidth / 2, currentHeight, param.pdfSubTitle, ALIGN_CENTER);
     currentHeight += pdfConfig.labelTextSize;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
   }

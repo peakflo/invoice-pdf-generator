@@ -23,6 +23,7 @@ describe("PDF Test", () => {
         returnJsPDFDocObject: true,
         fileName: "output/test-inmobi-irp.pdf",
         pdfTitle: "Tax Invoice",
+        pdfSubTitle: 'Original for Recipient',
         orientationLandscape: false,
         business: {
           name: "Demo INR File",
