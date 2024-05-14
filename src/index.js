@@ -1327,6 +1327,25 @@ async function jsPDFInvoiceTemplate(props) {
 
   if (param.data?.desc?.length > 0) addDesc();
 
+  let signaturePageNumber;
+  let signatureLineHeight;
+  if (param?.isPdfForDsc) {
+    // PDF is for Digital Signature
+    currentHeight += pdfConfig.subLineHeight;
+    if (
+      currentHeight + 20 > pageHeight ||
+      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
+        doc.getNumberOfPages() > 1)
+    ) {
+      doc.addPage();
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
+    }
+    signaturePageNumber = doc.internal.getNumberOfPages();
+    signatureLineHeight = currentHeight;
+    currentHeight += 20;
+    currentHeight += pdfConfig.subLineHeight;
+  }
+
   // E signature
   if (param.data?.eSign?.signature?.src) {
     if (
@@ -1377,25 +1396,6 @@ async function jsPDFInvoiceTemplate(props) {
       `on ${param.data?.eSign?.approvedAt}.`,
       ALIGN_RIGHT
     );
-  }
-
-  let signaturePageNumber;
-  let signatureLineHeight;
-  if (param?.isPdfForDsc) {
-    // PDF is for Digital Signature
-    currentHeight += pdfConfig.subLineHeight;
-    if (
-      currentHeight + 20 > pageHeight ||
-      (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
-        doc.getNumberOfPages() > 1)
-    ) {
-      doc.addPage();
-      currentHeight = DEFAULT_CURRENT_HEIGHT;
-    }
-    signaturePageNumber = doc.internal.getNumberOfPages();
-    signatureLineHeight = currentHeight;
-    currentHeight += 20;
-    currentHeight += pdfConfig.subLineHeight;
   }
 
   // Note
