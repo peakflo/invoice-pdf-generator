@@ -10,7 +10,7 @@ on:
     inputs:
       version:
         # Friendly description to be shown in the UI instead of 'name'
-        description: 'Release version'
+        description: "Release version"
         # Input has to be provided for the workflow to run
         required: true
 
@@ -22,23 +22,23 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ github.token }}
-          
+
       - name: Version number
         run: echo "Release version ->  ${{ github.event.inputs.version }}"
-      
+
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.6
         with:
           persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: 12.22.5
-          
+          node-version: 20.9.0
+
       - name: Install Dependencies
         env:
           CYPRESS_INSTALL_BINARY: 0 # Skip install of Cypress (handled in its own job)
@@ -65,4 +65,4 @@ jobs:
           REPO: self
           BRANCH: v${{ github.event.inputs.version }}
           FOLDER: ./release
-          GITHUB_TOKEN:  ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
