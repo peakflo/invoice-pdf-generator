@@ -44,10 +44,11 @@ jobs:
           CYPRESS_INSTALL_BINARY: 0 # Skip install of Cypress (handled in its own job)
           HUSKY_SKIP_INSTALL: 1 # Skip install of Husky
         run: |
-          npm install --omit=dev
+          npm ci
 
       - name: Build the package
         run: |
+          export PATH="$PATH:$(npm bin)"
           npm run build-babel
 
       - name: Create release directory
