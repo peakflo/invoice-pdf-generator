@@ -1273,11 +1273,15 @@ async function jsPDFInvoiceTemplate(props) {
     // Additional information section will take the following space
     /**
      * 1. Label - Additional Information =>  1 Line
-     * 2. Each custom field => 1 Line
+     * 2. Each custom field => height calculated from splitTextAndGetHeight
      */
-    const additionalInfoSize =
-      param.data.customFields.length * pdfConfig.subLineHeight +
-      pdfConfig.lineHeight;
+    let additionalInfoSize = pdfConfig.lineHeight;
+
+    param.data.customFields.map((item) => {
+      const { height } = splitTextAndGetHeight(item, pageWidth - 20);
+      additionalInfoSize += height;
+    });
+
     if (currentHeight + additionalInfoSize > pageHeight) {
       doc.addPage();
       currentHeight = 20;
