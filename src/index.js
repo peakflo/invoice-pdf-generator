@@ -1236,24 +1236,6 @@ async function jsPDFInvoiceTemplate(props) {
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
 
-  //add num of pages at the bottom
-  if (doc.getNumberOfPages() > 1) {
-    for (let i = 1; i <= doc.getNumberOfPages(); i++) {
-      doc.setFontSize(pdfConfig.fieldTextSize - 2);
-      doc.setTextColor(colorGray);
-
-      if (param.pageEnable) {
-        doc.text(docWidth / 2, docHeight - 10, param.footer.text, ALIGN_CENTER);
-        doc.setPage(i);
-        doc.text(
-          param.pageLabel + " " + i + " / " + doc.getNumberOfPages(),
-          docWidth - 20,
-          doc.internal.pageSize.height - 6
-        );
-      }
-    }
-  }
-
   // requested by
   if (param.data.requestedBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
@@ -1455,18 +1437,19 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
 
-  //add num of page at the bottom
-  if (doc.getNumberOfPages() === 1 && param.pageEnable) {
+  const numPages = doc.getNumberOfPages();
+
+  // Add Page Number at bottom
+  // Iterates through each page and adds the page number at bottom
+  for (let i = 1; i <= numPages; i++) {
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.setTextColor(colorGray);
+    if (param.pageEnable) {
+      doc.text(docWidth / 2, docHeight - 10, param.footer.text, ALIGN_CENTER);
+    }
+    doc.setPage(i);
     doc.text(
-      docWidth / 2,
-      docHeight - DEFAULT_CURRENT_HEIGHT,
-      param.footer.text,
-      ALIGN_CENTER
-    );
-    doc.text(
-      param.pageLabel + "1 / 1",
+      param.pageLabel + " " + i + " / " + numPages,
       docWidth - 20,
       doc.internal.pageSize.height - 6
     );
