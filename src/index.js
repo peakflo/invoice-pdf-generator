@@ -1440,6 +1440,7 @@ async function jsPDFInvoiceTemplate(props) {
   const numPages = doc.getNumberOfPages();
 
   // Add Page Number at bottom
+  // Iterates through each page and adds the page number at bottom
   for (let i = 1; i <= numPages; i++) {
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     doc.setTextColor(colorGray);
