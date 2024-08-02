@@ -375,6 +375,7 @@ async function jsPDFInvoiceTemplate(props) {
   const IMAGE_CONTENT_TYPE = "PNG";
   const CUSTOM_FONT_NAME = "customFont";
   const DEFAULT_CURRENT_HEIGHT = 10;
+  const DSC_HEIGHT = 30;
 
   //starting at 15mm
   let currentHeight = 15;
@@ -1352,7 +1353,7 @@ async function jsPDFInvoiceTemplate(props) {
     // PDF is for Digital Signature
     currentHeight += pdfConfig.subLineHeight;
     if (
-      currentHeight + 30 > pageHeight ||
+      currentHeight + DSC_HEIGHT > pageHeight ||
       (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
         doc.getNumberOfPages() > 1)
     ) {
@@ -1361,7 +1362,7 @@ async function jsPDFInvoiceTemplate(props) {
     }
     signaturePageNumber = doc.internal.getNumberOfPages();
     signatureLineHeight = currentHeight;
-    currentHeight += 30;
+    currentHeight += DSC_HEIGHT;
     currentHeight += pdfConfig.subLineHeight;
   }
 
