@@ -1352,7 +1352,7 @@ async function jsPDFInvoiceTemplate(props) {
     // PDF is for Digital Signature
     currentHeight += pdfConfig.subLineHeight;
     if (
-      currentHeight + 20 > pageHeight ||
+      currentHeight + 30 > pageHeight ||
       (currentHeight > pageHeight - DEFAULT_CURRENT_HEIGHT &&
         doc.getNumberOfPages() > 1)
     ) {
@@ -1361,7 +1361,7 @@ async function jsPDFInvoiceTemplate(props) {
     }
     signaturePageNumber = doc.internal.getNumberOfPages();
     signatureLineHeight = currentHeight;
-    currentHeight += 20;
+    currentHeight += 30;
     currentHeight += pdfConfig.subLineHeight;
   }
 
