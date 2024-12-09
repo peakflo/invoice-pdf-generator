@@ -1252,7 +1252,15 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Additional Information - custom fields
   if (param.data.customFields.length) {
-    currentHeight += pdfConfig.lineHeight;
+    // Ensure "Additional Information" starts on a new page
+    if (currentHeight + pdfConfig.lineHeight > pageHeight) {
+      doc.addPage();
+      currentHeight = 20; // Reset current height for the new page
+    }
+
+    // Add a fresh page explicitly for "Additional Information"
+    doc.addPage();
+    currentHeight = 20; // Reset height to start from the top of the new page
 
     // Write the "Additional Information" label
     doc.setFontSize(pdfConfig.labelTextSize);
