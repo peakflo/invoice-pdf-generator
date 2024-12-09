@@ -1253,34 +1253,34 @@ async function jsPDFInvoiceTemplate(props) {
   // Additional Information - custom fields
   if (param.data.customFields.length) {
     currentHeight += pdfConfig.lineHeight;
-    // Additional information section will take the following space
-    /**
-     * 1. Label - Additional Information =>  1 Line
-     * 2. Each custom field => height calculated from splitTextAndGetHeight
-     */
-    let additionalInfoSize = pdfConfig.lineHeight;
 
-    param.data.customFields.map((item) => {
-      const { height } = splitTextAndGetHeight(item, pageWidth - 20);
-      additionalInfoSize += height;
-    });
-
-    if (currentHeight + additionalInfoSize > pageHeight) {
-      doc.addPage();
-      currentHeight = 20;
-    }
+    // Write the "Additional Information" label
     doc.setFontSize(pdfConfig.labelTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(10, currentHeight, "Additional Information");
 
+    // Increment height for the next line
+    currentHeight += pdfConfig.subLineHeight;
+
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    currentHeight += pdfConfig.subLineHeight;
-    param.data.customFields.map((item) => {
+
+    param.data.customFields.forEach((item) => {
+      // Calculate text height
       const { text, height } = splitTextAndGetHeight(item, pageWidth - 20);
+
+      // Check if adding this item will exceed the page height
+      if (currentHeight + height > pageHeight) {
+        doc.addPage();
+        currentHeight = 20; // Reset to the top of the new page
+      }
+
+      // Add the text
       doc.text(10, currentHeight, text);
-      currentHeight += height;
+      currentHeight += height; // Increment the current height
     });
+
+    // Add spacing after the section
     currentHeight += pdfConfig.lineHeight;
   }
 
