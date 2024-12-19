@@ -1252,28 +1252,11 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Additional Information - custom fields
   if (param.data.customFields.length) {
-    // Ensure "Additional Information" starts on a new page
-    if (currentHeight + pdfConfig.lineHeight > pageHeight) {
-      doc.addPage();
-      currentHeight = 20; // Reset current height for the new page
-    }
-
-    // Add a fresh page explicitly for "Additional Information"
-    doc.addPage();
-    currentHeight = 20; // Reset height to start from the top of the new page
+    currentHeight += pdfConfig.lineHeight;
 
     // Write the "Additional Information" label
-    doc.setFontSize(pdfConfig.labelTextSize);
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Additional Information");
 
-    // Increment height for the next line
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-
-    param.data.customFields.forEach((item) => {
+    param.data.customFields.forEach((item, index) => {
       // Calculate text height
       const { text, height } = splitTextAndGetHeight(item, pageWidth - 20);
 
@@ -1281,6 +1264,16 @@ async function jsPDFInvoiceTemplate(props) {
       if (currentHeight + height > pageHeight) {
         doc.addPage();
         currentHeight = 20; // Reset to the top of the new page
+      }
+
+      if (index === 0) {
+        doc.setFontSize(pdfConfig.labelTextSize);
+        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+        doc.text(10, currentHeight, "Additional Information");
+        // Increment height for the next line
+        currentHeight += 2 * pdfConfig.subLineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       }
 
       // Add the text
