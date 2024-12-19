@@ -23,7 +23,7 @@ describe("PDF Test", () => {
         returnJsPDFDocObject: true,
         fileName: "output/test-inmobi-irp.pdf",
         pdfTitle: "Tax Invoice",
-        pdfSubTitle: 'Original for Recipient',
+        pdfSubTitle: "Original for Recipient",
         orientationLandscape: false,
         business: {
           name: "Demo INR File",
@@ -669,6 +669,156 @@ describe("PDF Test", () => {
       };
       const pdfObject = await jsPDFInvoiceTemplate(testProps1);
       // await pdfObject.jsPDFDocObject.save('output/test1.pdf')
+      expect(true).toBeTruthy();
+    });
+  });
+
+  describe("Purchase order tests", () => {
+    test("So many custom fields", async () => {
+      var testProps1 = {
+        outputType: "datauristring",
+        returnJsPDFDocObject: true,
+        fileName: "PO-Zach Test PO Custom Fields3",
+        orientationLandscape: false,
+        business: {
+          name: "Demo MSNAV SG",
+          address: "",
+          addressLine2: "",
+          addressLine3: "",
+          country: "",
+          taxNumber: "",
+        },
+        contact: {
+          label: "PO issued for:",
+          name: "Bob The Builder",
+          billingAddress: {
+            label: "Supplier Address:",
+            address: "street1",
+            addressLine2: "London - 5645657",
+            addressLine3: "",
+            country: "GB",
+          },
+          shippingAddress: {
+            label: "",
+            address: "",
+            addressLine2: "",
+            addressLine3: "",
+            country: "",
+          },
+          taxNumber: "",
+        },
+        data: {
+          label: "DRAFT PURCHASE ORDER ",
+          num: "Zach Test PO Custom Fields3",
+          date1Label: "Date",
+          date1: "05/12/2024",
+          date2Label: "Delivery Date",
+          date2: "05/12/2024",
+          netTermLabel: "Due Date",
+          netTerm: "05/12/2024",
+          headerBorder: false,
+          tableBodyBorder: false,
+          header: [
+            "Description",
+            "Unit Price",
+            "Quantity",
+            "Discount",
+            "Tax",
+            "Amount",
+          ],
+          headerWidth: [0.425, 0.125, 0.1, 0.1, 0.125, 0.125],
+          table: [
+            [
+              "Item test for Peakflo 2 70068\n[PCS]",
+              "10,000.00",
+              1,
+              "",
+              "",
+              "10,000.00",
+            ],
+            [
+              "Item test for Peaklfo 1 70067\n[PCS]",
+              "50,000.00",
+              1,
+              "",
+              "",
+              "50,000.00",
+            ],
+            [
+              '15" 1501 FP Flat Panel 80101\n[PCS]',
+              "3,400.00",
+              7,
+              "",
+              "",
+              "23,800.00",
+            ],
+          ],
+          subTotalLabel: "Sub Total:",
+          subTotal: "83,800.00",
+          currency: "SGD",
+          descLabel: "Delivery Instruction",
+          desc: [],
+          note: "",
+          requestedBy: "Zachova Zebedeus",
+          customFields: [
+            "Terms and Conditions: \n",
+            'Jaminan & Tanggung Jawab : \nVENDOR menjamin bahwa bahan/barang yang dijual dan kemudian dikirimkan kepada PT. MEARES SOPUTAN MINING ("MSM") bebas dari segala gugatan, tuntutan, segala fakta yang dapat menimbulkan sengketa, jaminan, biaya-biaya, pajak-pajak, putusan dari penyitaan termasuk mengenai cacat produk, yang timbul dalam hubungannya dengan PO ini dengan turut memperhatikan adanya pelanggaran baik secara langsung maupun tidak langsung tentang hak paten, hak cipta, hak merk, atau segala permohonan pengajuan tentang hak paten, hak cipta, hal merk. VENDOR setuju menanggung, melindungi dan membebaskan MSM dari setiap kerugian dan terhadap seluruh tuntutan akibat kegagalan VENDOR memenuhi jaminan tersebut.\n',
+            'Warranty & Indemnification: \nVENDOR shall guarantee that materials/goods sold and subsequently delivered to PT. MEARES SOPUTAN MINING ("MSM") is free and clear from all claims, demands, causes of action, lien, cost, taxes, foreclosure and awards including those related to product liability, arising in connection with this PO in respect of the direct and indirect infringement of any patent, copyright or trademark or an application of any patent, copyright or trademark. VENDOR agrees to indemnify, protect and save MSM harmless from and against all claims which VENDOR fails to pay and satisfy.\n',
+            "Pemeriksaan: \nVENDOR wajib, dengan biaya sendiri, segera memperbaiki cacat terhadap bahan/barang atas spesifikasi teknis dan/atau kekurangan dan/atau apapun yang tidak sesuai mengacu kepada hasil pemeriksaan di atas.\n",
+            "Inspection: \nVENDOR shall, at its own sole cost, promptly remedy any material defect subject to technical specification and/or deficiency based on the inspection above.\n",
+            "Persetujuan: \nPersetujuan atas PO ini secara hukum merupakan persetujuan dari VENDOR atas seluruh ketentuan dan persyaratan sebagaimana tercantum dalam PO dan syarat dan ketentuan umum ini. Persetujuan harus diberikan oleh pejabat VENDOR yang berwenang. Seluruh tambahan atau perbedaan atas keseluruhan dan peryaratan ini, yang diajukan oleh VENDOR setiap waktu, baik secara tertulis ataupun secara lisan, tidak dapat diterima. Seluruh perubahan yang dilakukan oleh MSM akan dikonfirmasikan secara tertulis dan secara resmi dalam bentuk perubahan PO MSM. Dalam hal VENDOR melanggar sebagian atau seluruh ketentuan dan persyaratan, maka VENDOR akan dikenakan sanksi sesuai dengan ketentuan yang berlaku di MSM.\n",
+            "Acceptance: \nAcceptance of this PO shall constitute agreement by VENDOR of all terms and conditions set out in the PO and this general terms and conditions. Such acceptance shall be given by authorized official of the VENDOR. Any additional or different terms and conditions proposed by the VENDOR at any time in any manner written or verbal shall not be accepted. Any changes made by MSM shall be confirmed in written by official MSM's PO amendment form. In the event, the VENDOR breach this terms and conditions entirely or partially, VENDOR shall be subjected to sanctions in accordance with the prevailing provisions on MSM.\n",
+            "Pemutusan: \nMSM berhak, atas pertimbangannya sendiri secara mutlak, untuk memutuskan sebagian atau seluruh PO ini, dengan pembertahuan 30 hari sebelumnya secara tertulis, dimana sejak tanggal diterimanya surat pembertahuan tersebut, VENDOR tidak memiliki hak untuk meminta kompensasi dalam bentuk apapun.\n",
+            "Termination: \nMSM, at its own absolute discretion, shall be entitled to, partially or wholly, terminate this PO, by giving a prior written 30 days notice, whereas VENDOR has no rights to claim of any compensation since the date of acceptance of such termination letter.\n",
+            "Kualitas & Kuantitas: \nBahan/barang yang dikirimkan oleh VENDOR harus sesuai dengan kualitas, kuantitas dan spesifikasi sebagaimana tercantum dalam PO\n",
+            "Quality & Quantity: \nGoods/materials delivered by the VENDOR shall meet the quality, quantity and specification as set forth in the PO.\n",
+            "Pengepakan: \nSeluruh biaya dan pengeluaran (temasuk namun tidak terbatas pada biaya sewa gudang MSM, biaya handling, dan lain-lain) yang timbul diakibatkan oleh tertundanya penerimaan atas barang, yang disebabkan oleh kesalahan atau kelalaian VENDOR, termasuk namun tidak terbatas pada kesalahan pengepakan, menjadi tanggung jawab VENDOR sepenuhnya.\n",
+            "Packing: \nAny cost and expenses (including but not limited to MSM's warehouse rent/lease fee, handling fee, etc) which may arise due to pending approval of materials which caused by VENDOR's negligence or fault, including but not limited to failure of packaging, shall be borne solely by VENDOR.\n",
+            "Penyerahan : \nPengiriman secara sebagian tidak dapat diterima, kecuali ditentukan lain oleh MSM.",
+            "Delivery: \nPartial delivery is not acceptable unless otherwise stated by MSM.\n",
+            "Penalti : \nSetiap keterlambatan pengiriman bahan/barang akan dikenakan sanksi denda sebesar [*] per hari sampai maksimum sebesar [*] persen dari total nilai PO. Denda untuk keterlambatan pengiriman secara parsial (sebagaimana diinstruksikan oleh MSM) adalah sebesar [*] per hari dari total nilai bahan/barang yang terlambat hingga mencapai maksimum sebesar [*]persen dari total nilai PO. Apabila keterlambatan melebihi 30 hari dari tanggal yang ditentukan dalam PO, maka MSM berhak untuk memutuskan PO sesegera mungkin tanpa ganti rugi apapun kepada VENDOR.\n",
+            "Penalty: \nA penalty will be imposed for any late delivery in the amount of [*] per day up to maximum amount of [*] from the total PO amount. In case of partial delivery (as instructed by MSM), the penalty shall in the amount of [*] per day of total late materials/goods value up to maximum amount of [*] from the total PO amount. If the delay of delivery exceed 30 days of due date as stated in the PO, therefore MSM have right to immediately terminate PO without any compensation to VENDOR.\n",
+            "Klaim: \nDalam hal Klaim diajukan setelah VENDOR menerima pembayaran, maka MSM berhak untuk memotong tagihan VENDOR yang akan datang (apabila ada) atau VENDOR wajib mengembalikan pembayaran sebesar nilai yang di Klaim.\n",
+            "Claim: \nIn the event Claim is submitted after VENDOR receives payment, MSM is entitled to deduct from VENDOR future invoice (if any) or the VENDOR shall be obligated to return the payment of value in a claim.\n",
+            "Pembayaran & Tagihan: \nPembayaran akan dilakukan kepada rekening bank atas nama Vendor dalam waktu maksimal 90 hari kerja setelah tagihan diterima secara lengkap dan benar oleh MSM (sesuai peraturan yang berlaku dan prosedur di MSM). Tagihan harus diserahkan paling lambat 30 hari kalender setelah bahan/barang diterima oleh MSM, dan ditujukan kepada: MSM tidak menjamin terhadap pembayaran atas invoice yang disampaiakan dengan tidak sesuai dengan ketentuan poin ini oleh VENDOR.\n",
+            "Payment & Invoice: \nPayment will be conducted at the maximum 90 working days after invoice completely and correctly received by MSM (in accordance with prevailing regulations and procedures in MSM), to bank account under VENDOR#s name. Invoice shall be submitted at least 30 calendar days after the materials/goods has been received by MSM, and addressed to: MSM will not guarantee the payment of invoice that the VENDOR submitted not in accordance with this point.\n",
+          ],
+          row1: {
+            col1: "Total taxes:",
+            col2: "0.00",
+            col3: "",
+            col4: [],
+            style: {
+              fontSize: 10,
+            },
+          },
+          row2: {
+            col1: "Discount:",
+            col2: "0.00",
+            col3: "",
+            style: {
+              fontSize: 10,
+            },
+          },
+          total: {
+            isFxConversionVisible: false,
+            col1: "Total:",
+            col2: "83,800.00",
+            col3: "SGD",
+            totalTaxAmount: "",
+            totalTaxAmountConv: "",
+            style: {
+              fontSize: 10,
+            },
+          },
+          authorisedBy: "",
+        },
+        pageEnable: true,
+        pageLabel: "Page ",
+      };
+      const pdfObject = await jsPDFInvoiceTemplate(testProps1);
+      if (pdfObject.jsPDFDocObject)
+        await pdfObject.jsPDFDocObject.save("output/po-custom-fields.pdf");
       expect(true).toBeTruthy();
     });
   });
