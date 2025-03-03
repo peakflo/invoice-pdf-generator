@@ -757,8 +757,11 @@ describe("PDF Test", () => {
           subTotal: "83,800.00",
           currency: "SGD",
           descLabel: "Delivery Instruction",
-          desc: [],
-          note: "",
+          desc: [
+            "Delivery should be done by 30th April 2025",
+            "Package should be sealed and marked with the PO number",
+          ],
+          note: "Be careful and avoid damage",
           requestedBy: "Zachova Zebedeus",
           customFields: [
             "Terms and Conditions: \n",
