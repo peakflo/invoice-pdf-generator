@@ -1256,6 +1256,56 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
   }
 
+  const addDesc = () => {
+    doc.setFontSize(pdfConfig.labelTextSize - 2);
+    doc.setTextColor(colorBlack);
+
+    if (param.data?.desc.length > 0) {
+      currentHeight += 1;
+      param.data?.desc?.forEach((el, index) => {
+        const desc = splitTextAndGetHeight(el, pageWidth - 40);
+        if (currentHeight + desc.height > pageHeight) {
+          doc.addPage();
+          currentHeight = DEFAULT_CURRENT_HEIGHT;
+        }
+
+        if (index === 0) {
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+          doc.text(10, currentHeight, param.data.descLabel);
+          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+          currentHeight += pdfConfig.subLineHeight;
+        }
+        doc.text(10, currentHeight, desc.text);
+        currentHeight += desc.height + 1;
+      });
+    }
+  };
+
+  if (param.data?.desc?.length > 0) addDesc();
+
+  // Note
+  if (param.data.note) {
+    currentHeight += pdfConfig.labelTextSize;
+    const noteData = splitTextAndGetHeight(
+      param.data.note,
+      pageWidth - pdfConfig.headerTextSize
+    );
+
+    if (currentHeight + noteData.height > pageHeight) {
+      doc.addPage();
+      currentHeight = DEFAULT_CURRENT_HEIGHT;
+    }
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.setFontSize(pdfConfig.labelTextSize);
+    doc.text(10, currentHeight, "Note");
+    currentHeight += pdfConfig.lineHeight;
+
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.text(10, currentHeight, noteData.text);
+    currentHeight += pdfConfig.lineHeight + noteData.height;
+  }
+
   // Additional Information - custom fields
   if (param.data.customFields.length) {
     currentHeight += pdfConfig.lineHeight;
@@ -1334,33 +1384,6 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
 
-  const addDesc = () => {
-    doc.setFontSize(pdfConfig.labelTextSize - 2);
-    doc.setTextColor(colorBlack);
-
-    if (param.data?.desc.length > 0) {
-      currentHeight += 1;
-      param.data?.desc?.forEach((el, index) => {
-        const desc = splitTextAndGetHeight(el, pageWidth - 40);
-        if (currentHeight + desc.height > pageHeight) {
-          doc.addPage();
-          currentHeight = DEFAULT_CURRENT_HEIGHT;
-        }
-
-        if (index === 0) {
-          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-          doc.text(10, currentHeight, param.data.descLabel);
-          doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-          currentHeight += pdfConfig.subLineHeight;
-        }
-        doc.text(10, currentHeight, desc.text);
-        currentHeight += desc.height + 1;
-      });
-    }
-  };
-
-  if (param.data?.desc?.length > 0) addDesc();
-
   let signaturePageNumber;
   let signatureLineHeight;
   if (param?.isPdfForDsc) {
@@ -1431,29 +1454,6 @@ async function jsPDFInvoiceTemplate(props) {
       `on ${param.data?.eSign?.approvedAt}.`,
       ALIGN_RIGHT
     );
-  }
-
-  // Note
-  if (param.data.note) {
-    currentHeight += pdfConfig.labelTextSize;
-    const noteData = splitTextAndGetHeight(
-      param.data.note,
-      pageWidth - pdfConfig.headerTextSize
-    );
-
-    if (currentHeight + noteData.height > pageHeight) {
-      doc.addPage();
-      currentHeight = DEFAULT_CURRENT_HEIGHT;
-    }
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.setFontSize(pdfConfig.labelTextSize);
-    doc.text(10, currentHeight, "Note");
-    currentHeight += pdfConfig.lineHeight;
-
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.text(10, currentHeight, noteData.text);
-    currentHeight += pdfConfig.lineHeight + noteData.height;
   }
 
   const numPages = doc.getNumberOfPages();
