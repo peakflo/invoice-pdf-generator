@@ -57,6 +57,8 @@ import { jsPDF } from "jspdf";
  *       table?: any,
  *       subTotalLabel?: string,
  *       subTotal?: string,
+ *       dppNilaiLainLabel?: string,
+ *       dppNilaiLain?: string,
  *       currency?: string,
  *       descLabel?: string,
  *       customFields?: string[],
@@ -137,6 +139,8 @@ declare function jsPDFInvoiceTemplate(props: {
     label?: string;
     subTotalLabel?: string;
     subTotal?: string;
+    dppNilaiLainLabel?: string;
+    dppNilaiLain?: string;
     num?: number | string;
     date1?: string;
     date1Label?: string;
@@ -183,6 +187,7 @@ declare function jsPDFInvoiceTemplate(props: {
       totalTaxAmount: string;
       totalTaxAmountConv: string;
       subTotalConv?: string;
+      dppNilaiLainConv?: string;
       totalConv?: string;
       defaultCurrency?: string;
       convRate?: string;

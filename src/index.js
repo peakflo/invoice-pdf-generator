@@ -75,6 +75,8 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *       table?: any,
  *       subTotalLabel?: string,
  *       subTotal?: string,
+ *       dppNilaiLainLabel?: string,
+ *       dppNilaiLain?: string,
  *       currency?: string,
  *       descLabel?: string,
  *       desc?: string[],
@@ -213,6 +215,8 @@ async function jsPDFInvoiceTemplate(props) {
     data: {
       label: props.data?.label || "",
       subTotalLabel: props.data?.subTotalLabel || "",
+      dppNilaiLainLabel: props.data?.dppNilaiLainLabel || "",
+      dppNilaiLain: props.data?.dppNilaiLain || "",
       date1Label: props.data?.date1Label || "",
       num: props.data?.num || "",
       date2Label: props.data?.date2Label || "",
@@ -270,6 +274,7 @@ async function jsPDFInvoiceTemplate(props) {
         col5: props.data?.total?.col5 || "", // Total amount in words
         totalConv: props.data?.total?.totalConv || "", // Total converted amount
         subTotalConv: props.data?.total?.subTotalConv || "", // sub total converted amount
+        dppNilaiLainConv: props.data?.total?.dppNilaiLainConv || "",
         isFxConversionVisible: props.data?.total?.isFxConversionVisible,
         totalTaxAmount: props.data?.total?.totalTaxAmount || "",
         totalTaxAmountConv: props.data?.total?.totalTaxAmountConv || "",
@@ -997,6 +1002,23 @@ async function jsPDFInvoiceTemplate(props) {
     finalRowCount += 1;
   }
 
+  if (param.data.dppNilaiLainLabel && param.data.dppNilaiLain) {
+    doc.text(
+      docWidth - 50,
+      currentHeight += pdfConfig.lineHeight,
+      param.data.dppNilaiLainLabel,
+      ALIGN_RIGHT
+    );
+    doc.text(
+      docWidth - 10,
+      currentHeight,
+      param.data.currency + "  " + param.data.dppNilaiLain.toLocaleString(),
+      ALIGN_RIGHT
+    );
+
+    finalRowCount += 1;
+  }
+
   //row1 - tax
   if (
     param.data.row1 &&
@@ -1200,6 +1222,10 @@ async function jsPDFInvoiceTemplate(props) {
       head: [["", `Amount ${param.data.total.defaultCurrency}`]],
       body: [
         ["Subtotal", param.data.total.subTotalConv],
+        
+        // Only include Dpp Nilai Lain if the value exists, with adjusted spacing
+        ["Dpp Nilai Lain", param.data.total.dppNilaiLainConv],
+        
         ["Total Tax", param.data.total.totalTaxAmountConv],
         [
           {
