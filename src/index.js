@@ -1223,7 +1223,6 @@ async function jsPDFInvoiceTemplate(props) {
       body: [
         ["Subtotal", param.data.total.subTotalConv],
         
-        // Only include Dpp Nilai Lain if the value exists, with adjusted spacing
         ["Dpp Nilai Lain", param.data.total.dppNilaiLainConv],
         
         ["Total Tax", param.data.total.totalTaxAmountConv],
