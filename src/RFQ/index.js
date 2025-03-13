@@ -101,6 +101,7 @@ async function jsPDFRfqTemplate(props) {
     data: {
       label: props.data?.label || "",
       subTotalLabel: props.data?.subTotalLabel || "",
+      dppNilaiLainLabel: props.data?.dppNilaiLainLabel || "",
       date1Label: props.data?.date1Label || "",
       num: props.data?.num || "",
       date2Label: props.data?.date2Label || "",

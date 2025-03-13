@@ -97,6 +97,8 @@ declare function jsPDFRfqTemplate(props: {
     label?: string;
     subTotalLabel?: string;
     subTotal?: string;
+    dppNilaiLainLabel?: string;
+    dppNilaiLain?: string;
     num?: number | string;
     date1?: string;
     date1Label?: string;
