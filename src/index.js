@@ -1269,29 +1269,40 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.subLineHeight - 1;
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
-  // requested by
-  if (param.data.requestedBy) {
+  // requested by and created by - side by side in a 4-column grid
+  if (param.data.requestedBy || param.data.createdBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Requested By");
+    
+    // Create a 4-column grid layout
+    const columnWidth = (docWidth - 20) / 4;
+    
+    // First column: Requested By label
+    if (param.data.requestedBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.text(10, currentHeight, "Requested By");
+    }
+    
+    // Third column: Created By label
+    if (param.data.createdBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.text(10 + columnWidth * 2, currentHeight, "Created By");
+    }
+    
     currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, param.data.requestedBy);
-    currentHeight += pdfConfig.lineHeight;
-  }
-
-  // created by
-  if (param.data.createdBy) {
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    currentHeight += pdfConfig.lineHeight;
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Created By");
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, param.data.createdBy);
+    
+    // First column: Requested By value
+    if (param.data.requestedBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, param.data.requestedBy);
+    }
+    
+    // Third column: Created By value
+    if (param.data.createdBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      doc.text(10 + columnWidth * 2, currentHeight, param.data.createdBy);
+    }
+    
     currentHeight += pdfConfig.lineHeight;
   }
 
