@@ -1289,7 +1289,7 @@ async function jsPDFInvoiceTemplate(props) {
       // Values for both fields
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, param.data.requestedBy);
-      doc.text(docWidth / 2, currentHeight, param.data.createdBy);
+      doc.text(docWidth / 3, currentHeight, param.data.createdBy);
       
       currentHeight += pdfConfig.lineHeight;
     } else {
