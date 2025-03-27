@@ -65,8 +65,8 @@ import { jsPDF } from "jspdf";
  *       desc?: string[],
  *       creditNoteLabel?: string,
  *       note?: string,
- *       createdBy?: string,
  *       requestedBy?: string,
+ *       createdBy?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
