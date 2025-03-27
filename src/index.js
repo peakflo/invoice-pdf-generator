@@ -1279,7 +1279,7 @@ async function jsPDFInvoiceTemplate(props) {
     if (param.data.requestedBy && param.data.createdBy) {
       // Requested By (left side)
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-      doc.text(10, currentHeight, "Requested By");
+      doc.text(10, currentHeight, "Request By");
       
       // Created By (right side - positioned at middle of page)
       doc.text(docWidth / 2, currentHeight, "Created By");
