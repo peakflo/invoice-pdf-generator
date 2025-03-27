@@ -1270,45 +1270,30 @@ async function jsPDFInvoiceTemplate(props) {
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
 
-  // requested by and created by (side by side)
+  // requested by and created by (one below the other)
   if (param.data.requestedBy || param.data.createdBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     
-    // If both fields exist, place them side by side
-    if (param.data.requestedBy && param.data.createdBy) {
-      // Requested By (left side)
+    // Display requestedBy if it exists
+    if (param.data.requestedBy) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-      doc.text(10, currentHeight, "Request By");
-      
-      // Created By (right side - positioned at middle of page)
-      doc.text(docWidth / 2, currentHeight, "Created By");
-      
+      doc.text(10, currentHeight, "Requested By");
       currentHeight += pdfConfig.subLineHeight;
       
-      // Values for both fields
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, param.data.requestedBy);
-      doc.text(docWidth / 3, currentHeight, param.data.createdBy);
-      
       currentHeight += pdfConfig.lineHeight;
-    } else {
-      // If only one field exists, display it normally
-      if (param.data.requestedBy) {
-        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-        doc.text(10, currentHeight, "Request By");
-        currentHeight += pdfConfig.subLineHeight;
-        
-        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-        doc.text(10, currentHeight, param.data.requestedBy);
-      } else if (param.data.createdBy) {
-        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-        doc.text(10, currentHeight, "Created By");
-        currentHeight += pdfConfig.subLineHeight;
-        
-        doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-        doc.text(10, currentHeight, param.data.createdBy);
-      }
+    }
+    
+    // Display createdBy if it exists
+    if (param.data.createdBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.text(10, currentHeight, "Created By");
+      currentHeight += pdfConfig.subLineHeight;
+      
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      doc.text(10, currentHeight, param.data.createdBy);
       currentHeight += pdfConfig.lineHeight;
     }
   }
