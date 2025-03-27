@@ -1296,7 +1296,7 @@ async function jsPDFInvoiceTemplate(props) {
       // If only one field exists, display it normally
       if (param.data.requestedBy) {
         doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-        doc.text(10, currentHeight, "Requested By");
+        doc.text(10, currentHeight, "Request By");
         currentHeight += pdfConfig.subLineHeight;
         
         doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
