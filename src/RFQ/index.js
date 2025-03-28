@@ -544,7 +544,7 @@ async function jsPDFRfqTemplate(props) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Requests By");
+    doc.text(10, currentHeight, "Requested By");
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);

@@ -156,6 +156,7 @@ declare function jsPDFInvoiceTemplate(props: {
     currency?: string;
     descLabel?: string;
     desc?: string[];
+    note?: string;
     requestedBy?: string;
     createdBy?: string;
     row1?: {
