@@ -65,6 +65,8 @@ import { jsPDF } from "jspdf";
  *       desc?: string[],
  *       creditNoteLabel?: string,
  *       note?: string,
+ *       requestedBy?: string,
+ *       createdBy?: string,
  *       row1?: {
  *           col1?: string,
  *           col2?: string,
@@ -155,6 +157,8 @@ declare function jsPDFInvoiceTemplate(props: {
     descLabel?: string;
     desc?: string[];
     note?: string;
+    requestedBy?: string;
+    createdBy?: string;
     row1?: {
       col1?: string;
       col2?: string;
