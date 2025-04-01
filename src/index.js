@@ -83,6 +83,7 @@ export { OutputType, jsPDF, jsPDFRfqTemplate };
  *       creditNoteLabel?: string,
  *       note?: string,
  *       requestedBy?: string,
+ *       createdBy?: string,
  *       customFields?: string[],
  *       authorisedBy?: string,
  *       pdfTitle?: string,
@@ -233,6 +234,7 @@ async function jsPDFInvoiceTemplate(props) {
       currency: props.data?.currency || "",
       descLabel: props.data?.descLabel || "",
       requestedBy: props.data?.requestedBy || "",
+      createdBy: props.data?.createdBy || "",
       customFields: props.data?.customFields || [],
       authorisedBy: props.data?.authorisedBy || "",
       staticVA: props.data?.staticVA,
@@ -1267,17 +1269,40 @@ async function jsPDFInvoiceTemplate(props) {
   currentHeight += pdfConfig.subLineHeight - 1;
   //   currentHeight += pdfConfig.subLineHeight;
   doc.setFontSize(pdfConfig.labelTextSize);
-
-  // requested by
-  if (param.data.requestedBy) {
+  // requested by and created by 
+  if (param.data.requestedBy || param.data.createdBy) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Requested By");
+    
+    const columnWidth = (docWidth - 20) / 4;
+    if (param.data.requestedBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.text(10, currentHeight, "Requested By");
+    }
+    if (param.data.createdBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.text(10 + columnWidth * 1, currentHeight, "Created By");
+    }
+    
     currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, param.data.requestedBy);
+    
+    // Handle long names with text wrapping
+    if (param.data.requestedBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      const requestedByText = splitTextAndGetHeight(param.data.requestedBy, columnWidth - 5);
+      doc.text(10, currentHeight, requestedByText.text);
+      customerNameHeight += requestedByText.height;
+    }
+    
+    if (param.data.createdBy) {
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      const createdByText = splitTextAndGetHeight(param.data.createdBy, columnWidth - 5);
+      doc.text(10 + columnWidth * 1, currentHeight, createdByText.text);
+      customerNameHeight += createdByText.height;
+    }
+    
+    // Adjust current height based on the taller of the two text blocks
+    currentHeight += Math.max(customerNameHeight, 0);
     currentHeight += pdfConfig.lineHeight;
   }
 
