@@ -1291,9 +1291,7 @@ async function jsPDFInvoiceTemplate(props) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       const requestedByText = splitTextAndGetHeight(param.data.requestedBy, columnWidth - 5);
       doc.text(10, currentHeight, requestedByText.text);
-      customerNameHeight = requestedByText.height;
-    } else {
-      customerNameHeight = 0;
+      customerNameHeight += requestedByText.height;
     }
     
     if (param.data.createdBy) {
@@ -1301,8 +1299,6 @@ async function jsPDFInvoiceTemplate(props) {
       const createdByText = splitTextAndGetHeight(param.data.createdBy, columnWidth - 5);
       doc.text(10 + columnWidth * 1, currentHeight, createdByText.text);
       customerNameHeight += createdByText.height;
-    } else {
-      customerNameHeight = 0;
     }
     
     // Adjust current height based on the taller of the two text blocks
