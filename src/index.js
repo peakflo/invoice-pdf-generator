@@ -1218,24 +1218,26 @@ async function jsPDFInvoiceTemplate(props) {
     );
 
     // Add the table
+    const bodyRows = [
+      ["Subtotal", param.data.total.subTotalConv],
+      ...(param.data.total.dppNilaiLainConv !== undefined && param.data.total.dppNilaiLainConv !== null
+        ? [["Dpp Nilai Lain", param.data.total.dppNilaiLainConv]]
+        : []),
+      ["Total Tax", param.data.total.totalTaxAmountConv],
+      [
+        {
+          content: `Total ${param.data.total.defaultCurrency}`,
+          fontStyle: "bold",
+        },
+        { content: param.data.total.totalConv, fontStyle: "bold" },
+      ],
+    ];
+
     doc.autoTable({
       startY: boxY + 18,
       margin: { left: boxX, right: 0 },
       head: [["", `Amount ${param.data.total.defaultCurrency}`]],
-      body: [
-        ["Subtotal", param.data.total.subTotalConv],
-        
-        ["Dpp Nilai Lain", param.data.total.dppNilaiLainConv],
-        
-        ["Total Tax", param.data.total.totalTaxAmountConv],
-        [
-          {
-            content: `Total ${param.data.total.defaultCurrency}`,
-            fontStyle: "bold",
-          },
-          { content: param.data.total.totalConv, fontStyle: "bold" },
-        ],
-      ],
+      body: bodyRows,
       theme: "plain",
       headStyles: {
         fillColor: [255, 255, 255],
