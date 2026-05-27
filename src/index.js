@@ -941,8 +941,15 @@ async function jsPDFInvoiceTemplate(props) {
         currentHeight -= maxHeight;
     }
 
+    // Zebra striping
+    if (index % 2 === 1) {
+      doc.setFillColor(245, 245, 245);
+      doc.rect(10, currentHeight, docWidth - 20, maxHeight + 4, "F");
+    }
+
     doc.setFontSize(pdfConfig.textSizeSmall);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
     row.forEach(function (rr, index) {
       let item = splitTextAndGetHeight(
         rr.toString(),
@@ -952,12 +959,8 @@ async function jsPDFInvoiceTemplate(props) {
       doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 4);
     });
 
-    doc.setLineWidth(0.1);
-    doc.line(10, currentHeight, docWidth - 10, currentHeight);
     currentHeight += maxHeight + 4; // increased padding
-
-    //td border height
-    currentHeight += 2;
+    // removed doc.line to make it borderless
   });
 
   // no table data
@@ -1010,7 +1013,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.subTotalLabel && param.data.subTotal) {
     doc.setTextColor(colorGray);
     doc.text(
-      docWidth - 50,
+      docWidth - 65,
       currentHeight,
       param.data.subTotalLabel?.toUpperCase(),
       ALIGN_RIGHT
@@ -1029,7 +1032,7 @@ async function jsPDFInvoiceTemplate(props) {
   if (param.data.dppNilaiLainLabel && param.data.dppNilaiLain) {
     doc.setTextColor(colorGray);
     doc.text(
-      docWidth - 50,
+      docWidth - 65,
       currentHeight += pdfConfig.lineHeight,
       param.data.dppNilaiLainLabel?.toUpperCase(),
       ALIGN_RIGHT
@@ -1055,7 +1058,7 @@ async function jsPDFInvoiceTemplate(props) {
       doc.setFontSize(pdfConfig.fieldTextSize);
 
       doc.setTextColor(colorGray);
-      doc.text(docWidth - 50, currentHeight, param.data.row1.col1?.toUpperCase(), ALIGN_RIGHT);
+      doc.text(docWidth - 65, currentHeight, param.data.row1.col1?.toUpperCase(), ALIGN_RIGHT);
       doc.setTextColor(colorBlack);
       doc.text(
         docWidth - 10,
@@ -1077,7 +1080,7 @@ async function jsPDFInvoiceTemplate(props) {
           doc.addPage();
           currentHeight = pdfConfig.headerTextSize;
         }
-        doc.text(docWidth - 50, currentHeight, `${tax.name?.toUpperCase()}:`, ALIGN_RIGHT);
+        doc.text(docWidth - 65, currentHeight, `${tax.name?.toUpperCase()}:`, ALIGN_RIGHT);
         doc.setTextColor(colorBlack);
         doc.text(
           docWidth - 10,
@@ -1103,7 +1106,7 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(pdfConfig.fieldTextSize);
 
     doc.setTextColor(colorGray);
-    doc.text(docWidth - 50, currentHeight, param.data.row2.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.text(docWidth - 65, currentHeight, param.data.row2.col1?.toUpperCase(), ALIGN_RIGHT);
     doc.setTextColor(colorBlack);
     doc.text(docWidth - 10, currentHeight, param.data.row2.col2, ALIGN_RIGHT);
     finalRowCount += 1;
@@ -1116,7 +1119,7 @@ async function jsPDFInvoiceTemplate(props) {
   ) {
     currentHeight += pdfConfig.lineHeight;
     doc.setTextColor(colorGray);
-    doc.text(docWidth - 50, currentHeight, param.data.row3.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.text(docWidth - 65, currentHeight, param.data.row3.col1?.toUpperCase(), ALIGN_RIGHT);
     doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
@@ -1127,23 +1130,29 @@ async function jsPDFInvoiceTemplate(props) {
     finalRowCount += 1;
   }
 
-  // Main total
+  // Main total - Modernized Summary Block
   if (
     param.data.total &&
     (param.data.total.col1 || param.data.total.col2 || param.data.total.col3)
   ) {
+    currentHeight += 2;
+    // Draw shaded box for Total
+    doc.setFillColor(240, 240, 240);
+    doc.rect(docWidth / 2 - 20, currentHeight, docWidth / 2 + 10, pdfConfig.lineHeight + 6, "F");
+    
     currentHeight += pdfConfig.lineHeight;
-    doc.setFontSize(pdfConfig.labelTextSize);
+    doc.setFontSize(pdfConfig.labelTextSize + 2); // Slightly larger
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setTextColor(colorGray);
-    doc.text(docWidth - 50, currentHeight, param.data.total.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.text(docWidth - 65, currentHeight + 2, param.data.total.col1?.toUpperCase(), ALIGN_RIGHT);
     doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
-      currentHeight,
+      currentHeight + 2,
       param.data.total.col3 + "  " + param.data.total.col2,
       ALIGN_RIGHT
     );
+    currentHeight += 6;
     finalRowCount += 1;
   }
 

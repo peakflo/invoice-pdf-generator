@@ -467,17 +467,25 @@ async function jsPDFRfqTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     const tdWidthDimensions = getTdWidthDimensions();
+    // Zebra striping
+    if (index % 2 === 1) {
+      doc.setFillColor(245, 245, 245);
+      doc.rect(10, currentHeight, docWidth - 20, maxHeight + 6, "F");
+    }
+
+    doc.setFontSize(pdfConfig.textSizeSmall);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
     row.forEach(function (rr, index) {
       let item = splitTextAndGetHeight(
         rr.toString(),
         tdWidthDimensions?.[index]?.width - 1
-      ); //minus 1, to fix the padding issue between borders
+      );
 
       doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 5);
     });
 
-    //pre-increase currentHeight to check the height based on next row
-    if (index + 1 < tableBodyLength) currentHeight += maxHeight;
+    currentHeight += maxHeight + 6;
 
     if (
       currentHeight > pageHeight ||
@@ -487,18 +495,6 @@ async function jsPDFRfqTemplate(props) {
       currentHeight = 10;
       if (index + 1 < tableBodyLength) addTableHeader();
     }
-
-    //reset the height that was increased to check the next row
-    if (index + 1 < tableBodyLength && currentHeight > 30)
-      // check if new page
-      currentHeight -= maxHeight;
-
-    doc.setLineWidth(0.1);
-    doc.line(10, currentHeight, docWidth - 10, currentHeight);
-    currentHeight += maxHeight + 4; // increased padding
-
-    //td border height
-    currentHeight += 2;
   });
 
   // no table data
