@@ -378,7 +378,7 @@ async function jsPDFInvoiceTemplate(props) {
   const ALIGN_RIGHT = "right";
   const ALIGN_LEFT = "left";
   const ALIGN_CENTER = "center";
-  const ISSUER_ADDRESS_LABEL = "Company Address";
+  const ISSUER_ADDRESS_LABEL = "COMPANY ADDRESS";
   const IMAGE_CONTENT_TYPE = "PNG";
   const CUSTOM_FONT_NAME = "Roboto";
   const DEFAULT_CURRENT_HEIGHT = 10;
@@ -478,7 +478,9 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (param?.business?.address) {
       doc.setFontSize(pdfConfig.fieldTextSize);
+      doc.setTextColor(colorGray);
       doc.text(pdfConfig.fieldTextSize, currentHeight, ISSUER_ADDRESS_LABEL);
+      doc.setTextColor(colorBlack);
     }
     currentHeight += pdfConfig.subLineHeight;
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
@@ -513,7 +515,9 @@ async function jsPDFInvoiceTemplate(props) {
     if (param?.business?.address) {
       currentHeight += pdfConfig.lineHeight;
       doc.setFontSize(pdfConfig.fieldTextSize);
+      doc.setTextColor(colorGray);
       doc.text(docWidth - 10, currentHeight, ISSUER_ADDRESS_LABEL, ALIGN_RIGHT);
+      doc.setTextColor(colorBlack);
     }
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
     currentHeight += pdfConfig.subLineHeight;
@@ -597,9 +601,9 @@ async function jsPDFInvoiceTemplate(props) {
     param.data.date1 ||
     param.data.date2
   ) {
-    doc.setTextColor(colorBlack);
-    const billingAddressLabel = param.contact?.billingAddress.label;
-    const shippingAddressLabel = param.contact?.shippingAddress.label;
+    doc.setTextColor(colorGray);
+    const billingAddressLabel = param.contact?.billingAddress.label?.toUpperCase();
+    const shippingAddressLabel = param.contact?.shippingAddress.label?.toUpperCase();
     doc.text(10, currentHeight, billingAddressLabel);
     doc.text(pageWidth / 3, currentHeight, shippingAddressLabel);
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
@@ -607,24 +611,25 @@ async function jsPDFInvoiceTemplate(props) {
       doc.text(
         docWidth - 70,
         currentHeight,
-        param.data.date1Label,
+        param.data.date1Label?.toUpperCase(),
         ALIGN_RIGHT
       );
       doc.text(
         docWidth - 40,
         currentHeight,
-        param.data.netTermLabel,
+        param.data.netTermLabel?.toUpperCase(),
         ALIGN_RIGHT
       );
     } else {
       doc.text(
         docWidth - 10,
         currentHeight,
-        param.data.date1Label,
+        param.data.date1Label?.toUpperCase(),
         ALIGN_RIGHT
       );
     }
-    doc.text(docWidth - 10, currentHeight, param.data.date2Label, ALIGN_RIGHT);
+    doc.text(docWidth - 10, currentHeight, param.data.date2Label?.toUpperCase(), ALIGN_RIGHT);
+    doc.setTextColor(colorBlack);
     currentHeight += pdfConfig.subLineHeight;
   }
 
@@ -716,10 +721,12 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (indiaIRP.gstRegType) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label1);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label1?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label1),
+        10 + doc.getTextWidth(indiaIRP.label1?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.gstRegType
       );
@@ -728,10 +735,12 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (indiaIRP.gstStateWithCode) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label2);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label2?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label2),
+        10 + doc.getTextWidth(indiaIRP.label2?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.gstStateWithCode
       );
@@ -740,10 +749,12 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (indiaIRP.hsnNum) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label3);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label3?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label3),
+        10 + doc.getTextWidth(indiaIRP.label3?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.hsnNum
       );
@@ -752,10 +763,12 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (indiaIRP.irn) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label4);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label4?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label4),
+        10 + doc.getTextWidth(indiaIRP.label4?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.irn
       );
@@ -767,19 +780,23 @@ async function jsPDFInvoiceTemplate(props) {
 
     if (indiaIRP.ackDate && indiaIRP.ackNumber) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label5);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label5?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label5),
+        10 + doc.getTextWidth(indiaIRP.label5?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.ackDate
       );
       currentHeight += pdfConfig.subLineHeight;
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-      doc.text(10, currentHeight, indiaIRP.label6);
+      doc.setTextColor(colorGray);
+      doc.text(10, currentHeight, indiaIRP.label6?.toUpperCase());
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorBlack);
       doc.text(
-        10 + doc.getTextWidth(indiaIRP.label6),
+        10 + doc.getTextWidth(indiaIRP.label6?.toUpperCase() || ""),
         currentHeight,
         indiaIRP.ackNumber
       );
@@ -867,7 +884,7 @@ async function jsPDFInvoiceTemplate(props) {
     let maxTextHeightHeader = 0;
     param.data.header.forEach(function (row, index) {
       const rowtext = splitTextAndGetHeight(
-        row,
+        row?.toUpperCase(),
         tdWidthDimensions[index].width - 3
       );
       maxTextHeightHeader = Math.max(maxTextHeightHeader, rowtext.height);
@@ -937,10 +954,10 @@ async function jsPDFInvoiceTemplate(props) {
 
     doc.setLineWidth(0.1);
     doc.line(10, currentHeight, docWidth - 10, currentHeight);
-    currentHeight += maxHeight + 2;
+    currentHeight += maxHeight + 4; // increased padding
 
     //td border height
-    currentHeight += 4;
+    currentHeight += 2;
   });
 
   // no table data
@@ -991,12 +1008,14 @@ async function jsPDFInvoiceTemplate(props) {
 
   // Subtotal line
   if (param.data.subTotalLabel && param.data.subTotal) {
+    doc.setTextColor(colorGray);
     doc.text(
       docWidth - 50,
       currentHeight,
-      param.data.subTotalLabel,
+      param.data.subTotalLabel?.toUpperCase(),
       ALIGN_RIGHT
     );
+    doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
       currentHeight,
@@ -1008,12 +1027,14 @@ async function jsPDFInvoiceTemplate(props) {
   }
 
   if (param.data.dppNilaiLainLabel && param.data.dppNilaiLain) {
+    doc.setTextColor(colorGray);
     doc.text(
       docWidth - 50,
       currentHeight += pdfConfig.lineHeight,
-      param.data.dppNilaiLainLabel,
+      param.data.dppNilaiLainLabel?.toUpperCase(),
       ALIGN_RIGHT
     );
+    doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
       currentHeight,
@@ -1031,9 +1052,11 @@ async function jsPDFInvoiceTemplate(props) {
   ) {
     if (!param.data.row1.hideTotal) {
       currentHeight += pdfConfig.lineHeight;
-      doc.setFontSize(param.data.row1.style.fontSize);
+      doc.setFontSize(pdfConfig.fieldTextSize);
 
-      doc.text(docWidth - 50, currentHeight, param.data.row1.col1, ALIGN_RIGHT);
+      doc.setTextColor(colorGray);
+      doc.text(docWidth - 50, currentHeight, param.data.row1.col1?.toUpperCase(), ALIGN_RIGHT);
+      doc.setTextColor(colorBlack);
       doc.text(
         docWidth - 10,
         currentHeight,
@@ -1047,20 +1070,22 @@ async function jsPDFInvoiceTemplate(props) {
     // Show all the taxes applied
     const taxData = param.data.row1?.col4;
     if (taxData) {
-      doc.setTextColor(lightGray);
+      doc.setTextColor(colorGray);
       taxData.forEach((tax) => {
         currentHeight += pdfConfig.lineHeight;
         if (isBreakPage(currentHeight, pageHeight)) {
           doc.addPage();
           currentHeight = pdfConfig.headerTextSize;
         }
-        doc.text(docWidth - 50, currentHeight, `${tax.name}:`, ALIGN_RIGHT);
+        doc.text(docWidth - 50, currentHeight, `${tax.name?.toUpperCase()}:`, ALIGN_RIGHT);
+        doc.setTextColor(colorBlack);
         doc.text(
           docWidth - 10,
           currentHeight,
           param.data.row1.col3 + "  " + tax.amount,
           ALIGN_RIGHT
         );
+        doc.setTextColor(colorGray);
       });
 
       finalRowCount += taxData.length;
@@ -1075,9 +1100,11 @@ async function jsPDFInvoiceTemplate(props) {
     (param.data.row2.col1 || param.data.row2.col2 || param.data.row2.col3)
   ) {
     currentHeight += pdfConfig.lineHeight;
-    doc.setFontSize(param.data.row2.style.fontSize);
+    doc.setFontSize(pdfConfig.fieldTextSize);
 
-    doc.text(docWidth - 50, currentHeight, param.data.row2.col1, ALIGN_RIGHT);
+    doc.setTextColor(colorGray);
+    doc.text(docWidth - 50, currentHeight, param.data.row2.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.setTextColor(colorBlack);
     doc.text(docWidth - 10, currentHeight, param.data.row2.col2, ALIGN_RIGHT);
     finalRowCount += 1;
   }
@@ -1088,7 +1115,9 @@ async function jsPDFInvoiceTemplate(props) {
     (param.data.row3.col1 || param.data.row3.col2 || param.data.row3.col3)
   ) {
     currentHeight += pdfConfig.lineHeight;
-    doc.text(docWidth - 50, currentHeight, param.data.row3.col1, ALIGN_RIGHT);
+    doc.setTextColor(colorGray);
+    doc.text(docWidth - 50, currentHeight, param.data.row3.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
       currentHeight,
@@ -1104,9 +1133,11 @@ async function jsPDFInvoiceTemplate(props) {
     (param.data.total.col1 || param.data.total.col2 || param.data.total.col3)
   ) {
     currentHeight += pdfConfig.lineHeight;
-    doc.setFontSize(12);
+    doc.setFontSize(pdfConfig.labelTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(docWidth - 50, currentHeight, param.data.total.col1, ALIGN_RIGHT);
+    doc.setTextColor(colorGray);
+    doc.text(docWidth - 50, currentHeight, param.data.total.col1?.toUpperCase(), ALIGN_RIGHT);
+    doc.setTextColor(colorBlack);
     doc.text(
       docWidth - 10,
       currentHeight,
@@ -1142,10 +1173,12 @@ async function jsPDFInvoiceTemplate(props) {
 
     doc.setFontSize(pdfConfig.fieldTextSize);
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.text(10, currentHeight, param.data.total.col4);
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, param.data.total.col4?.toUpperCase());
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.setTextColor(colorBlack);
     doc.text(
-      10 + doc.getTextWidth(param.data.total.col4),
+      10 + doc.getTextWidth(param.data.total.col4?.toUpperCase() || ""),
       currentHeight,
       totalInWords.text
     );
@@ -1280,16 +1313,18 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += pdfConfig.lineHeight;
     
     const columnWidth = (docWidth - 20) / 4;
+    doc.setTextColor(colorGray);
     if (param.data.requestedBy) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-      doc.text(10, currentHeight, "Requested By");
+      doc.text(10, currentHeight, "REQUESTED BY");
     }
     if (param.data.createdBy) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-      doc.text(10 + columnWidth * 1, currentHeight, "Created By");
+      doc.text(10 + columnWidth * 1, currentHeight, "CREATED BY");
     }
     
     currentHeight += pdfConfig.subLineHeight;
+    doc.setTextColor(colorBlack);
     
     // Handle long names with text wrapping
     if (param.data.requestedBy) {
@@ -1326,8 +1361,10 @@ async function jsPDFInvoiceTemplate(props) {
 
         if (index === 0) {
           doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-          doc.text(10, currentHeight, param.data.descLabel);
+          doc.setTextColor(colorGray);
+          doc.text(10, currentHeight, param.data.descLabel?.toUpperCase());
           doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+          doc.setTextColor(colorBlack);
           currentHeight += pdfConfig.subLineHeight;
         }
         doc.text(10, currentHeight, desc.text);
@@ -1352,11 +1389,13 @@ async function jsPDFInvoiceTemplate(props) {
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setFontSize(pdfConfig.labelTextSize);
-    doc.text(10, currentHeight, "Note");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "NOTE");
     currentHeight += pdfConfig.lineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, noteData.text);
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
@@ -1383,15 +1422,17 @@ async function jsPDFInvoiceTemplate(props) {
       if (index === 0) {
         doc.setFontSize(pdfConfig.labelTextSize);
         doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+        doc.setTextColor(colorGray);
         doc.text(
           pdfConfig.fieldTextSize,
           currentHeight,
-          "Additional Information"
+          "ADDITIONAL INFORMATION"
         );
         // Increment height for the next line
         currentHeight += 2 * pdfConfig.subLineHeight;
         doc.setFontSize(pdfConfig.fieldTextSize);
         doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+        doc.setTextColor(colorBlack);
       }
 
       // Add the text
@@ -1408,10 +1449,12 @@ async function jsPDFInvoiceTemplate(props) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Authorised By");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "AUTHORISED BY");
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, param.data.authorisedBy);
     currentHeight += pdfConfig.lineHeight;
   }
@@ -1430,11 +1473,13 @@ async function jsPDFInvoiceTemplate(props) {
       currentHeight = pdfConfig.headerTextSize;
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Payment details");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "PAYMENT DETAILS");
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, paymentDetails.text);
     currentHeight += pdfConfig.lineHeight + paymentDetails.height;
   }
