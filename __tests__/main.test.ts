@@ -824,5 +824,100 @@ describe("PDF Test", () => {
         await pdfObject.jsPDFDocObject.save("output/po-custom-fields.pdf");
       expect(true).toBeTruthy();
     });
+    test("Unicode characters (Turkish, Arabic)", async () => {
+      var testProps = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-unicode.pdf",
+        pdfTitle: "Unicode Test - Türkçe ve العربية",
+        business: {
+          name: "Unicode İşletmesi",
+          address: "İstanbul, Türkiye",
+          email_1: "bilgi@isletme.tr",
+        },
+        contact: {
+          label: "Fatura Alıcısı / المستلم:",
+          name: "احمد محمد (Ahmed Mohamed)",
+          billingAddress: {
+            label: "Adres / العنوان",
+            address: "شارع النصر، القاهرة (Al-Nasr St, Cairo)",
+            country: "Mısır / مصر",
+          },
+        },
+        data: {
+          label: "FATURA / فاتورة",
+          num: "TR-AR-001",
+          date1Label: "Son Ödeme Tarihi:",
+          date1: "30.06.2023",
+          header: ["Açıklama / الوصف", "Fiyat", "Adet", "Toplam"],
+          table: [
+            ["Yazılım Hizmeti (Software Service)", "1000.00", "1", "1000.00"],
+            ["Consulting / استشارة", "500.00", "2", "1000.00"],
+            ["Special Item: ĞİŞçöü", "10.00", "10", "100.00"],
+          ],
+          currency: "TL / ج.م",
+          subTotalLabel: "Ara Toplam:",
+          subTotal: "2100.00",
+          total: {
+            col1: "Genel Toplam / المجموع:",
+            col2: "2100.00",
+            col3: "TL",
+            totalTaxAmount: "0",
+            totalTaxAmountConv: "0",
+            isFxConversionVisible: false,
+          },
+        } as any,
+      };
+      await jsPDFInvoiceTemplate(testProps as any);
+      expect(true).toBeTruthy();
+    });
+    test("Unicode characters (Chinese)", async () => {
+      var testProps = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-chinese.pdf",
+        pdfTitle: "Unicode Test - 中文 (Chinese)",
+        business: {
+          name: "华美科技有限公司 (Huamei Technology Co., Ltd.)",
+          address: "北京市朝阳区 (Chaoyang District, Beijing)",
+          email_1: "contact@huamei.cn",
+        },
+        contact: {
+          label: "客户信息 / Customer:",
+          name: "张三 (Zhang San)",
+          billingAddress: {
+            label: "账单地址 / Billing Address",
+            address: "上海市浦东新区 (Pudong New Area, Shanghai)",
+            country: "中国 / China",
+          },
+        },
+        data: {
+          label: "发票 / INVOICE",
+          num: "CN-2023-001",
+          date1Label: "到期日期 / Due Date:",
+          date1: "2023-07-15",
+          header: ["项目描述 / Description", "单价", "数量", "总额"],
+          table: [
+            ["软件开发服务 (Software Development)", "5000.00", "1", "5000.00"],
+            ["技术咨询 (Technical Consulting)", "1000.00", "2", "2000.00"],
+            ["测试项目: 龙之谷", "500.00", "5", "2500.00"],
+          ],
+          currency: "人民币 / CNY",
+          subTotalLabel: "小计 / Subtotal:",
+          subTotal: "9500.00",
+          total: {
+            col1: "总计 / TOTAL:",
+            col2: "9500.00",
+            col3: "CNY",
+            totalTaxAmount: "0",
+            totalTaxAmountConv: "0",
+            isFxConversionVisible: false,
+          },
+        } as any,
+      };
+      await jsPDFInvoiceTemplate(testProps as any);
+      expect(true).toBeTruthy();
+    });
   });
 });
+

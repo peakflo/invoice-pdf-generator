@@ -1,7 +1,12 @@
 import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { getCustomFont } from "../font";
+import { getVazir, getVazirBold, getNotoSC } from "../font";
+
+const containsChinese = (obj) => {
+  const str = JSON.stringify(obj);
+  return /[\u4E00-\u9FFF]/.test(str);
+};
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -162,25 +167,37 @@ async function jsPDFRfqTemplate(props) {
   const ALIGN_RIGHT = "right";
   const ALIGN_LEFT = "left";
   const ALIGN_CENTER = "center";
-  const ISSUER_ADDRESS_LABEL = "Company Address";
+  const ISSUER_ADDRESS_LABEL = "COMPANY ADDRESS";
   const IMAGE_CONTENT_TYPE = "PNG";
-  const CUSTOM_FONT_NAME = "customFont";
+  const CUSTOM_FONT_NAME = "Roboto";
   var heightBelowLogo;
 
-  //starting at 15mm
-  let currentHeight = 15;
+  //starting at 20mm
+  let currentHeight = 20;
 
   const pdfConfig = {
-    headerTextSize: 20,
+    headerTextSize: 24,
     labelTitleSize: 16,
-    labelTextSize: 12,
-    fieldTextSize: 10,
+    labelTextSize: 10,
+    fieldTextSize: 9,
     textSizeSmall: 8,
-    lineHeight: 6,
-    subLineHeight: 4,
+    lineHeight: 7,
+    subLineHeight: 5,
   };
-  doc.addFileToVFS("customFont.ttf", getCustomFont());
-  doc.addFont("customFont.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+
+  const isChinese = containsChinese(props);
+
+  if (isChinese) {
+    doc.addFileToVFS("NotoSC.ttf", getNotoSC());
+    doc.addFont("NotoSC.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.addFont("NotoSC.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+  } else {
+    doc.addFileToVFS("Vazir.ttf", getVazir());
+    doc.addFont("Vazir.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.addFileToVFS("VazirBold.ttf", getVazirBold());
+    doc.addFont("VazirBold.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+  }
+
   doc.setFont(CUSTOM_FONT_NAME);
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
@@ -212,12 +229,14 @@ async function jsPDFRfqTemplate(props) {
 
   if (param?.business?.address) {
     doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorGray);
     doc.text(
       10 + param.logo.margin.left,
       currentHeight,
       ISSUER_ADDRESS_LABEL,
       ALIGN_LEFT
     );
+    doc.setTextColor(colorBlack);
 
     currentHeight += pdfConfig.subLineHeight;
     doc.setFontSize(pdfConfig.fieldTextSize - 2);
@@ -282,13 +301,15 @@ async function jsPDFRfqTemplate(props) {
 
     if (param.business.phone) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorGray);
       doc.text(
         10 + param.logo.margin.left,
         currentHeight,
-        "Tel Number: ",
+        "TEL NUMBER: ",
         ALIGN_LEFT
       );
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      doc.setTextColor(colorBlack);
       doc.text(
         27 + param.logo.margin.left,
         currentHeight,
@@ -299,13 +320,15 @@ async function jsPDFRfqTemplate(props) {
 
     if (param.business.taxNumber) {
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+      doc.setTextColor(colorGray);
       doc.text(
         10 + param.logo.margin.left,
         currentHeight,
-        "Tax Number: ",
+        "TAX NUMBER: ",
         ALIGN_LEFT
       );
       doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+      doc.setTextColor(colorBlack);
       doc.text(
         27 + param.logo.margin.left,
         currentHeight,
@@ -321,13 +344,15 @@ async function jsPDFRfqTemplate(props) {
     const size = headers.length;
     var heightHeaders = heightBelowLogo;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.setTextColor(colorGray);
 
     for (var i = 0; i < size; i++) {
-      const detailsText = headers[i] + ": ";
+      const detailsText = headers[i]?.toUpperCase() + ": ";
       doc.text(docWidth - 30, heightHeaders, detailsText, ALIGN_RIGHT);
       heightHeaders += pdfConfig.subLineHeight;
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
 
     for (var i = 0; i < size; i++) {
       const detailsText = values[i];
@@ -344,10 +369,10 @@ async function jsPDFRfqTemplate(props) {
   doc.setFontSize(pdfConfig.headerTextSize - 6);
 
   if (param.data.label) {
-    doc.text(docWidth / 2, currentHeight, param.data.label, ALIGN_CENTER);
+    doc.text(docWidth / 2, currentHeight, param.data.label?.toUpperCase(), ALIGN_CENTER);
   }
 
-  doc.setFont(undefined, FONT_TYPE_BOLD);
+  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
   currentHeight += pdfConfig.subLineHeight;
 
   //line breaker Doc text
@@ -419,7 +444,7 @@ async function jsPDFRfqTemplate(props) {
 
     const tdWidthDimensions = getTdWidthDimensions();
     param.data.header.forEach(function (row, index) {
-      doc.text(row, tdWidthDimensions?.[index]?.shift, currentHeight);
+      doc.text(row?.toUpperCase(), tdWidthDimensions?.[index]?.shift, currentHeight);
     });
 
     currentHeight += pdfConfig.subLineHeight;
@@ -457,17 +482,25 @@ async function jsPDFRfqTemplate(props) {
     //display text into row cells
     //Object.entries(row).forEach(function(col, index) {
     const tdWidthDimensions = getTdWidthDimensions();
+    // Zebra striping
+    if (index % 2 === 1) {
+      doc.setFillColor(245, 245, 245);
+      doc.rect(10, currentHeight, docWidth - 20, maxHeight + 6, "F");
+    }
+
+    doc.setFontSize(pdfConfig.textSizeSmall);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
     row.forEach(function (rr, index) {
       let item = splitTextAndGetHeight(
         rr.toString(),
         tdWidthDimensions?.[index]?.width - 1
-      ); //minus 1, to fix the padding issue between borders
+      );
 
       doc.text(item.text, tdWidthDimensions?.[index]?.shift, currentHeight + 5);
     });
 
-    //pre-increase currentHeight to check the height based on next row
-    if (index + 1 < tableBodyLength) currentHeight += maxHeight;
+    currentHeight += maxHeight + 6;
 
     if (
       currentHeight > pageHeight ||
@@ -477,18 +510,6 @@ async function jsPDFRfqTemplate(props) {
       currentHeight = 10;
       if (index + 1 < tableBodyLength) addTableHeader();
     }
-
-    //reset the height that was increased to check the next row
-    if (index + 1 < tableBodyLength && currentHeight > 30)
-      // check if new page
-      currentHeight -= maxHeight;
-
-    doc.setLineWidth(0.1);
-    doc.line(10, currentHeight, docWidth - 10, currentHeight);
-    currentHeight += maxHeight + 2;
-
-    //td border height
-    currentHeight += 4;
   });
 
   // no table data
@@ -544,10 +565,12 @@ async function jsPDFRfqTemplate(props) {
     doc.setFontSize(pdfConfig.fieldTextSize);
     currentHeight += pdfConfig.lineHeight;
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-    doc.text(10, currentHeight, "Requested By");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "REQUESTED BY");
     currentHeight += pdfConfig.subLineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, param.data.requestedBy.name);
     currentHeight += pdfConfig.subLineHeight;
 
@@ -573,8 +596,10 @@ async function jsPDFRfqTemplate(props) {
 
         if (index === 0) {
           doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
-          doc.text(10, currentHeight, param.data.descLabel);
+          doc.setTextColor(colorGray);
+          doc.text(10, currentHeight, param.data.descLabel?.toUpperCase());
           doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+          doc.setTextColor(colorBlack);
           currentHeight += pdfConfig.subLineHeight;
         }
         doc.text(10, currentHeight, desc.text);
@@ -598,11 +623,13 @@ async function jsPDFRfqTemplate(props) {
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setFontSize(pdfConfig.labelTextSize);
-    doc.text(10, currentHeight, "Delivery Instructions:");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "DELIVERY INSTRUCTIONS:");
     currentHeight += pdfConfig.lineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, diData.text);
     currentHeight += pdfConfig.lineHeight + diData.height;
   }
@@ -618,11 +645,13 @@ async function jsPDFRfqTemplate(props) {
     }
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.setFontSize(pdfConfig.labelTextSize);
-    doc.text(10, currentHeight, "Note");
+    doc.setTextColor(colorGray);
+    doc.text(10, currentHeight, "NOTE");
     currentHeight += pdfConfig.lineHeight;
 
     doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.setFontSize(pdfConfig.fieldTextSize);
+    doc.setTextColor(colorBlack);
     doc.text(10, currentHeight, noteData.text);
     currentHeight += pdfConfig.lineHeight + noteData.height;
   }
