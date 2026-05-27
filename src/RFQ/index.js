@@ -1,7 +1,12 @@
 import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { getCustomFont, getCustomFontBold } from "../font";
+import { getVazir, getVazirBold, getDroid } from "../font";
+
+const containsChinese = (obj) => {
+  const str = JSON.stringify(obj);
+  return /[\u4E00-\u9FFF]/.test(str);
+};
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -179,10 +184,20 @@ async function jsPDFRfqTemplate(props) {
     lineHeight: 7,
     subLineHeight: 5,
   };
-  doc.addFileToVFS("Roboto-Regular.ttf", getCustomFont());
-  doc.addFont("Roboto-Regular.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-  doc.addFileToVFS("Roboto-Bold.ttf", getCustomFontBold());
-  doc.addFont("Roboto-Bold.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+
+  const isChinese = containsChinese(props);
+
+  if (isChinese) {
+    doc.addFileToVFS("Droid.ttf", getDroid());
+    doc.addFont("Droid.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.addFont("Droid.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+  } else {
+    doc.addFileToVFS("Vazir.ttf", getVazir());
+    doc.addFont("Vazir.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.addFileToVFS("VazirBold.ttf", getVazirBold());
+    doc.addFont("VazirBold.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+  }
+
   doc.setFont(CUSTOM_FONT_NAME);
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
