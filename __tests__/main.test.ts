@@ -824,5 +824,53 @@ describe("PDF Test", () => {
         await pdfObject.jsPDFDocObject.save("output/po-custom-fields.pdf");
       expect(true).toBeTruthy();
     });
+    test("Unicode characters (Turkish, Arabic)", async () => {
+      var testProps = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-unicode.pdf",
+        pdfTitle: "Unicode Test - Türkçe ve العربية",
+        business: {
+          name: "Unicode İşletmesi",
+          address: "İstanbul, Türkiye",
+          email_1: "bilgi@isletme.tr",
+        },
+        contact: {
+          label: "Fatura Alıcısı / المستلم:",
+          name: "احمد محمد (Ahmed Mohamed)",
+          billingAddress: {
+            label: "Adres / العنوان",
+            address: "شارع النصر، القاهرة (Al-Nasr St, Cairo)",
+            country: "Mısır / مصر",
+          },
+        },
+        data: {
+          label: "FATURA / فاتورة",
+          num: "TR-AR-001",
+          date1Label: "Son Ödeme Tarihi:",
+          date1: "30.06.2023",
+          header: ["Açıklama / الوصف", "Fiyat", "Adet", "Toplam"],
+          table: [
+            ["Yazılım Hizmeti (Software Service)", "1000.00", "1", "1000.00"],
+            ["Consulting / استشارة", "500.00", "2", "1000.00"],
+            ["Special Item: ĞİŞçöü", "10.00", "10", "100.00"],
+          ],
+          currency: "TL / ج.م",
+          subTotalLabel: "Ara Toplam:",
+          subTotal: "2100.00",
+          total: {
+            col1: "Genel Toplam / المجموع:",
+            col2: "2100.00",
+            col3: "TL",
+            totalTaxAmount: "0",
+            totalTaxAmountConv: "0",
+            isFxConversionVisible: false,
+          },
+        } as any,
+      };
+      await jsPDFInvoiceTemplate(testProps as any);
+      expect(true).toBeTruthy();
+    });
   });
 });
+
