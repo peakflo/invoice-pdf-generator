@@ -2,7 +2,7 @@ import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import QRCode from "qrcode";
-import { getCustomFont } from "./font";
+import { getCustomFont, getCustomFontBold } from "./font";
 import jsPDFRfqTemplate from "./RFQ";
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -380,24 +380,26 @@ async function jsPDFInvoiceTemplate(props) {
   const ALIGN_CENTER = "center";
   const ISSUER_ADDRESS_LABEL = "Company Address";
   const IMAGE_CONTENT_TYPE = "PNG";
-  const CUSTOM_FONT_NAME = "customFont";
+  const CUSTOM_FONT_NAME = "Roboto";
   const DEFAULT_CURRENT_HEIGHT = 10;
   const DSC_HEIGHT = 30;
 
-  //starting at 15mm
-  let currentHeight = 15;
+  //starting at 20mm
+  let currentHeight = 20;
 
   const pdfConfig = {
-    headerTextSize: 20,
+    headerTextSize: 24,
     labelTitleSize: 16,
-    labelTextSize: 12,
-    fieldTextSize: 10,
+    labelTextSize: 10,
+    fieldTextSize: 9,
     textSizeSmall: 8,
-    lineHeight: 6,
-    subLineHeight: 4,
+    lineHeight: 7,
+    subLineHeight: 5,
   };
-  doc.addFileToVFS("customFont.ttf", getCustomFont());
-  doc.addFont("customFont.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  doc.addFileToVFS("Roboto-Regular.ttf", getCustomFont());
+  doc.addFont("Roboto-Regular.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  doc.addFileToVFS("Roboto-Bold.ttf", getCustomFontBold());
+  doc.addFont("Roboto-Bold.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
   doc.setFont(CUSTOM_FONT_NAME);
 
   //Adding PDF title
@@ -546,8 +548,9 @@ async function jsPDFInvoiceTemplate(props) {
 
   //line breaker after logo & business info
   if (param.data.header.length) {
-    currentHeight += pdfConfig.subLineHeight;
+    currentHeight += pdfConfig.subLineHeight + 2;
     doc.line(10, currentHeight, docWidth - 10, currentHeight);
+    currentHeight += 2;
   }
 
   //Contact part
@@ -712,9 +715,9 @@ async function jsPDFInvoiceTemplate(props) {
     currentHeight += 2 * pdfConfig.subLineHeight;
 
     if (indiaIRP.gstRegType) {
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label1);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label1),
         currentHeight,
@@ -724,9 +727,9 @@ async function jsPDFInvoiceTemplate(props) {
     }
 
     if (indiaIRP.gstStateWithCode) {
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label2);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label2),
         currentHeight,
@@ -736,9 +739,9 @@ async function jsPDFInvoiceTemplate(props) {
     }
 
     if (indiaIRP.hsnNum) {
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label3);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label3),
         currentHeight,
@@ -748,9 +751,9 @@ async function jsPDFInvoiceTemplate(props) {
     }
 
     if (indiaIRP.irn) {
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label4);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label4),
         currentHeight,
@@ -758,23 +761,23 @@ async function jsPDFInvoiceTemplate(props) {
       );
       currentHeight += pdfConfig.subLineHeight;
     } else {
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       currentHeight += pdfConfig.subLineHeight;
     }
 
     if (indiaIRP.ackDate && indiaIRP.ackNumber) {
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label5);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label5),
         currentHeight,
         indiaIRP.ackDate
       );
       currentHeight += pdfConfig.subLineHeight;
-      doc.setFont(undefined, FONT_TYPE_NORMAL);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
       doc.text(10, currentHeight, indiaIRP.label6);
-      doc.setFont(undefined, FONT_TYPE_BOLD);
+      doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
       doc.text(
         10 + doc.getTextWidth(indiaIRP.label6),
         currentHeight,
@@ -1138,9 +1141,9 @@ async function jsPDFInvoiceTemplate(props) {
     );
 
     doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setFont(undefined, FONT_TYPE_NORMAL);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
     doc.text(10, currentHeight, param.data.total.col4);
-    doc.setFont(undefined, FONT_TYPE_BOLD);
+    doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
     doc.text(
       10 + doc.getTextWidth(param.data.total.col4),
       currentHeight,

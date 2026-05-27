@@ -1,7 +1,7 @@
 import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { getCustomFont } from "../font";
+import { getCustomFont, getCustomFontBold } from "../font";
 
 const OutputType = {
   Save: "save", //save pdf as a file
@@ -164,23 +164,25 @@ async function jsPDFRfqTemplate(props) {
   const ALIGN_CENTER = "center";
   const ISSUER_ADDRESS_LABEL = "Company Address";
   const IMAGE_CONTENT_TYPE = "PNG";
-  const CUSTOM_FONT_NAME = "customFont";
+  const CUSTOM_FONT_NAME = "Roboto";
   var heightBelowLogo;
 
-  //starting at 15mm
-  let currentHeight = 15;
+  //starting at 20mm
+  let currentHeight = 20;
 
   const pdfConfig = {
-    headerTextSize: 20,
+    headerTextSize: 24,
     labelTitleSize: 16,
-    labelTextSize: 12,
-    fieldTextSize: 10,
+    labelTextSize: 10,
+    fieldTextSize: 9,
     textSizeSmall: 8,
-    lineHeight: 6,
-    subLineHeight: 4,
+    lineHeight: 7,
+    subLineHeight: 5,
   };
-  doc.addFileToVFS("customFont.ttf", getCustomFont());
-  doc.addFont("customFont.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  doc.addFileToVFS("Roboto-Regular.ttf", getCustomFont());
+  doc.addFont("Roboto-Regular.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+  doc.addFileToVFS("Roboto-Bold.ttf", getCustomFontBold());
+  doc.addFont("Roboto-Bold.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
   doc.setFont(CUSTOM_FONT_NAME);
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
@@ -347,7 +349,7 @@ async function jsPDFRfqTemplate(props) {
     doc.text(docWidth / 2, currentHeight, param.data.label, ALIGN_CENTER);
   }
 
-  doc.setFont(undefined, FONT_TYPE_BOLD);
+  doc.setFont(CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
   currentHeight += pdfConfig.subLineHeight;
 
   //line breaker Doc text
