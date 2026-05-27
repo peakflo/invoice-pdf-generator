@@ -2,7 +2,7 @@ import "regenerator-runtime";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import QRCode from "qrcode";
-import { getVazir, getVazirBold, getDroid } from "./font";
+import { getVazir, getVazirBold, getNotoSC } from "./font";
 import jsPDFRfqTemplate from "./RFQ";
 
 const containsChinese = (obj) => {
@@ -405,9 +405,9 @@ async function jsPDFInvoiceTemplate(props) {
   const isChinese = containsChinese(props);
   
   if (isChinese) {
-    doc.addFileToVFS("Droid.ttf", getDroid());
-    doc.addFont("Droid.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
-    doc.addFont("Droid.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
+    doc.addFileToVFS("NotoSC.ttf", getNotoSC());
+    doc.addFont("NotoSC.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
+    doc.addFont("NotoSC.ttf", CUSTOM_FONT_NAME, FONT_TYPE_BOLD);
   } else {
     doc.addFileToVFS("Vazir.ttf", getVazir());
     doc.addFont("Vazir.ttf", CUSTOM_FONT_NAME, FONT_TYPE_NORMAL);
