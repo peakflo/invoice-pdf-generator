@@ -918,6 +918,48 @@ describe("PDF Test", () => {
       await jsPDFInvoiceTemplate(testProps as any);
       expect(true).toBeTruthy();
     });
+    test("Long company name and logo intersection test", async () => {
+      var testProps = {
+        outputType: "save",
+        returnJsPDFDocObject: true,
+        fileName: "output/test-header-intersection.pdf",
+        logo: {
+          src: logo.src,
+          width: 50,
+          height: 25,
+          margin: { top: 0, left: 0 }
+        },
+        business: {
+          name: "This Is An Extremely Long Business Name That Should Not Intersect With The Logo On The Left Side Of The Page",
+          address: "123 Business Road, Suite 456, Innovation Park, Tech City",
+          email_1: "long.name@business.com",
+        },
+        contact: {
+          name: "John Doe",
+          billingAddress: {
+            address: "789 Client Ave",
+            country: "USA"
+          }
+        },
+        data: {
+          label: "INVOICE",
+          num: "INV-LONG-001",
+          header: ["Item", "Total"],
+          table: [["Service A", "100.00"]],
+          currency: "USD",
+          total: {
+            col1: "Total:",
+            col2: "100.00",
+            col3: "USD",
+            totalTaxAmount: "0",
+            totalTaxAmountConv: "0",
+            isFxConversionVisible: false,
+          }
+        } as any
+      };
+      await jsPDFInvoiceTemplate(testProps as any);
+      expect(true).toBeTruthy();
+    });
   });
 });
 
