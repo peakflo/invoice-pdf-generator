@@ -435,25 +435,48 @@ async function jsPDFInvoiceTemplate(props) {
 
   doc.setFontSize(pdfConfig.headerTextSize);
   doc.setTextColor(colorBlack);
-  doc.text(
-    docWidth - pdfConfig.fieldTextSize,
-    currentHeight,
-    param.business.name,
-    ALIGN_RIGHT
-  );
-  doc.setFontSize(pdfConfig.fieldTextSize);
+
+  const logoWidth = param.logo.src ? param.logo.width + param.logo.margin.left : 0;
+  const logoHeight = param.logo.src ? param.logo.height : 0;
+  const logoMarginTop = param.logo.src ? param.logo.margin.top : 0;
+  
+  // Reserve space on the left if logo exists
+  const rightColumnX = docWidth - pdfConfig.fieldTextSize;
+  const leftReservedWidth = logoWidth + 20; // Logo + some padding
+  const availableNameWidth = docWidth - leftReservedWidth - (pdfConfig.fieldTextSize * 2);
 
   // company logo
+  let logoBottom = currentHeight;
   if (param.logo.src) {
+    const logoY = currentHeight - 5 + logoMarginTop;
     doc.addImage(
       param.logo.src,
       IMAGE_CONTENT_TYPE,
       pdfConfig.fieldTextSize + param.logo.margin.left,
-      currentHeight - 5 + param.logo.margin.top,
+      logoY,
       param.logo.width,
       param.logo.height
     );
+    logoBottom = logoY + logoHeight;
   }
+
+  // Business Name
+  const businessName = param.business.name;
+  const wrappedName = doc.splitTextToSize(businessName, availableNameWidth);
+  
+  doc.text(
+    rightColumnX,
+    currentHeight,
+    wrappedName,
+    ALIGN_RIGHT
+  );
+  
+  const nameHeight = wrappedName.length * (pdfConfig.headerTextSize * 0.35);
+  currentHeight = Math.max(logoBottom, currentHeight + nameHeight);
+
+  doc.setFontSize(pdfConfig.fieldTextSize);
+  // currentHeight already updated to max of logo or name bottom
+
 
   // tenant tax number
   if (param.business.taxNumber) {
