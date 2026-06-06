@@ -926,7 +926,7 @@ describe("PDF Test", () => {
         logo: {
           src: logo.src,
           width: 50,
-          height: 25,
+          height: 10,
           margin: { top: 0, left: 0 }
         },
         business: {
