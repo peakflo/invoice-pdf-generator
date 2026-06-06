@@ -216,14 +216,17 @@ async function jsPDFRfqTemplate(props) {
   }
 
   if (param.business.name) {
+    const businessName = param.business.name;
+    const wrappedName = doc.splitTextToSize(businessName, docWidth - 20 - param.logo.margin.left);
+    
     doc.text(
       10 + param.logo.margin.left,
       currentHeight,
-      param.business.name,
+      wrappedName,
       ALIGN_LEFT
     );
 
-    currentHeight += pdfConfig.lineHeight;
+    currentHeight += wrappedName.length * (pdfConfig.headerTextSize * 0.35);
     heightBelowLogo = currentHeight;
   }
 
