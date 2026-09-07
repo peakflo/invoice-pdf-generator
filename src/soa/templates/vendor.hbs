@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Statement of Account</title>
+		<style>
+			/* Typography, colors and table treatment follow jspdf-invoice-template. */
+			@font-face {
+				font-family: Invoice;
+				src: url('data:font/ttf;base64,{{{fonts.regular}}}') format('truetype');
+				font-weight: 400;
+			}
+			@font-face {
+				font-family: Invoice;
+				src: url('data:font/ttf;base64,{{{fonts.bold}}}') format('truetype');
+				font-weight: 700;
+			}
+			@page {
+				size: A4;
+				margin: 20mm 10mm 25mm;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				margin: 0;
+				font-family: Invoice, sans-serif;
+				font-size: 9pt;
+				color: #000;
+				line-height: 1.4;
+			}
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 8mm;
+				break-inside: avoid;
+				color: #24334a;
+			}
+			.logo {
+				max-width: 40mm;
+				max-height: 22mm;
+				object-fit: contain;
+			}
+			.eyebrow {
+				color: #607089;
+				font-size: 7.5pt;
+				text-transform: uppercase;
+				letter-spacing: 1.1px;
+			}
+			h1 {
+				margin: 1mm 0 2mm;
+				font-size: 21pt;
+				line-height: 1.2;
+				font-weight: 700;
+			}
+			.as-at {
+				color: #607089;
+				font-size: 8pt;
+			}
+			.parties {
+				display: flex;
+				gap: 12mm;
+				margin: 7mm 0;
+				padding: 5mm 0;
+				border-top: 1px solid #dce2eb;
+				border-bottom: 1px solid #dce2eb;
+				break-inside: avoid;
+				color: #24334a;
+			}
+			.party {
+				flex: 1;
+				min-width: 0;
+				overflow-wrap: anywhere;
+			}
+			.party-name {
+				font-size: 10.5pt;
+				font-weight: 700;
+				margin: 2mm 0;
+			}
+			.address {
+				font-size: 8pt;
+			}
+			.label {
+				color: #4d4e53;
+				text-transform: uppercase;
+				font-size: 8pt;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+			}
+			thead {
+				display: table-header-group;
+			}
+			tr {
+				break-inside: avoid;
+			}
+			th,
+			td {
+				padding: 2mm 1mm;
+				overflow-wrap: anywhere;
+				vertical-align: top;
+			}
+			th {
+				font-size: 9pt;
+				text-transform: uppercase;
+				text-align: left;
+				border-bottom: 0.5mm solid #4d4e53;
+			}
+			td {
+				font-size: 8pt;
+			}
+			.subsidiary {
+				font-size: 9pt;
+				text-transform: none;
+				color: #4d4e53;
+				border-bottom: 0;
+				padding-top: 4mm;
+			}
+			.striped {
+				background: #f5f5f5;
+			}
+			.number {
+				text-align: right;
+			}
+			.total {
+				margin: 5mm 0 8mm auto;
+				padding: 3mm 0;
+				width: 50%;
+				border-top: 0.5mm solid #000;
+				text-align: right;
+				break-inside: avoid;
+			}
+			.total strong {
+				margin-left: 5mm;
+				font-size: 12pt;
+			}
+			.notice {
+				white-space: pre-wrap;
+				color: #4d4e53;
+				font-size: 8pt;
+				margin-top: 6mm;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<div>
+				<div class="eyebrow">Vendor statement</div>
+				<h1>Statement of Account</h1>
+				<div class="as-at">
+					{{#if activity}}Activity · {{asAtDate}}{{else}}Outstanding balances · As at {{asAtDate}}{{/if}}
+				</div>
+			</div>
+			{{#if logo}}<img class="logo" src="data:image/png;base64,{{logo}}" alt="" />{{/if}}
+		</div>
+		<div class="parties">
+			<div class="party">
+				<div class="eyebrow">From</div>
+				<div class="party-name">{{issuer.name}}</div>
+				<div class="address">
+					{{#with issuer.address}}{{line1}}{{#if line2}}<br />{{line2}}{{/if}}<br />{{city}} {{state}} {{postalCode}}<br />{{country}}{{/with}}
+				</div>
+				{{#if gstRegNumber}}
+				<div class="address">GST Reg. No: {{gstRegNumber}}</div>
+				{{/if}}
+			</div>
+			<div class="party">
+				<div class="eyebrow">Vendor</div>
+				<div class="party-name">{{vendor.name}}</div>
+				<div class="address">
+					{{#with vendor.address}}{{line1}}{{#if line2}}<br />{{line2}}{{/if}}<br />{{city}} {{state}} {{postalCode}}<br />{{country}}{{/with}}
+				</div>
+			</div>
+		</div>
+		{{#each currencies as |currencyGroup|}} {{#each subsidiaries}}
+		<table>
+			<colgroup>
+				<col style="width: 13%" />
+				<col style="width: 31%" />
+				<col style="width: 13%" />
+				<col style="width: 14%" />
+				<col style="width: 14%" />
+				<col style="width: 15%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th colspan="6" class="subsidiary">{{name}} · {{currencyGroup.currency}}</th>
+				</tr>
+				<tr>
+					<th>Date</th>
+					<th>Activity</th>
+					<th>Due Date</th>
+					<th class="number">Amount</th>
+					<th class="number">Payments</th>
+					<th class="number">Balance {{currencyGroup.currency}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each items}}
+				<tr class="{{#if (isOdd @index)}}striped{{/if}}">
+					<td>{{date}}</td>
+					<td>{{activity}}</td>
+					<td>{{dueDate}}</td>
+					<td class="number">{{#if amount}}{{numberFormat amount}}{{else}}-{{/if}}</td>
+					<td class="number">{{#if payments}}{{numberFormat payments}}{{else}}-{{/if}}</td>
+					<td class="number">{{#if balance}}{{numberFormat balance}}{{else}}-{{/if}}</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+		{{/each}}
+		<div class="total">
+			<span class="label">Balance Due</span><strong>{{currency}} {{numberFormat totalBalanceDue}}</strong>
+		</div>
+		{{else}}
+		<p>{{#if activity}}No activity in this date range{{else}}No outstanding balance{{/if}}</p>
+		{{/each}} {{#if bottomNotice}}
+		<div class="notice">{{bottomNotice}}</div>
+		{{/if}}
+	</body>
+</html>
