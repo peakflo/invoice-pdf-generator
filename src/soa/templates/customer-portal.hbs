@@ -1,0 +1,123 @@
+<html>
+	<style>
+        .txt-right {text-align: right;}
+		*{margin: 0px; padding: 0px;} body { font-family: 'verdanaregular'; height: 842px; width: 595px; /* to centre page
+		on screen*/ margin-left: auto; margin-right: auto; margin-top: 50px; margin-bottom: 50px;} table { width: 100%; table-layout: fixed;} td { font-size:x-small; word-wrap: break-word;overflow: hidden;} #header { }
+		.logo-wrapper { vertical-align: top; text-align: end; } #logo { max-width: 200px; max-height: 100px; }
+		#receiver-details tr { vertical-align: top; justify-content: space-between; }
+        #items-list-total td {text-align: right; font-size: 1.5em; font-weight: bold;}
+
+        #bottom-notice {white-space: pre-wrap;}
+	</style>
+	<body>
+
+		{{! statement details }}
+		<table id='receiver-details'>
+			<colgroup>
+				<col style='width: 50%' />
+                <col style='width: 50%' />
+			</colgroup>
+			<tr>
+				<td>
+					<h1>Statement of Account</h1>
+				</td>
+				<td>
+					<p style="text-align: right; margin-top: 6px;"><b>GST Reg. No:</b>{{#if gstRegNumber}}{{gstRegNumber}}{{else}}Unregistered{{/if}}</p>
+				</td>
+			</tr>
+            <tr>
+                <td>
+
+
+                <hr style="width: 60%;" />
+					<div>
+						<p style="padding: 2px 0; font-size: 12px; font-family: 'Arial', sans-serif;">{{asAtDate}}</p>
+					</div>
+                    <hr style="width: 60%;" />
+                </td>
+            </tr>
+
+				<tr>
+					<td style="padding-top: 20px;">
+                            <p style="font-weight: bold; font-size: larger; padding-bottom: 10px;">{{payer.name}}</p>
+                            {{#if payer.address.line1}}<p>{{payer.address.line1}}</p>{{/if}}
+                            {{#if payer.address.line2}}<p>{{payer.address.line2}}</p>{{/if}}
+                            <p>{{payer.address.city}} {{#if payer.address.postalCode}}{{payer.address.postalCode}}{{/if}}</p>
+                            <p>{{#if payer.address.country}}{{payer.address.country}}{{/if}}</p>
+                        </td>
+                        <td style="padding-top: 20px;">
+                            <p style="font-weight: bold; font-size: larger; padding-bottom: 10px;">{{issuer.name}}</p>
+                            {{#if issuer.address.line1}}<p>{{issuer.address.line1}}</p>{{/if}}
+                            {{#if issuer.address.line2}}<p>{{issuer.address.line2}}</p>{{/if}}
+                            <p>{{issuer.address.city}} {{#if issuer.address.postalCode}}{{issuer.address.postalCode}}{{/if}}</p>
+                            <p>{{#if issuer.address.country}}{{issuer.address.country}}{{/if}}</p>
+                        </td>
+					</tr>
+		</table>
+		<br />
+		<br />
+
+		{{#each currencies}}
+		<table id='items-list'>
+			<colgroup>
+				<col style="width: 10%;">
+				<col style="width: 35%;">
+				<col style="width: 10%;">
+				<col span="3" style="width: 15%;">
+			</colgroup>
+			<thead>
+				<tr>
+					<td><b>Date</b></td>
+					<td><b>Activity</b></td>
+					<td><b>Due Date</b></td>
+					<td class="txt-right"><b>Amount</b></td>
+					<td class="txt-right"><b>Payments</b></td>
+					<td class="txt-right"><b>Balance {{currency}}</b></td>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each subsidiaries}}
+					<tr><td colspan='7'><hr /></td></tr>
+					<tr>
+						<td colspan='7'>{{name}}</td>
+					</tr>
+					<tr><td colspan='7'><hr /></td></tr>
+
+					{{#each items}}
+					<tr>
+						<td>{{date}}</td>
+						<td>{{activity}}</td>
+						<td>{{dueDate}}</td>
+						<td class="txt-right">{{#if amount}}{{numberFormat amount}}{{else}}-{{/if}}</td>
+						<td class="txt-right">{{#if payments}}{{numberFormat payments}}{{else}}-{{/if}}</td>
+						<td class="txt-right">{{#if balance}}{{numberFormat balance}}{{else}}-{{/if}}</td>
+					</tr>
+				{{/each}}
+				{{/each}}
+			</tbody>
+            <tfoot>
+				<tr><td colspan='7'><hr/></td></tr>
+			</tfoot>
+		</table>
+		<br />
+        
+        {{! item list total }}
+		<table id='items-list-total'>
+			<tr>
+				<td>
+                    <p>Balance Due {{currency}} {{numberFormat totalBalanceDue}}</p>
+				</td>
+			</tr>
+		</table>
+		<br />
+		<br />
+		{{/each}}
+
+        {{! bottom notice }}
+		<table id='bottom-notice'>
+			<tbody>
+				<tr><td>{{bottomNotice}}</td></tr>
+			</tbody>
+		</table>
+	</body>
+</html>
