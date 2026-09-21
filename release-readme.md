@@ -34,10 +34,13 @@ const statement = Buffer.from(
 // Existing notification flow: raw HTML for its existing PDF converter.
 const html = renderSOA(embeddings, SOALayout.NOTIFICATION);
 
+// Scheduled notification attachment: retains its layout and disabled background printing.
+const scheduledPdf = await generateSOAPdf(browser, embeddings, SOALayout.SCHEDULED_NOTIFICATION);
+
 // Vendor download: PDF using the caller's existing Puppeteer browser.
 const pdf = await generateSOAPdf(browser, embeddings, SOALayout.VENDOR);
 ```
 
 Each layout preserves its existing template and embedding fields. AR and AP calculation semantics remain separate. `generateSOAPdf` closes its page and leaves the caller's browser open.
 
-After releasing a version containing this entrypoint, update `jspdf-invoice-template` in `upload-functions/package.json` and `peakflo-web/functions/package.json`, and add it to `customer-portal-be/package.json`. Regenerate the corresponding lockfiles. Consumer version updates and functional testing are pending; the earlier package versions do not contain this module.
+After releasing a version containing this entrypoint, update `jspdf-invoice-template` in `upload-functions/package.json` and `peakflo-web/functions/package.json`, and add it to `customer-portal-be/package.json` and `notifications/package.json`. Regenerate the corresponding lockfiles. Consumer version updates and functional testing are pending; the earlier package versions do not contain this module.

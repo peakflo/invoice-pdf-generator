@@ -3,6 +3,7 @@ export declare const SOALayout: {
   readonly VENDOR: "vendor";
   readonly CUSTOMER_PORTAL: "customer-portal";
   readonly NOTIFICATION: "notification";
+  readonly SCHEDULED_NOTIFICATION: "scheduled-notification";
 };
 export type SOALayout = typeof SOALayout[keyof typeof SOALayout];
 

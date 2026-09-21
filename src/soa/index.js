@@ -7,6 +7,7 @@ const SOALayout = Object.freeze({
   VENDOR: "vendor",
   CUSTOMER_PORTAL: "customer-portal",
   NOTIFICATION: "notification",
+  SCHEDULED_NOTIFICATION: "scheduled-notification",
 });
 
 // Keep SOA helpers isolated from invoice and caller Handlebars registrations.
@@ -52,7 +53,10 @@ async function generateSOAPdf(browser, embeddings, layout) {
     await page.goto(`data:text/html;charset=UTF-8;base64,${Buffer.from(html).toString("base64")}`, {
       waitUntil: "networkidle0",
     });
-    return await page.pdf({ format: "a4", printBackground: true });
+    return await page.pdf({
+      format: "a4",
+      printBackground: layout !== SOALayout.SCHEDULED_NOTIFICATION,
+    });
   } finally {
     await page.close();
   }
