@@ -1,0 +1,70 @@
+{{! statement details }}
+{{#each currencies}}
+  {{#each subsidiaries}}
+    <table id='items-list' style='border-collapse: collapse;'>
+      <colgroup>
+        <col style='width: 15%; border: 1px solid black;' />
+        <col style='width: 35%; border: 1px solid black;' />
+        <col style='width: 15%; border: 1px solid black;' />
+        <col span='3' style='width: 15%; border: 1px solid black;' />
+      </colgroup>
+      <thead>
+        <tr style='height: 50px;'>
+          <td colspan='6' style='border: 1px solid black; text-align:center'>
+            <b>{{name}}</b>
+          </td>
+        </tr>
+        <tr>
+          <td style='border: 1px solid black;'><b>Date</b></td>
+          <td style='border: 1px solid black;'><b>Activity</b></td>
+          <td style='border: 1px solid black;'><b>Due Date</b></td>
+          <td class='txt-right' style='border: 1px solid black;'><b
+            >Amount</b></td>
+          <td class='txt-right' style='border: 1px solid black;'><b
+            >Payments</b></td>
+          <td class='txt-right' style='border: 1px solid black;'><b>Balance
+              {{../currency}}</b></td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+          <tr>
+            <td
+              style='border: 1px solid black;white-space: nowrap;'
+            ><span style="font-weight: normal;">{{date}}</span></td>
+            <td
+              style='border: 1px solid black;white-space: pre-wrap;'
+            ><span style="font-weight: normal;">{{activity}}</span></td>
+            <td
+              style='border: 1px solid black;white-space: nowrap;'
+            ><span style="font-weight: normal;">{{dueDate}}</span></td>
+            <td
+              class='txt-right'
+              style='border: 1px solid black;'
+            ><span style="font-weight: normal;">{{numberFormat amount}}</span></td>
+            <td
+              class='txt-right'
+              style='border: 1px solid black;'
+            ><span style="font-weight: normal;">{{numberFormat payments}}</span></td>
+            <td
+              class='txt-right'
+              style='border: 1px solid black;'
+            ><span style="font-weight: normal;">{{numberFormat balance}}</span></td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/each}}
+  <br />
+
+  {{! item list total }}
+  <table id='items-list-total'>
+    <tr>
+      <td>
+        <p>Balance Due {{currency}} {{numberFormat totalBalanceDue}}</p>
+      </td>
+    </tr>
+  </table>
+  <br />
+  <br />
+{{/each}}
