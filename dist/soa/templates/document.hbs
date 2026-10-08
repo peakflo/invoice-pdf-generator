@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Statement of Account</title>
+		<style>
+			/* Typography, colors and table treatment follow jspdf-invoice-template. */
+			@font-face {
+				font-family: Invoice;
+				src: url('data:font/ttf;base64,{{{fonts.regular}}}') format('truetype');
+				font-weight: 400;
+			}
+			@font-face {
+				font-family: Invoice;
+				src: url('data:font/ttf;base64,{{{fonts.bold}}}') format('truetype');
+				font-weight: 700;
+			}
+			@page {
+				size: A4;
+				margin: 20mm 10mm 25mm;
+			}
+			.soa-document * {
+				box-sizing: border-box;
+			}
+			.soa-document {
+				margin: 0;
+				font-family: Invoice, sans-serif;
+				font-size: 9pt;
+				color: #000;
+				line-height: 1.4;
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+			.soa-document .header {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 8mm;
+				break-inside: avoid;
+				color: #24334a;
+			}
+			.soa-document .logo {
+				max-width: 40mm;
+				max-height: 22mm;
+				object-fit: contain;
+			}
+			.soa-document .eyebrow {
+				color: #607089;
+				font-size: 7.5pt;
+				text-transform: uppercase;
+				letter-spacing: 1.1px;
+			}
+			.soa-document h1 {
+				margin: 1mm 0 2mm;
+				font-size: 21pt;
+				line-height: 1.2;
+				font-weight: 700;
+			}
+			.soa-document .as-at {
+				color: #607089;
+				font-size: 8pt;
+			}
+			.soa-document .parties {
+				display: flex;
+				gap: 12mm;
+				margin: 7mm 0;
+				padding: 5mm 0;
+				border-top: 1px solid #dce2eb;
+				border-bottom: 1px solid #dce2eb;
+				break-inside: avoid;
+				color: #24334a;
+			}
+			.soa-document .party {
+				flex: 1;
+				min-width: 0;
+				overflow-wrap: anywhere;
+			}
+			.soa-document .party-name {
+				font-size: 10.5pt;
+				font-weight: 700;
+				margin: 2mm 0;
+			}
+			.soa-document .address {
+				font-size: 8pt;
+			}
+			.soa-document .label {
+				color: #4d4e53;
+				text-transform: uppercase;
+				font-size: 8pt;
+			}
+			.soa-document .notice {
+				white-space: pre-wrap;
+				color: #4d4e53;
+				font-size: 8pt;
+				margin-top: 6mm;
+			}
+		</style>
+	</head>
+	<body class="soa-document">
+		<div class="header">
+			<div>
+				<div class="eyebrow">{{partyLabel}} statement</div>
+				<h1>Statement of Account</h1>
+				<div class="as-at">
+					{{#if modeLabel}}{{modeLabel}} &#183; {{/if}}{{dateLabel}}
+				</div>
+			</div>
+			{{#if logoSrc}}<img class="logo" src="{{logoSrc}}" alt="" />{{/if}}
+		</div>
+		<div class="parties">
+			<div class="party">
+				<div class="eyebrow">From</div>
+				<div class="party-name">{{issuer.name}}</div>
+				<div class="address">
+					{{#with issuer.address}}{{line1}}{{#if line2}}<br />{{line2}}{{/if}}<br />{{city}} {{state}} {{postalCode}}<br />{{country}}{{/with}}
+				</div>
+				<div class="address">GST Reg. No: {{#if gstRegNumber}}{{gstRegNumber}}{{else}}Unregistered{{/if}}</div>
+			</div>
+			<div class="party">
+				<div class="eyebrow">{{partyLabel}}</div>
+				<div class="party-name">{{party.name}}</div>
+				<div class="address">
+					{{#with party.address}}{{line1}}{{#if line2}}<br />{{line2}}{{/if}}<br />{{city}} {{state}} {{postalCode}}<br />{{country}}{{/with}}
+				</div>
+			</div>
+		</div>
+		{{> statement}}
+		{{#if bottomNotice}}
+		<div class="notice">{{bottomNotice}}</div>
+		{{/if}}
+	</body>
+</html>
