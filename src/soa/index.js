@@ -20,29 +20,73 @@ handlebars.registerHelper("numberFormat", (value) =>
   })
 );
 handlebars.registerHelper("isOdd", (value) => value % 2 !== 0);
-const templates = new Map();
+handlebars.registerHelper("displayNumber", (value) =>
+  value ? handlebars.helpers.numberFormat(value) : "-"
+);
+let documentTemplate;
+let statementTemplate;
 
-/** Render existing SOA layouts without changing document balances or transport. */
+function loadTemplates() {
+  if (!statementTemplate) {
+    statementTemplate = handlebars.compile(
+      readFileSync(join(__dirname, "templates", "statement.hbs"), "utf8")
+    );
+    handlebars.registerPartial("statement", statementTemplate);
+    documentTemplate = handlebars.compile(
+      readFileSync(join(__dirname, "templates", "document.hbs"), "utf8")
+    );
+  }
+}
+
+// Callers own dates, statement mode and every monetary value. Only adapt labels.
+function presentation(embeddings, layout) {
+  const isVendor = layout === SOALayout.VENDOR;
+  const asAtDate = embeddings.asAtDate || "";
+  let dateLabel = asAtDate;
+  let modeLabel;
+  let emptyMessage = "No statement entries";
+  if (embeddings.activity === true) {
+    modeLabel = "Activity";
+    emptyMessage = "No activity in this date range";
+  } else if (embeddings.activity === false) {
+    const dated = /^as at\b/i.test(asAtDate) ? asAtDate : `As at ${asAtDate}`;
+    dateLabel = dated;
+    modeLabel = "Outstanding balances";
+    emptyMessage = "No outstanding balance";
+  }
+  return {
+    ...embeddings,
+    partyLabel: isVendor ? "Vendor" : "Customer",
+    logoSrc: embeddings.logo
+      ? (embeddings.logo.startsWith("data:image/")
+        ? embeddings.logo
+        : `data:image/png;base64,${embeddings.logo}`)
+      : undefined,
+    party: isVendor ? embeddings.vendor : embeddings.payer,
+    dateLabel,
+    modeLabel,
+    emptyMessage,
+  };
+}
+
+/** Render one SOA design without changing caller-supplied accounting data. */
 function renderSOA(embeddings, layout) {
   if (!Object.values(SOALayout).includes(layout)) {
     throw new Error(`Unsupported SOA layout: ${layout}`);
   }
-  if (!templates.has(layout)) {
-    templates.set(
-      layout,
-      handlebars.compile(readFileSync(join(__dirname, "templates", `${layout}.hbs`), "utf8"))
-    );
+  loadTemplates();
+  const view = presentation(embeddings, layout);
+  // Email bodies receive the same inline-styled table, without document CSS/fonts.
+  if (layout === SOALayout.NOTIFICATION) {
+    return statementTemplate(view);
   }
-  if (layout === SOALayout.VENDOR && !embeddings.fonts) {
+  if (!view.fonts) {
     const { getVazir, getVazirBold, getNotoSC } = require("../font");
     const useChineseFont = /[\u4E00-\u9FFF]/.test(JSON.stringify(embeddings));
     const regular = useChineseFont ? getNotoSC() : getVazir();
-    embeddings = {
-      ...embeddings,
-      fonts: { regular, bold: useChineseFont ? regular : getVazirBold() },
-    };
+    view.fonts = { regular, bold: useChineseFont ? regular : getVazirBold() };
   }
-  return templates.get(layout)(embeddings);
+  return documentTemplate(view);
 }
 
 /** Use the caller's existing browser while owning the page lifecycle. */
@@ -55,7 +99,7 @@ async function generateSOAPdf(browser, embeddings, layout) {
     });
     return await page.pdf({
       format: "a4",
-      printBackground: layout !== SOALayout.SCHEDULED_NOTIFICATION,
+      printBackground: true,
     });
   } finally {
     await page.close();
