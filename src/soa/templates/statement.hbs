@@ -1,0 +1,51 @@
+<div class="soa-statement" style="font-family: Invoice, Arial, sans-serif; color: #000; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+{{#each currencies as |currencyGroup|}}
+  {{#each subsidiaries}}
+  <table class="soa-items" cellpadding="0" cellspacing="0" width="100%" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+    <colgroup>
+      <col style="width: 13%" />
+      <col style="width: 31%" />
+      <col style="width: 13%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
+      <col style="width: 15%" />
+    </colgroup>
+    <thead style="display: table-header-group;">
+      <tr style="break-inside: avoid;">
+        <th colspan="6" style="padding: 4mm 1mm 2mm; text-align: left; font-size: 9pt; font-weight: bold; color: #4d4e53; overflow-wrap: anywhere; word-wrap: break-word;">{{name}} &#183; {{currencyGroup.currency}}</th>
+      </tr>
+      <tr style="break-inside: avoid;">
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: left; border-bottom: 0.5mm solid #4d4e53;">Date</th>
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: left; border-bottom: 0.5mm solid #4d4e53;">Activity</th>
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: left; border-bottom: 0.5mm solid #4d4e53;">Due Date</th>
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: right; border-bottom: 0.5mm solid #4d4e53;">Amount</th>
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: right; border-bottom: 0.5mm solid #4d4e53;">Payments</th>
+        <th scope="col" style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 9pt; font-weight: bold; text-transform: uppercase; text-align: right; border-bottom: 0.5mm solid #4d4e53;">Balance {{currencyGroup.currency}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each items}}
+      <tr style="break-inside: avoid;{{#if (isOdd @index)}} background-color: #f5f5f5;{{/if}}"{{#if (isOdd @index)}} bgcolor="#f5f5f5"{{/if}}>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: left;">{{date}}</td>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: left;">{{activity}}</td>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: left;">{{dueDate}}</td>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: right;">{{displayNumber amount}}</td>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: right;">{{displayNumber payments}}</td>
+        <td style="padding: 2mm 1mm; overflow-wrap: anywhere; word-wrap: break-word; vertical-align: top; font-size: 8pt; font-weight: normal; text-align: right;">{{displayNumber balance}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{/each}}
+  <table class="soa-total" cellpadding="0" cellspacing="0" width="100%" style="width: 100%; border-collapse: collapse; margin: 5mm 0 8mm; break-inside: avoid;">
+    <tr>
+      <td width="50%"></td>
+      <td width="50%" style="padding: 3mm 0; border-top: 0.5mm solid #000; text-align: right;">
+        <span style="color: #4d4e53; text-transform: uppercase; font-size: 8pt;">Balance Due</span><strong style="margin-left: 5mm; font-size: 12pt;">{{currency}} {{numberFormat totalBalanceDue}}</strong>
+      </td>
+    </tr>
+  </table>
+{{else}}
+  <p style="font-size: 9pt;">{{emptyMessage}}</p>
+{{/each}}
+</div>
